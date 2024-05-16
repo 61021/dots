@@ -34,7 +34,7 @@ ctrl + shift + 9
 
 # Launch xcolor
 ctrl + shift + minus
-    xcolor -s | xclip -selection clipboard
+    xcolor | xclip -selection clipboard
 
 # Find Cursor
 ctrl + shift + 0

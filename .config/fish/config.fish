@@ -26,7 +26,9 @@ if status is-interactive
 	alias vim='v'
 	alias nano='v'
   alias emacs='v'
-  alias vv='sudo nvim'
+  alias s='sudo'
+  alias se='sudo -E'
+  alias vv='se nvim'
 
 	# utilities
 	alias myip='curl ipinfo.io/ip'
@@ -55,7 +57,7 @@ if status is-interactive
   alias sc='nvim ~/.config/sxhkd/sxhkdrc'
 
 	# funny
-	alias reyeet='reboot'
+	alias reyeet='sudo reboot'
 	alias obey='sudo'
 	alias obey_as_me='sudo -E'
 	alias say='yes'
@@ -90,9 +92,4 @@ complete --command j --exclusive --arguments '(__jump_hint)'
 
 end
 
-# pnpm
-set -gx PNPM_HOME "/home/khaled/.local/share/pnpm"
-if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
-end
-# pnpm end
+export NVM_DIR="$HOME/.nvm"
