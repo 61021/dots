@@ -3,7 +3,7 @@ if status is-interactive
   set fish_greeting "Welcome to the Batcave, Master Wayne. How can I assist you today?"
 
 	# general
-	alias die="sudo shutdown -h now"
+	alias die="sudo systemctl poweroff"
 	alias cp='cp -iv'
 	alias mv='mv -iv' 
 	alias wget='wget -c'
@@ -24,19 +24,21 @@ if status is-interactive
 	# alternatives
 	alias v='nvim'
 	alias vim='v'
+	alias cat='bat'
 	alias nano='v'
   alias emacs='v'
   alias s='sudo'
   alias se='sudo -E'
   alias vv='se nvim'
+  alias lspcifzf="lspci | fzf --preview-window='top:50%:nowrap' --preview=\"echo {} | grep -o '[0-9a-zA-Z][0-9a-zA-Z]:[0-9a-zA-Z][0-9a-zA-Z]\.[0-9a-zA-Z]' | xargs -I[] lspci -k -s [] | grep -z --color=always -e '[0-9a-zA-Z][0-9a-zA-Z]:[0-9a-zA-Z][0-9a-zA-Z]\.[0-9a-zA-Z]'\""
+  alias ipsbs="pacman -Qi | awk '/^Name/ {name=$3} /^Installed Size/ {print $4 $5, name}' | sort -hr | less"
 
 	# utilities
 	alias myip='curl ipinfo.io/ip'
-  alias oc='~/stuff/scripts/code.sh'
 
-	# xbps
 	alias i='paru -S'
-	alias update='paru'
+  alias aa='paru'
+  alias update='paru'
 	alias remove='paru -R'
   alias removeall='paru -Rcsn'
 	alias search='paru'
@@ -51,9 +53,7 @@ if status is-interactive
 	
 	# paths
   alias fishc="cd ~/.config/fish && nvim config.fish"
-	
   alias codef='cd ~/stuff/code/'
-
   alias sc='nvim ~/.config/sxhkd/sxhkdrc'
 
 	# funny
@@ -66,9 +66,7 @@ if status is-interactive
   alias sl='sl -100wdae'
 	alias yeetermeter='btop'
 	alias rr='curl -s -L https://raw.githubusercontent.com/keroserene/rickrollrc/master/roll.sh | bash'
-
-  export PATH="$HOME/pnpm-global/bin:$PATH"
-
+  alias where="pwd"
 
 #   jump shell fish | source
 #
@@ -92,4 +90,4 @@ complete --command j --exclusive --arguments '(__jump_hint)'
 
 end
 
-export NVM_DIR="$HOME/.nvm"
+set -Ux nvm_default_version 22.14.0
