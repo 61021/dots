@@ -53,6 +53,7 @@ if status is-interactive
 	
 	# paths
   alias fishc="cd ~/.config/fish && nvim config.fish"
+  alias hyprc="nvim ~/.config/hypr/hyprland.conf"
   alias codef='cd ~/stuff/code/'
   alias sc='nvim ~/.config/sxhkd/sxhkdrc'
 

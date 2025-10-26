@@ -20,10 +20,6 @@ stuff/*
 !.local/share
 .local/share/*
 
-!.local/share/fish
-.local/share/fish/*
-!.local/share/fish/fish_history
-
 !.local/share/fonts
 !.config/btop
 !.config/sxhkd
@@ -34,3 +30,4 @@ stuff/*
 !.config/neofetch
 !.config/flameshot
 !.config/paru
+!.config/fontconfig
