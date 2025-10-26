@@ -19,8 +19,8 @@ stuff/*
 .local/*
 !.local/share
 .local/share/*
-
 !.local/share/fonts
+
 !.config/btop
 !.config/sxhkd
 !.config/fish
