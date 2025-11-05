@@ -3,7 +3,7 @@ if status is-interactive
   set fish_greeting "Welcome to the Batcave, Master Wayne. How can I assist you today?"
 
 	# general
-	alias die="sudo systemctl poweroff"
+	alias die="sudo shutdown -h now"
 	alias cp='cp -iv'
 	alias mv='mv -iv' 
 	alias wget='wget -c'
@@ -20,8 +20,8 @@ if status is-interactive
 	alias extract='tar -xzvf'
   alias update-grub='sudo update-grub'
   alias x='startx'
-
-	# alternatives
+	
+  # alternatives
 	alias v='nvim'
 	alias vim='v'
 	alias cat='bat'
