@@ -1,0 +1,193 @@
+/*
+ * __        __          _                  ____  _         _
+ * \ \      / /_ _ _   _| |__   __ _ _ __  / ___|| |_ _   _| | ___
+ *  \ \ /\ / / _` | | | | '_ \ / _` | '__| \___ \| __| | | | |/ _ \
+ *   \ V  V / (_| | |_| | |_) | (_| | |     ___) | |_| |_| | |  __/
+ *    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    |____/ \__|\__, |_|\___|
+ *                 |___/                              |___/
+ *
+ * -----------------------------------------------------
+*/
+
+/* -----------------------------------------------------
+ * General
+ * ----------------------------------------------------- */
+
+* {
+  font-family: "IBM Plex Sans", "JetBrainsMono Nerd Font", Arial, sans-serif;
+}
+
+window#waybar {
+  background-color: #000;
+}
+
+.modules-left {
+  margin-left: 12px;
+}
+
+.modules-right {
+  margin-right: 12px;
+}
+/* -----------------------------------------------------
+ * Tooltips
+ * ----------------------------------------------------- */
+
+tooltip {
+  border-radius: 10px;
+  background-color: #000;
+  padding: 1px;
+  margin: 0px;
+}
+
+tooltip label {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* -----------------------------------------------------
+ * Custom Now Playing
+ * ----------------------------------------------------- */
+
+#custom-nowplaying {
+  font-size: 16px;
+  color: white;
+}
+
+#custom-nowplaying.playing {
+  color: #4ade80;
+}
+
+#custom-nowplaying.paused {
+  color: #666666;
+}
+
+/* -----------------------------------------------------
+ * Custom Exit
+ * ----------------------------------------------------- */
+
+#custom-exit {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+}
+
+/* -----------------------------------------------------
+ * Custom Weather
+ * ----------------------------------------------------- */
+
+#custom-weather {
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  padding-left: 16px;
+}
+
+/* -----------------------------------------------------
+ * Hardware Group
+ * ----------------------------------------------------- */
+
+#disk,
+#memory,
+#cpu,
+#language {
+  margin: 0px;
+  padding: 0px;
+  font-size: 16px;
+  color: white;
+}
+
+/* -----------------------------------------------------
+ * Clock
+ * ----------------------------------------------------- */
+
+#clock {
+  color: white;
+  transition: color 0.3s ease-in-out;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+#clock:hover {
+  color: #89ddff;
+}
+
+/* -----------------------------------------------------
+ * Pulseaudio
+ * ----------------------------------------------------- */
+
+#pulseaudio {
+  font-size: 16px;
+  color: white;
+  transition: all 0.3s ease-out;
+  font-weight: 500;
+  padding-left: 16px;
+}
+
+#pulseaudio:hover {
+  color: #89ddff;
+}
+
+#pulseaudio.muted {
+  color: red;
+}
+
+/* -----------------------------------------------------
+ * Network
+ * ----------------------------------------------------- */
+
+#network {
+  font-size: 16px;
+  padding-left: 12px;
+  transition: color 0.3s ease-in-out;
+  font-weight: 500;
+}
+
+#network.ethernet:hover {
+  color: #89ddff;
+}
+
+#network.wifi:hover {
+  color: #89ddff;
+}
+
+#network.ethernet {
+  color: white;
+}
+
+#network.wifi {
+  color: white;
+}
+
+/* -----------------------------------------------------
+ * Battery
+ * ----------------------------------------------------- */
+
+#battery {
+  font-size: 16px;
+  color: white;
+  padding-left: 16px;
+  font-weight: 500;
+}
+
+#battery.charging,
+#battery.plugged {
+  color: #4ade80;
+}
+
+@keyframes blink {
+  from {
+    color: white;
+  }
+  to {
+    color: red;
+  }
+}
+
+#battery.critical:not(.charging) {
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
