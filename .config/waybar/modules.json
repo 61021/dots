@@ -2,31 +2,15 @@
   "custom/empty": {
     "format": ""
   },
+  "custom/exit": {
+    "format": "KW",
+    "tooltip": true,
+    "tooltip-format": "Lock screen",
+    "on-click": "hyprlock"
+  },
   "group/hardware": {
     "format": "CPU: {cpu} MEM: {memory} DISK: {disk}",
     "interval": 1
-  },
-  "custom/nowplaying": {
-    "exec": "~/.config/waybar/scripts/now-playing.sh",
-    "format": "  {text}",
-    "return-type": "json",
-    "interval": 1,
-    "escape": true,
-    "hide-empty-text": false,
-    "on-click": "playerctl play-pause",
-    "on-click-right": "playerctl next",
-    "on-click-middle": "playerctl previous",
-    "tooltip-format": "Left: Play/Pause\nRight: Next\nMiddle: Previous"
-  },
-
-  "custom/exit": {
-    "exec": "~/stuff/scripts/increment-love.sh",
-    "return-type": "json",
-    "interval": 2,
-    "format": "{text}",
-    "tooltip": true,
-    "on-click": "~/.config/my-scripts/scripts/wlogout.sh",
-    "on-click-right": "hyprlock"
   },
   "tray": {
     "icon-size": 16,
@@ -42,10 +26,37 @@
     "on-click": "~/.config/waybar/scripts/vpn-toggle.sh",
     "on-click-right": "foot -e sh -c 'tail -n 200 -f \"${XDG_RUNTIME_DIR:-/tmp}/waybar-vpn/openfortivpn.log\"'"
   },
+  "custom/warp": {
+    "exec": "~/.config/waybar/scripts/warp.sh",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 9,
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "~/.config/waybar/scripts/warp-toggle.sh",
+    "on-click-right": "foot -e sh -c 'warp-cli status; warp-cli settings; echo; read -p \"press enter\"'"
+  },
   "clock": {
     "format": "{:%I:%M %a %d/%m}",
-    "tooltip": true,
-    "tooltip-format": "Memento Mori, be mindful of death."
+    "tooltip-format": "<span size='large' weight='bold'>{:%A, %B %d %Y}</span>\n<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#facc15'><b>{}</b></span>",
+        "days": "<span color='#e5e7eb'>{}</span>",
+        "weeks": "<span color='#6b7280'><i>W{}</i></span>",
+        "weekdays": "<span color='#89ddff'><b>{}</b></span>",
+        "today": "<span color='#4ade80'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-click-right": "mode",
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
   },
   "cpu": {
     "format": "/ C {usage}% ",
@@ -64,12 +75,12 @@
   "network": {
     "format": "{ifname}",
     "format-wifi": "{icon}",
-    "format-ethernet": "\udb80\udf17   Wired",
-    "format-disconnected": "No Network",
+    "format-ethernet": "󰈀   Wired",
+    "format-disconnected": "󰤮 No Network",
     "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
-    "tooltip-format": "\uf1eb {ifname} via {gwaddri}",
+    "tooltip-format": "󰈀 {ifname} via {gwaddri}",
     "tooltip-format-wifi": "{icon}    {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
-    "tooltip-format-ethernet": "\uf1eb    {ifname}\nIP: {ipaddr}\nup: {bandwidthUpBits} down: {bandwidthDownBits}",
+    "tooltip-format-ethernet": "󰈀    {ifname}\nIP: {ipaddr}\nup: {bandwidthUpBits} down: {bandwidthDownBits}",
     "tooltip-format-disconnected": "Disconnected",
     "max-length": 50,
     "min-length": 2,
@@ -83,35 +94,41 @@
       "critical": 15
     },
     "format": "{icon}    {capacity}%",
-    "format-charging": "{icon}    {capacity}%",
-    "format-plugged": "{icon}    {capacity}%",
-    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
+    "format-charging": "󰂄    {capacity}%",
+    "format-plugged": "󰂄    {capacity}%",
+    "format-icons": ["󰂃", "󰁻", "󰁽", "󰂀", "󰁹"]
   },
   "pulseaudio": {
     "format": "{icon}   {volume}",
-    "format-bluetooth": "{volume} {icon} ",
-    "format-bluetooth-muted": " {icon} {format_source}",
-    "format-muted": " {format_source}",
-    "format-source": "{volume}% ",
-    "format-source-muted": "",
+    "format-bluetooth": "{volume} {icon} ",
+    "format-bluetooth-muted": "󰸈 {icon} {format_source}",
+    "format-muted": "󰸈 {format_source}",
+    "format-source": "{volume}% 󰍬",
+    "format-source-muted": "󰍭",
     "format-icons": {
-      "headphone": " ",
-      "hands-free": "\uf130",
-      "headset": "\uf025",
-      "phone": " ",
-      "portable": " ",
-      "car": " ",
-      "default": ["", "", ""]
+      "headphone": "󰋋 ",
+      "hands-free": "󰋎 ",
+      "headset": "󰋎 ",
+      "phone": "󰏲 ",
+      "portable": "󰏲 ",
+      "car": "󰄋 ",
+      "default": ["󰕿", "󰖀", "󰕾"]
     },
     "on-click": "pavucontrol"
   },
   "bluetooth": {
-    "format": " {status}",
-    "format-disabled": "",
-    "format-off": "",
+    "format": "󰂯",
+    "format-on": "󰂯",
+    "format-off": "󰂲",
+    "format-disabled": "󰂲",
+    "format-no-controller": "",
+    "format-connected": "󰂱 {num_connections}",
+    "tooltip-format": "Bluetooth: {status}\nController: {controller_alias}",
+    "tooltip-format-connected": "Bluetooth: {status}\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias} ({device_address})",
+    "tooltip-format-enumerate-connected-battery": "{device_alias}: {device_battery_percentage}%",
     "interval": 30,
-    "on-click": "sleep 0.1 && ~/.config/my-scripts/settings/bluetooth.sh",
-    "format-no-controller": ""
+    "on-click": "sleep 0.1 && ~/.config/my-scripts/settings/bluetooth.sh"
   },
   "user": {
     "format": "{user}",
@@ -120,23 +137,7 @@
   },
   "backlight": {
     "format": "{icon} {percent}%",
-    "format-icons": [
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
-    ],
+    "format-icons": ["󰃞", "󰃟", "󰃠"],
     "scroll-step": 1
   }
 }

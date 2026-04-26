@@ -1,75 +1,68 @@
-/*
- * __        __          _                  ____  _         _
- * \ \      / /_ _ _   _| |__   __ _ _ __  / ___|| |_ _   _| | ___
- *  \ \ /\ / / _` | | | | '_ \ / _` | '__| \___ \| __| | | | |/ _ \
- *   \ V  V / (_| | |_| | |_) | (_| | |     ___) | |_| |_| | |  __/
- *    \_/\_/ \__,_|\__, |_.__/ \__,_|_|    |____/ \__|\__, |_|\___|
- *                 |___/                              |___/
- *
- * -----------------------------------------------------
-*/
-
 /* -----------------------------------------------------
- * General
+ * Waybar Style — floating island, MDI icons
  * ----------------------------------------------------- */
 
 * {
   font-family: "IBM Plex Sans", "JetBrainsMono Nerd Font", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 0;
 }
+
+/* Floating bar background ---------------------------- */
 
 window#waybar {
   background-color: transparent;
 }
 
-.modules-left {
-  margin-left: 12px;
+window#waybar > box {
+  background-color: black;
+  padding: 0 6px;
 }
 
+.modules-left,
+.modules-center,
 .modules-right {
-  margin-right: 12px;
+  margin: 0;
+  padding: 0;
 }
+
 /* -----------------------------------------------------
  * Tooltips
  * ----------------------------------------------------- */
 
 tooltip {
-  border-radius: 10px;
-  background-color: #000;
-  padding: 1px;
-  margin: 0px;
+  border-radius: 12px;
+  background-color: rgba(15, 17, 21, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px;
 }
 
 tooltip label {
-  color: white;
-  font-size: 14px;
+  color: #e5e7eb;
+  font-size: 13px;
   font-weight: 500;
 }
 
 /* -----------------------------------------------------
- * Custom Now Playing
- * ----------------------------------------------------- */
-
-#custom-nowplaying {
-  font-size: 16px;
-  color: white;
-}
-
-#custom-nowplaying.playing {
-  color: #4ade80;
-}
-
-#custom-nowplaying.paused {
-  color: #666666;
-}
-
-/* -----------------------------------------------------
- * Custom Exit
+ * Custom Exit (KW lock button)
  * ----------------------------------------------------- */
 
 #custom-exit {
-  font-size: 16px;
-  color: white;
-  font-weight: 500;
+  color: #e5e7eb;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 0 14px;
+  margin-right: 4px;
+  transition:
+    color 0.2s ease-in-out,
+    background 0.2s ease-in-out;
+}
+
+#custom-exit:hover {
+  color: #89ddff;
+  background: rgba(137, 221, 255, 0.08);
 }
 
 /* -----------------------------------------------------
@@ -80,9 +73,6 @@ tooltip label {
 #memory,
 #cpu,
 #language {
-  margin: 0px;
-  padding: 0px;
-  font-size: 16px;
   color: white;
 }
 
@@ -92,114 +82,57 @@ tooltip label {
 
 #clock {
   color: white;
-  transition: color 0.3s ease-in-out;
-  font-weight: 500;
-  font-size: 16px;
+  padding: 0 14px;
+  border-radius: 999px;
+  transition:
+    color 0.3s ease-in-out,
+    background 0.3s ease-in-out;
 }
 
 #clock:hover {
   color: #89ddff;
+  background: rgba(137, 221, 255, 0.08);
 }
 
 /* -----------------------------------------------------
- * Pulseaudio
+ * Common right-side modules — uniform spacing
  * ----------------------------------------------------- */
 
-#pulseaudio {
-  font-size: 16px;
+#pulseaudio,
+#network,
+#battery,
+#bluetooth,
+#custom-vpn,
+#custom-warp,
+#tray {
   color: white;
-  transition: all 0.3s ease-out;
-  font-weight: 500;
-  padding-left: 24px;
-}
-
-#pulseaudio:hover {
-  color: #89ddff;
-}
-
-#pulseaudio.muted {
-  color: red;
-}
-
-/* -----------------------------------------------------
- * VPN
- * ----------------------------------------------------- */
-
-#custom-vpn {
-  font-size: 16px;
-  color: white;
-  font-weight: 500;
-  padding-left: 24px;
+  padding: 0 10px;
   transition: color 0.3s ease-in-out;
 }
 
-#custom-vpn:hover {
+#pulseaudio:hover,
+#network:hover,
+#bluetooth:hover,
+#custom-vpn:hover,
+#custom-warp:hover {
   color: #89ddff;
 }
 
-#custom-vpn.disconnected {
+#group-hardware {
+  padding: 0 10px;
+}
+
+/* Pulseaudio --------------------------------------- */
+#pulseaudio.muted {
+  color: #ef4444;
+}
+
+/* Network ------------------------------------------ */
+#network.disconnected {
   color: #6b7280;
 }
 
-#custom-vpn.connected {
-  color: #4ade80;
-}
-
-@keyframes vpn-pulse {
-  from {
-    color: #facc15;
-  }
-  to {
-    color: #fde68a;
-  }
-}
-
-#custom-vpn.connecting {
-  animation-name: vpn-pulse;
-  animation-duration: 0.8s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-direction: alternate;
-}
-
-/* -----------------------------------------------------
- * Network
- * ----------------------------------------------------- */
-
-#network {
-  font-size: 16px;
-  padding-left: 24px;
-  transition: color 0.3s ease-in-out;
-  font-weight: 500;
-}
-
-#network.ethernet:hover {
-  color: #89ddff;
-}
-
-#network.wifi:hover {
-  color: #89ddff;
-}
-
-#network.ethernet {
-  color: white;
-}
-
-#network.wifi {
-  color: white;
-}
-
-/* -----------------------------------------------------
- * Battery
- * ----------------------------------------------------- */
-
-#battery {
-  font-size: 16px;
-  color: white;
-  padding-left: 24px;
-  font-weight: 500;
-}
-
+/* Battery ------------------------------------------ */
 #battery.charging,
 #battery.plugged {
   color: #4ade80;
@@ -210,7 +143,7 @@ tooltip label {
     color: white;
   }
   to {
-    color: red;
+    color: #ef4444;
   }
 }
 
@@ -218,6 +151,48 @@ tooltip label {
   animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+/* Bluetooth ---------------------------------------- */
+#bluetooth.disabled,
+#bluetooth.off {
+  color: #6b7280;
+}
+#bluetooth.connected {
+  color: #89ddff;
+}
+
+/* DND ---------------------------------------------- */
+/* VPN / WARP shared pulse animation ---------------- */
+@keyframes vpn-pulse {
+  from {
+    color: #facc15;
+  }
+  to {
+    color: #fde68a;
+  }
+}
+
+#custom-vpn.disconnected,
+#custom-warp.disconnected,
+#custom-warp.missing {
+  color: #6b7280;
+}
+
+#custom-vpn.connected {
+  color: #4ade80;
+}
+#custom-warp.connected {
+  color: #f97316;
+}
+
+#custom-vpn.connecting,
+#custom-warp.connecting {
+  animation-name: vpn-pulse;
+  animation-duration: 0.8s;
+  animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
 }
