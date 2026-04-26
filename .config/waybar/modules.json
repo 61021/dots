@@ -1,0 +1,142 @@
+{
+  "custom/empty": {
+    "format": ""
+  },
+  "group/hardware": {
+    "format": "CPU: {cpu} MEM: {memory} DISK: {disk}",
+    "interval": 1
+  },
+  "custom/nowplaying": {
+    "exec": "~/.config/waybar/scripts/now-playing.sh",
+    "format": "  {text}",
+    "return-type": "json",
+    "interval": 1,
+    "escape": true,
+    "hide-empty-text": false,
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl next",
+    "on-click-middle": "playerctl previous",
+    "tooltip-format": "Left: Play/Pause\nRight: Next\nMiddle: Previous"
+  },
+
+  "custom/exit": {
+    "exec": "~/stuff/scripts/increment-love.sh",
+    "return-type": "json",
+    "interval": 2,
+    "format": "{text}",
+    "tooltip": true,
+    "on-click": "~/.config/my-scripts/scripts/wlogout.sh",
+    "on-click-right": "hyprlock"
+  },
+  "tray": {
+    "icon-size": 16,
+    "spacing": 10
+  },
+  "custom/vpn": {
+    "exec": "~/.config/waybar/scripts/vpn.sh",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 8,
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "~/.config/waybar/scripts/vpn-toggle.sh",
+    "on-click-right": "foot -e sh -c 'tail -n 200 -f \"${XDG_RUNTIME_DIR:-/tmp}/waybar-vpn/openfortivpn.log\"'"
+  },
+  "clock": {
+    "format": "{:%I:%M %a %d/%m}",
+    "tooltip": true,
+    "tooltip-format": "Memento Mori, be mindful of death."
+  },
+  "cpu": {
+    "format": "/ C {usage}% ",
+    "on-click": "~/.config/my-scripts/settings/system-monitor.sh"
+  },
+  "memory": {
+    "format": "/ M {}% ",
+    "on-click": "~/.config/my-scripts/settings/system-monitor.sh"
+  },
+  "disk": {
+    "interval": 1,
+    "format": "D {percentage_used}% ",
+    "path": "/",
+    "on-click": "~/.config/my-scripts/settings/system-monitor.sh"
+  },
+  "network": {
+    "format": "{ifname}",
+    "format-wifi": "{icon}",
+    "format-ethernet": "\udb80\udf17   Wired",
+    "format-disconnected": "No Network",
+    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
+    "tooltip-format": "\uf1eb {ifname} via {gwaddri}",
+    "tooltip-format-wifi": "{icon}    {ifname} @ {essid}\nIP: {ipaddr}\nStrength: {signalStrength}%\nUp: {bandwidthUpBits} Down: {bandwidthDownBits}",
+    "tooltip-format-ethernet": "\uf1eb    {ifname}\nIP: {ipaddr}\nup: {bandwidthUpBits} down: {bandwidthDownBits}",
+    "tooltip-format-disconnected": "Disconnected",
+    "max-length": 50,
+    "min-length": 2,
+    "on-click": "~/.config/my-scripts/settings/networkmanager.sh",
+    "on-click-right": "~/.config/my-scripts/settings/networkmanager.sh"
+  },
+  "battery": {
+    "interval": 1,
+    "states": {
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon}    {capacity}%",
+    "format-charging": "{icon}    {capacity}%",
+    "format-plugged": "{icon}    {capacity}%",
+    "format-icons": ["\uf244", "\uf243", "\uf242", "\uf241", "\uf240"]
+  },
+  "pulseaudio": {
+    "format": "{icon}   {volume}",
+    "format-bluetooth": "{volume} {icon} ",
+    "format-bluetooth-muted": " {icon} {format_source}",
+    "format-muted": " {format_source}",
+    "format-source": "{volume}% ",
+    "format-source-muted": "",
+    "format-icons": {
+      "headphone": " ",
+      "hands-free": "\uf130",
+      "headset": "\uf025",
+      "phone": " ",
+      "portable": " ",
+      "car": " ",
+      "default": ["", "", ""]
+    },
+    "on-click": "pavucontrol"
+  },
+  "bluetooth": {
+    "format": " {status}",
+    "format-disabled": "",
+    "format-off": "",
+    "interval": 30,
+    "on-click": "sleep 0.1 && ~/.config/my-scripts/settings/bluetooth.sh",
+    "format-no-controller": ""
+  },
+  "user": {
+    "format": "{user}",
+    "interval": 60,
+    "icon": false
+  },
+  "backlight": {
+    "format": "{icon} {percent}%",
+    "format-icons": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "scroll-step": 1
+  }
+}

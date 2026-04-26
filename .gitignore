@@ -1,0 +1,42 @@
+# ─────────────────────────────────────────────────────────────
+# Dotfiles repo: ignore everything in $HOME by default,
+# then explicitly allow-list what should be tracked.
+# ─────────────────────────────────────────────────────────────
+/*
+!.gitignore
+
+# ── Top-level dotfiles ───────────────────────────────────────
+!.bash_profile
+!.bashrc
+!.gitconfig
+!.gtkrc-2.0
+!.xinitrc
+
+# ── stuff/ (only constants and scripts) ──────────────────────
+!stuff/
+stuff/*
+!stuff/constants
+!stuff/scripts
+
+# ── .config/ ─────────────────────────────────────────────────
+!.config/
+.config/*
+!.config/Thunar
+!.config/fastfetch
+!.config/fish
+!.config/flameshot
+!.config/fontconfig
+!.config/gtk-3.0
+!.config/gtk-4.0
+!.config/hypr
+!.config/nvim
+!.config/paru
+!.config/rofi
+!.config/waybar
+
+# ── .local/share/ (fonts only) ───────────────────────────────
+!.local/
+.local/*
+!.local/share/
+.local/share/*
+!.local/share/fonts
