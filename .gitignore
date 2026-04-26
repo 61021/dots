@@ -14,6 +14,8 @@
 !.xinitrc
 !README.md
 !install.sh
+!packages-repo.txt
+!packages-aur.txt
 
 # ── stuff/ (only constants and scripts) ──────────────────────
 !stuff/
