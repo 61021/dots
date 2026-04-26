@@ -81,8 +81,8 @@ echo "    $c_dim # or add an alias:  alias dot='git --git-dir=\$HOME/.dotfiles.g
 
 # ─── 4. Install packages (Arch / pacman + paru) ──────────────
 if command -v pacman >/dev/null; then
-  REPO_LIST="$HOME/packages-repo.txt"
-  AUR_LIST="$HOME/packages-aur.txt"
+  REPO_LIST="$HOME/.config/packages/repo.txt"
+  AUR_LIST="$HOME/.config/packages/aur.txt"
 
   if [[ -f "$REPO_LIST" ]]; then
     log "Installing official-repo packages from $(basename "$REPO_LIST")"

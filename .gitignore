@@ -14,8 +14,6 @@
 !.xinitrc
 !README.md
 !install.sh
-!packages-repo.txt
-!packages-aur.txt
 
 # ── stuff/ (only constants and scripts) ──────────────────────
 !stuff/
@@ -43,6 +41,7 @@ stuff/*
 !.config/nvim
 !.config/nwg-displays
 !.config/nwg-look
+!.config/packages
 !.config/paru
 !.config/qt5ct
 !.config/qt6ct
