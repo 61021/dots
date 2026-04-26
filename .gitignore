@@ -10,7 +10,10 @@
 !.bashrc
 !.gitconfig
 !.gtkrc-2.0
+!.gtkrc-2.0.mine
 !.xinitrc
+!README.md
+!install.sh
 
 # ── stuff/ (only constants and scripts) ──────────────────────
 !stuff/
@@ -22,6 +25,8 @@ stuff/*
 !.config/
 .config/*
 !.config/Thunar
+!.config/btop
+!.config/dunst
 !.config/fastfetch
 !.config/fish
 !.config/flameshot
@@ -29,10 +34,21 @@ stuff/*
 !.config/gtk-3.0
 !.config/gtk-4.0
 !.config/hypr
+!.config/kdeglobals
+!.config/kitty
+!.config/mimeapps.list
+!.config/mpv
 !.config/nvim
+!.config/nwg-displays
+!.config/nwg-look
 !.config/paru
+!.config/qt5ct
+!.config/qt6ct
 !.config/rofi
+!.config/user-dirs.dirs
 !.config/waybar
+!.config/wofi
+!.config/xsettingsd
 
 # ── .local/share/ (fonts only) ───────────────────────────────
 !.local/
@@ -40,3 +56,26 @@ stuff/*
 !.local/share/
 .local/share/*
 !.local/share/fonts
+
+# ─────────────────────────────────────────────────────────────
+# Defensive ignores: drop noise inside allow-listed folders
+# ─────────────────────────────────────────────────────────────
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/*.bak
+**/*.swp
+**/*.swo
+**/*~
+
+# fish: per-machine state
+.config/fish/fish_history
+.config/fish/generated_completions/
+.config/fish/.nvimlog
+
+# nvim: caches & state
+.config/nvim/.stylua-cache/
+.config/nvim/spell/
+
+# paru caches
+.config/paru/*.cache
