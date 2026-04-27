@@ -5,7 +5,7 @@ configuration {
 }
 
 * {
-    font:           "Inter 10";
+    font:           "IBM Plex Sans 10";
     bg0:            #000000;
     bg1:            #0a0a0a;
     bg2:            #141414;

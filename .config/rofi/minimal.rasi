@@ -9,7 +9,7 @@ configuration {
 
 /*****----- Palette (OLED black) -----*****/
 * {
-    font:           "Inter 11";
+    font:           "IBM Plex Sans 11";
     bg0:            #000000;     /* pure black surface */
     bg1:            #0a0a0a;     /* input */
     bg2:            #141414;     /* hover */
