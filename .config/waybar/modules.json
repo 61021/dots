@@ -3,9 +3,10 @@
     "format": ""
   },
   "custom/exit": {
-    "format": "KW",
+    "exec": "~/.config/waybar/scripts/kw-ram.sh",
+    "return-type": "json",
+    "interval": 2,
     "tooltip": true,
-    "tooltip-format": "Lock screen",
     "on-click": "hyprlock"
   },
   "group/hardware": {
@@ -37,7 +38,7 @@
     "on-click-right": "foot -e sh -c 'warp-cli status; warp-cli settings; echo; read -p \"press enter\"'"
   },
   "clock": {
-    "format": "{:%I:%M %a %d/%m}",
+    "format": "{:%I:%M %A %d/%m}",
     "tooltip-format": "<span size='large' weight='bold'>{:%A, %B %d %Y}</span>\n<tt><small>{calendar}</small></tt>",
     "calendar": {
       "mode": "month",
@@ -88,33 +89,36 @@
     "on-click-right": "~/.config/my-scripts/settings/networkmanager.sh"
   },
   "battery": {
-    "interval": 1,
     "states": {
       "warning": 30,
       "critical": 15
     },
-    "format": "{icon}    {capacity}%",
-    "format-charging": "󰂄    {capacity}%",
-    "format-plugged": "󰂄    {capacity}%",
-    "format-icons": ["󰂃", "󰁻", "󰁽", "󰂀", "󰁹"]
+    "format": "{icon}  {capacity}%",
+    "format-charging": "󰂄  {capacity}%",
+    "format-plugged": "󰚥  {capacity}%",
+    "format-icons": ["󰂎", "󰁺", "󰁻", "󰁼", "󰁽", "󰁾", "󰁿", "󰂀", "󰂁", "󰂂", "󰁹"],
+    "tooltip-format": "{timeTo}\n{power}W"
   },
   "pulseaudio": {
-    "format": "{icon}   {volume}",
-    "format-bluetooth": "{volume} {icon} ",
-    "format-bluetooth-muted": "󰸈 {icon} {format_source}",
-    "format-muted": "󰸈 {format_source}",
+    "format": "{icon}  {volume}%",
+    "format-bluetooth": "{icon}  {volume}% 󰂯",
+    "format-bluetooth-muted": "󰸈  {volume}% 󰂯",
+    "format-muted": "󰸈  {volume}%",
     "format-source": "{volume}% 󰍬",
     "format-source-muted": "󰍭",
     "format-icons": {
-      "headphone": "󰋋 ",
-      "hands-free": "󰋎 ",
-      "headset": "󰋎 ",
-      "phone": "󰏲 ",
-      "portable": "󰏲 ",
-      "car": "󰄋 ",
+      "headphone": "󰋋",
+      "hands-free": "󰋎",
+      "headset": "󰋎",
+      "phone": "󰏲",
+      "portable": "󰏲",
+      "car": "󰄋",
       "default": ["󰕿", "󰖀", "󰕾"]
     },
-    "on-click": "pavucontrol"
+    "tooltip-format": "{desc} — {volume}%",
+    "scroll-step": 5,
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
   },
   "bluetooth": {
     "format": "󰂯",

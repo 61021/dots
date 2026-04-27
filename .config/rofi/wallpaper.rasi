@@ -1,0 +1,104 @@
+/*****----- Wallpaper picker theme -----*****/
+configuration {
+    show-icons:                 true;
+    icon-theme:                 "Papirus-Dark";
+}
+
+* {
+    font:           "Inter 10";
+    bg0:            #000000;
+    bg1:            #0a0a0a;
+    bg2:            #141414;
+    bg-sel:         #ffffff14;
+    fg0:            #e7e9ee;
+    fg1:            #6b7178;
+    border:         #ffffff10;
+}
+
+window {
+    transparency:        "real";
+    location:            center;
+    anchor:              center;
+    width:               920px;
+    height:              640px;
+    border-radius:       18px;
+    border:              1px solid;
+    border-color:        @border;
+    background-color:    @bg0;
+}
+
+mainbox {
+    spacing:             0;
+    padding:             14px;
+    background-color:    transparent;
+    children:            [ "inputbar", "listview" ];
+}
+
+inputbar {
+    spacing:             10px;
+    padding:             10px 14px;
+    margin:              0 0 12px 0;
+    border-radius:       12px;
+    background-color:    @bg1;
+    text-color:          @fg0;
+    children:            [ "textbox-prompt-colon", "entry" ];
+}
+textbox-prompt-colon {
+    str:                 "";
+    expand:              false;
+    font:                "JetBrainsMono Nerd Font 12";
+    text-color:          @fg1;
+    background-color:    transparent;
+    vertical-align:      0.5;
+}
+entry {
+    expand:              true;
+    background-color:    transparent;
+    text-color:          @fg0;
+    placeholder:         "Search wallpapers…";
+    placeholder-color:   @fg1;
+    vertical-align:      0.5;
+}
+
+listview {
+    columns:             4;
+    lines:               2;
+    spacing:             10px;
+    cycle:               true;
+    dynamic:             true;
+    scrollbar:           false;
+    layout:              vertical;
+    fixed-height:        true;
+    fixed-columns:       true;
+    background-color:    transparent;
+    text-color:          @fg0;
+}
+
+element {
+    orientation:         vertical;
+    padding:             8px;
+    spacing:             6px;
+    border-radius:       12px;
+    background-color:    @bg1;
+    text-color:          @fg0;
+    cursor:              pointer;
+    children:            [ "element-icon", "element-text" ];
+}
+element selected {
+    background-color:    @bg-sel;
+    text-color:          @fg0;
+}
+element-icon {
+    size:                180px;
+    border-radius:       8px;
+    background-color:    transparent;
+    cursor:              inherit;
+    horizontal-align:    0.5;
+}
+element-text {
+    background-color:    transparent;
+    text-color:          inherit;
+    cursor:              inherit;
+    horizontal-align:    0.5;
+    vertical-align:      0.5;
+}
