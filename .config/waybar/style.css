@@ -17,6 +17,7 @@ window#waybar {
 
 window#waybar > box {
   background-color: black;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   padding: 0 6px;
 }
 
@@ -62,7 +63,7 @@ tooltip label {
 
 #custom-exit:hover {
   color: #89ddff;
-  background: rgba(137, 221, 255, 0.08);
+  background: transparent;
 }
 
 /* -----------------------------------------------------

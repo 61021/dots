@@ -8,7 +8,7 @@ log="$state_dir/openfortivpn.log"
 connecting_flag="$state_dir/connecting"
 
 if pgrep -x openfortivpn >/dev/null 2>&1; then
-  pkexec pkill -INT -x openfortivpn
+  sudo -n /usr/sbin/pkill -INT -x openfortivpn
   rm -f "$connecting_flag"
   exit 0
 fi
@@ -23,7 +23,7 @@ touch "$connecting_flag"
 pkill -RTMIN+8 waybar 2>/dev/null
 
 # Run openfortivpn detached. setsid keeps it alive after this script exits.
-setsid -f bash -c "pkexec openfortivpn -c '$config' >'$log' 2>&1" >/dev/null 2>&1 &
+setsid -f bash -c "sudo -n /usr/sbin/openfortivpn -c '$config' >'$log' 2>&1" >/dev/null 2>&1 &
 
 # Give it a moment, then refresh waybar.
 sleep 0.3

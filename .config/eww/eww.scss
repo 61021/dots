@@ -1,0 +1,165 @@
+.activate-linux {
+  color: rgba(250, 250, 250, 0.5);
+
+  &.background {
+    background: none;
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * KW Sidebar
+ * --------------------------------------------------------------------------- */
+
+* {
+  font-family: "IBM Plex Sans", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+/* Make the GTK window itself transparent so the sidebar's
+   border-radius is actually visible. */
+window.background,
+window {
+  background-color: transparent;
+}
+
+.kw-sidebar {
+  background-color: #000000;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  padding: 20px;
+  margin: 0;
+  color: #e5e7eb;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
+}
+
+.kw-header {
+  padding: 2px 2px 16px 2px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  .kw-brand {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #ffffff;
+  }
+
+  .kw-host {
+    font-size: 11px;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 1.2px;
+  }
+
+  .kw-close {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    margin-left: 8px;
+    transition: 200ms ease;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.18);
+      border-color: rgba(239, 68, 68, 0.4);
+      color: #fecaca;
+    }
+  }
+}
+
+.kw-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 1.4px;
+  padding: 0 4px;
+  margin-bottom: 2px;
+}
+
+.kw-icon-button {
+  background-color: #0a0a0a;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  background-clip: border-box;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 34px;
+  min-height: 34px;
+  outline: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  transition: 200ms ease;
+
+  &:hover {
+    background-color: #111418;
+    border-color: rgba(137, 221, 255, 0.35);
+  }
+
+  &:active {
+    background-color: #0d1014;
+    border-color: rgba(137, 221, 255, 0.55);
+  }
+
+  /* State-driven border + ambient tint */
+  &.connected {
+    background-color: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.55);
+  }
+  &.connecting {
+    background-color: rgba(250, 204, 21, 0.08);
+    border-color: rgba(250, 204, 21, 0.55);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+ * Clock
+ * -------------------------------------------------------------------------- */
+.kw-clock {
+  margin: 4px 0 2px 0;
+  padding: 8px 0 4px 0;
+  background-color: transparent;
+  border: none;
+}
+
+.kw-clock-time {
+  color: #f8fafc;
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-shadow: 0 0 18px rgba(137, 221, 255, 0.35);
+}
+
+.kw-clock-date {
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.kw-scrim,
+.kw-scrim-fill {
+  background-color: transparent;
+}
+
+/* -----------------------------------------------------------------------------
+ * Quote
+ * -------------------------------------------------------------------------- */
+.kw-quote {
+  margin: 8px 2px 12px 2px;
+  padding: 12px 10px;
+  background-color: transparent;
+  border: none;
+}
+
+.kw-quote-text {
+  color: #cbd5e1;
+  font-size: 17px;
+  font-style: italic;
+}

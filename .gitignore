@@ -51,6 +51,7 @@ stuff/*
 !.config/wofi
 !.config/xsettingsd
 !.config/snappy-switcher
+!.config/eww
 
 # ── .local/share/ (fonts only) ───────────────────────────────
 !.local/

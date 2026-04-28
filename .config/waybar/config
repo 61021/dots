@@ -16,8 +16,6 @@
     "clock"
   ],
   "modules-right": [
-    "custom/vpn",
-    "custom/warp",
     "pulseaudio",
     "network",
     "battery",

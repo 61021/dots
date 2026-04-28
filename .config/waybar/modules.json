@@ -6,8 +6,9 @@
     "exec": "~/.config/waybar/scripts/kw-ram.sh",
     "return-type": "json",
     "interval": 2,
-    "tooltip": true,
-    "on-click": "hyprlock"
+    "tooltip": false,
+    "on-click": "~/.config/waybar/scripts/kw-sidebar-toggle.sh",
+    "on-click-right": "hyprlock"
   },
   "group/hardware": {
     "format": "CPU: {cpu} MEM: {memory} DISK: {disk}",
