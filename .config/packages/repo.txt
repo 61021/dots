@@ -106,7 +106,6 @@ wireless_tools
 wireplumber
 wl-clipboard
 wob
-wofi
 xdg-desktop-portal-hyprland
 xdg-utils
 xorg-server

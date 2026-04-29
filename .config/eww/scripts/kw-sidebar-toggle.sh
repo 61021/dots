@@ -18,8 +18,6 @@ scrim_w=$(( logical_w - sidebar_w ))
 
 if [ "$1" = "close" ] || eww active-windows 2>/dev/null | grep -q '^kw-sidebar'; then
   eww close kw-sidebar kw-scrim
-  # Pre-fetch the next quote so it's ready the next time the sidebar opens.
-  ( quote="$(~/.config/eww/scripts/quote.sh)"; eww update "kw-quote=$quote" ) &
 else
   eww open kw-sidebar \
     --screen "$mon_id" \

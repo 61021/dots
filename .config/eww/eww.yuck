@@ -27,15 +27,11 @@
   "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected")
 (defpoll dnd-state  :interval "5s" :initial "connected"
   "[ \"$(dunstctl is-paused)\" = 'true' ] && echo disconnected || echo connected")
+(defpoll eye-state  :interval "3s" :initial "disconnected"
+  "pgrep -x hyprsunset >/dev/null && echo connected || echo disconnected")
 
 (defpoll kw-time :interval "10s" :initial "--:--" "date '+%H:%M'")
 (defpoll kw-date :interval "60s" :initial ""      "date '+%a, %b %-d'")
-(defvar kw-quote "")
-
-(defwidget kw-quote-card []
-  (box :class "kw-quote" :orientation "v" :space-evenly false :halign "fill" :hexpand true
-    (label :class "kw-quote-text" :text kw-quote
-           :wrap true :justify "center" :xalign 0.5 :show-truncated false)))
 
 (defwidget kw-clock []
   (box :class "kw-clock" :orientation "v" :space-evenly false :spacing 2 :halign "center"
@@ -93,10 +89,14 @@
           :icon "${EWW_CONFIG_DIR}/icons/bell.svg"
           :tooltip "Toggle do-not-disturb (dunst)"
           :state dnd-state
-          :onclick "dunstctl set-paused toggle")))
+          :onclick "dunstctl set-paused toggle")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/moon.svg"
+          :tooltip "Toggle eye comfort (no blue light)"
+          :state eye-state
+          :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh")))
 
-    (box :vexpand true)
-    (kw-quote-card)))
+    (box :vexpand true)))
 
 (defwindow kw-sidebar
   :stacking "overlay"
@@ -123,7 +123,7 @@
     (box :class "kw-scrim-fill")))
 
 ;; -----------------------------------------------------------------------------
-;; KW Top Bar (replaces waybar)
+;; KW Top Bar
 ;; -----------------------------------------------------------------------------
 
 (defpoll bar-bat     :interval "3s" :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--"}' "~/.config/eww/scripts/bar/battery.sh")
@@ -158,7 +158,7 @@
       (bar-stat :icon {bar-audio.icon} :text {bar-audio.label}))
     (button :class "bar-stat-btn"
             :tooltip {bar-net.label}
-            :onclick "~/.config/my-scripts/settings/networkmanager.sh"
+            :onclick "~/.config/eww/scripts/networkmanager.sh"
       (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
     (box :class "bar-stat-btn"
       (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
