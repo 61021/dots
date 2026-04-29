@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Waybar status module for openfortivpn.
+# eww status module for openfortivpn.
 # Outputs JSON with text/class/tooltip describing VPN state.
 
-state_dir="${XDG_RUNTIME_DIR:-/tmp}/waybar-vpn"
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/eww-vpn"
 mkdir -p "$state_dir"
 connecting_flag="$state_dir/connecting"
 

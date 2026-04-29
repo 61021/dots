@@ -2,7 +2,7 @@
 # Toggle openfortivpn. Uses pkexec for the graphical sudo prompt.
 
 config="$HOME/.config/openfortivpn/config"
-state_dir="${XDG_RUNTIME_DIR:-/tmp}/waybar-vpn"
+state_dir="${XDG_RUNTIME_DIR:-/tmp}/eww-vpn"
 mkdir -p "$state_dir"
 log="$state_dir/openfortivpn.log"
 connecting_flag="$state_dir/connecting"
@@ -20,11 +20,7 @@ fi
 
 # Mark connecting so the indicator updates immediately.
 touch "$connecting_flag"
-pkill -RTMIN+8 waybar 2>/dev/null
+eww update "vpn-state=connecting" "vpn-tooltip=Connecting to VPN…" 2>/dev/null
 
 # Run openfortivpn detached. setsid keeps it alive after this script exits.
 setsid -f bash -c "sudo -n /usr/sbin/openfortivpn -c '$config' >'$log' 2>&1" >/dev/null 2>&1 &
-
-# Give it a moment, then refresh waybar.
-sleep 0.3
-pkill -RTMIN+8 waybar 2>/dev/null

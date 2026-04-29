@@ -47,7 +47,6 @@ stuff/*
 !.config/qt6ct
 !.config/rofi
 !.config/user-dirs.dirs
-!.config/waybar
 !.config/wofi
 !.config/xsettingsd
 !.config/snappy-switcher

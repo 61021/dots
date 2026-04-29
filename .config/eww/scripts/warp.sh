@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Waybar status module for Cloudflare WARP.
+# eww status module for Cloudflare WARP.
 
 icon_on=""    # nf-md-cloud_check
 icon_off=""   # nf-md-cloud_off_outline

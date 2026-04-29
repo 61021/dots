@@ -17,5 +17,7 @@ case "$state" in
     ;;
 esac
 
-# Refresh waybar immediately.
-pkill -RTMIN+9 waybar 2>/dev/null
+# Refresh eww poll immediately.
+state_now="$(~/.config/eww/scripts/warp.sh | jq -r .class)"
+tooltip_now="$(~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\r' '\n')"
+eww update "warp-state=${state_now}" "warp-tooltip=${tooltip_now}" 2>/dev/null

@@ -1,19 +1,5 @@
-(defwidget activate-linux []
-  (box
-    :orientation "v"
-    :halign "start"
-    :valign "start"
-    (label :xalign 0 :markup "<span font_size=\"large\">Activate Linux</span>")
-    (label :xalign 0 :text "Go to Settings to activate Linux")))
-
-(defwindow activate-linux
-  :monitor "L27i-40"
-  :stacking "fg"
-  :geometry (geometry :x "8px" :y "32px" :width "250px" :anchor "bottom right")
-  (activate-linux))
-
 ;; -----------------------------------------------------------------------------
-;; KW Sidebar — opened from the "KW" button in waybar
+;; KW Sidebar — opened from the "KW" button in the bar
 ;; -----------------------------------------------------------------------------
 
 (defwidget kw-icon-button [icon tooltip onclick ?state]
@@ -28,10 +14,10 @@
     (label :class "kw-section-title" :xalign 0 :text title)
     (children)))
 
-(defpoll vpn-state    :interval "3s" :initial "disconnected" "~/.config/waybar/scripts/vpn.sh  | jq -r .class")
-(defpoll warp-state   :interval "3s" :initial "disconnected" "~/.config/waybar/scripts/warp.sh | jq -r .class")
-(defpoll vpn-tooltip  :interval "3s" :initial "VPN"  "~/.config/waybar/scripts/vpn.sh  | jq -r .tooltip | tr '\\r' '\\n'")
-(defpoll warp-tooltip :interval "3s" :initial "WARP" "~/.config/waybar/scripts/warp.sh | jq -r .tooltip | tr '\\r' '\\n'")
+(defpoll vpn-state    :interval "3s" :initial "disconnected" "~/.config/eww/scripts/vpn.sh  | jq -r .class")
+(defpoll warp-state   :interval "3s" :initial "disconnected" "~/.config/eww/scripts/warp.sh | jq -r .class")
+(defpoll vpn-tooltip  :interval "3s" :initial "VPN"  "~/.config/eww/scripts/vpn.sh  | jq -r .tooltip | tr '\\r' '\\n'")
+(defpoll warp-tooltip :interval "3s" :initial "WARP" "~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\\r' '\\n'")
 
 (defpoll bt-state   :interval "5s" :initial "disconnected"
   "rfkill list bluetooth | grep -q 'Soft blocked: no' && echo connected || echo disconnected")
@@ -79,12 +65,12 @@
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
           :tooltip vpn-tooltip
           :state vpn-state
-          :onclick "~/.config/waybar/scripts/vpn-toggle.sh")
+          :onclick "~/.config/eww/scripts/vpn-toggle.sh")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
           :tooltip warp-tooltip
           :state warp-state
-          :onclick "~/.config/waybar/scripts/warp-toggle.sh")
+          :onclick "~/.config/eww/scripts/warp-toggle.sh")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
           :tooltip "Bluetooth toggle"
@@ -133,5 +119,76 @@
     :height "100%"
     :anchor "top left")
   (eventbox :class "kw-scrim"
-            :onclick "~/.config/waybar/scripts/kw-sidebar-toggle.sh close"
+            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close"
     (box :class "kw-scrim-fill")))
+
+;; -----------------------------------------------------------------------------
+;; KW Top Bar (replaces waybar)
+;; -----------------------------------------------------------------------------
+
+(defpoll bar-bat     :interval "3s" :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--"}' "~/.config/eww/scripts/bar/battery.sh")
+(defpoll bar-net     :interval "5s"  :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-slash.svg","label":"--"}' "~/.config/eww/scripts/bar/net.sh")
+(defpoll bar-audio   :interval "2s"  :initial '{"icon":"/home/khaled/.config/eww/icons/speaker-none.svg","label":"--"}' "~/.config/eww/scripts/bar/audio.sh")
+(defpoll bar-time    :interval "10s" :initial "--:--" "date '+%I:%M %p'")
+(defpoll bar-date    :interval "60s" :initial ""      "date '+%a %d/%m'")
+
+(defwidget bar-stat [icon text]
+  (box :class "bar-stat" :orientation "h" :space-evenly false :spacing 6 :valign "center"
+    (image :class "bar-icon" :path icon :image-width 16 :image-height 16)
+    (label :class "bar-text" :text text :show-truncated false)))
+
+(defwidget bar-left []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
+    (button :class "bar-launcher"
+            :tooltip "KW menu"
+            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh"
+      (label :class "bar-launcher-text" :text "KW" :show-truncated false))))
+
+(defwidget bar-center []
+  (box :orientation "h" :space-evenly false :spacing 10 :halign "center" :valign "center"
+    (label :class "bar-time" :text bar-time)
+    (label :class "bar-date" :text bar-date)))
+
+(defwidget bar-right []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "end" :valign "center"
+    (button :class "bar-stat-btn"
+            :tooltip "Toggle mute"
+            :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && eww update \"bar-audio=$(~/.config/eww/scripts/bar/audio.sh)\""
+            :onrightclick "pavucontrol &"
+      (bar-stat :icon {bar-audio.icon} :text {bar-audio.label}))
+    (button :class "bar-stat-btn"
+            :tooltip {bar-net.label}
+            :onclick "~/.config/my-scripts/settings/networkmanager.sh"
+      (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
+    (box :class "bar-stat-btn"
+      (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
+
+(defwidget kw-bar []
+  (centerbox :class "kw-bar" :orientation "h"
+    (bar-left)
+    (bar-center)
+    (bar-right)))
+
+(defwindow bar
+  :monitor 0
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
+  (kw-bar))
+
+(defwindow bar-1
+  :monitor 1
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
+  (kw-bar))
+
+(defwindow bar-2
+  :monitor 2
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
+  (kw-bar))

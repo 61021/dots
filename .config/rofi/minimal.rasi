@@ -16,7 +16,7 @@ configuration {
     bg-sel:         #ffffff10;   /* selected row tint */
     fg0:            #e7e9ee;     /* primary text */
     fg1:            #6b7178;     /* muted text */
-    border:         #ffffff90;
+    border:         #ffffff20;
 }
 
 /*****----- Window -----*****/
@@ -25,7 +25,7 @@ window {
     location:            center;
     anchor:              center;
     width:               620px;
-    border-radius:       12px;
+    border-radius:       0;
     border:              1px solid;
     border-color:        @border;
     background-color:    @bg0;
@@ -49,7 +49,7 @@ inputbar {
     spacing:             10px;
     padding:             10px 14px;
     margin:              0 0 12px 0;
-    border-radius:       12px;
+    border-radius:       0;
     background-color:    @bg1;
     text-color:          @fg0;
     children:            [ "textbox-prompt-colon", "entry" ];
@@ -97,7 +97,7 @@ element {
     enabled:             true;
     spacing:             12px;
     padding:             10px 12px;
-    border-radius:       10px;
+    border-radius:       0;
     background-color:    transparent;
     text-color:          @fg0;
     cursor:              pointer;
