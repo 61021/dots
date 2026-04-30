@@ -17,6 +17,5 @@ termius
 visual-studio-code-bin
 weather
 wego
-wlogout
 yetris
 zrok-bin

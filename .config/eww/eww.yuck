@@ -51,12 +51,21 @@
           :tooltip "Lock screen"
           :onclick "eww close kw-sidebar; hyprlock &")
         (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg"
+          :tooltip "Reboot"
+          :onclick "eww close kw-sidebar; systemctl reboot")
+        (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/power.svg"
           :tooltip "Power off"
           :onclick "eww close kw-sidebar; systemctl poweroff")))
 
     (kw-section :title "NETWORK"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
+          :tooltip "Bluetooth toggle"
+          :state bt-state
+          :onclick "rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
           :tooltip vpn-tooltip
@@ -66,12 +75,7 @@
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
           :tooltip warp-tooltip
           :state warp-state
-          :onclick "~/.config/eww/scripts/warp-toggle.sh")
-        (kw-icon-button
-          :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
-          :tooltip "Bluetooth toggle"
-          :state bt-state
-          :onclick "rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth")))
+          :onclick "~/.config/eww/scripts/warp-toggle.sh")))
 
     (kw-section :title "AUDIO"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
@@ -84,7 +88,10 @@
           :icon "${EWW_CONFIG_DIR}/icons/microphone.svg"
           :tooltip "Toggle microphone mute"
           :state mic-state
-          :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")
+          :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")))
+
+    (kw-section :title "COMFORT"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/bell.svg"
           :tooltip "Toggle do-not-disturb (dunst)"
@@ -109,19 +116,6 @@
     :anchor "top left")
   (kw-sidebar))
 
-(defwindow kw-scrim
-  :stacking "overlay"
-  :focusable false
-  :geometry (geometry
-    :x "240px"
-    :y "0px"
-    :width "100%"
-    :height "100%"
-    :anchor "top left")
-  (eventbox :class "kw-scrim"
-            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close"
-    (box :class "kw-scrim-fill")))
-
 ;; -----------------------------------------------------------------------------
 ;; KW Top Bar
 ;; -----------------------------------------------------------------------------
@@ -140,17 +134,26 @@
 (defwidget bar-left []
   (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
     (button :class "bar-launcher"
-            :tooltip "KW menu"
             :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh"
+            :onrightclick "hyprlock --grace 0 &"
       (label :class "bar-launcher-text" :text "KW" :show-truncated false))))
 
 (defwidget bar-center []
-  (box :orientation "h" :space-evenly false :spacing 10 :halign "center" :valign "center"
-    (label :class "bar-time" :text bar-time)
-    (label :class "bar-date" :text bar-date)))
+  (box :orientation "h" :halign "center" :valign "center"
+    (button :class "bar-clock-btn"
+            :tooltip "Calendar"
+            :onclick "~/.config/eww/scripts/kw-calendar.sh"
+      (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
+        (label :class "bar-time" :text bar-time)
+        (label :class "bar-date" :text bar-date)))))
+
+(defwidget kw-calendar []
+  (box :class "kw-calendar" :orientation "v" :space-evenly false
+    (calendar :class "kw-calendar-cal")))
 
 (defwidget bar-right []
   (box :orientation "h" :space-evenly false :spacing 4 :halign "end" :valign "center"
+    (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)
     (button :class "bar-stat-btn"
             :tooltip "Toggle mute"
             :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && eww update \"bar-audio=$(~/.config/eww/scripts/bar/audio.sh)\""
@@ -169,26 +172,19 @@
     (bar-center)
     (bar-right)))
 
+;; Single bar template — opened once per connected monitor by
+;; ~/.config/eww/scripts/kw-bar-launch.sh, using `--id bar-<monitor-name>`
+;; and `--screen <monitor-name>`. Names are stable across hotplug, so
+;; each bar always lands on the right monitor.
 (defwindow bar
-  :monitor 0
   :stacking "fg"
   :exclusive true
   :focusable false
   :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
   (kw-bar))
 
-(defwindow bar-1
-  :monitor 1
-  :stacking "fg"
-  :exclusive true
+(defwindow kw-calendar
+  :stacking "overlay"
   :focusable false
-  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
-  (kw-bar))
-
-(defwindow bar-2
-  :monitor 2
-  :stacking "fg"
-  :exclusive true
-  :focusable false
-  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
-  (kw-bar))
+  :geometry (geometry :x "0" :y "0" :anchor "top center")
+  (kw-calendar))

@@ -51,6 +51,7 @@ stuff/*
 !.config/xsettingsd
 !.config/snappy-switcher
 !.config/eww
+!.config/feh
 
 # ── .local/share/ (fonts only) ───────────────────────────────
 !.local/

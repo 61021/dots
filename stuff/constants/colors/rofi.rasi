@@ -1,0 +1,12 @@
+/* Rofi palette — imported by rofi themes.
+ * Tokens defined in ~/stuff/constants/colors/palette.md */
+
+* {
+    bg0:    #000000;     /* pure black surface */
+    bg1:    #0a0a0a;     /* raised: inputs, chips */
+    bg2:    #141414;     /* hover */
+    bg-sel: #ffffff14;   /* selected row tint */
+    fg0:    #e5e7eb;     /* primary text */
+    fg1:    #6b7280;     /* muted text */
+    border: #ffffff14;   /* matches bar/sidebar separator (border-soft) */
+}

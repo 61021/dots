@@ -7,16 +7,11 @@ configuration {
     sidebar-mode:               false;
 }
 
-/*****----- Palette (OLED black) -----*****/
+/*****----- Palette (shared) -----*****/
+@import "~/stuff/constants/colors/rofi.rasi"
+
 * {
-    font:           "IBM Plex Sans 11";
-    bg0:            #000000;     /* pure black surface */
-    bg1:            #0a0a0a;     /* input */
-    bg2:            #141414;     /* hover */
-    bg-sel:         #ffffff10;   /* selected row tint */
-    fg0:            #e7e9ee;     /* primary text */
-    fg1:            #6b7178;     /* muted text */
-    border:         #ffffff20;
+    font: "IBM Plex Sans 11";
 }
 
 /*****----- Window -----*****/
@@ -25,7 +20,7 @@ window {
     location:            center;
     anchor:              center;
     width:               620px;
-    border-radius:       0;
+    border-radius:       12px;
     border:              1px solid;
     border-color:        @border;
     background-color:    @bg0;
@@ -49,7 +44,7 @@ inputbar {
     spacing:             10px;
     padding:             10px 14px;
     margin:              0 0 12px 0;
-    border-radius:       0;
+    border-radius:       8px;
     background-color:    @bg1;
     text-color:          @fg0;
     children:            [ "textbox-prompt-colon", "entry" ];
@@ -97,7 +92,7 @@ element {
     enabled:             true;
     spacing:             12px;
     padding:             10px 12px;
-    border-radius:       0;
+    border-radius:       8px;
     background-color:    transparent;
     text-color:          @fg0;
     cursor:              pointer;
