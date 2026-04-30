@@ -1,0 +1,13 @@
+/* Base - global resets and shared window transparency. */
+
+* {
+  font-family: "IBM Plex Sans", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+/* Make the GTK window itself transparent so widget border-radius shows. */
+window.background,
+window {
+  background-color: transparent;
+  margin: 0;
+  padding: 0;
+}

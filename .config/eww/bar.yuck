@@ -1,0 +1,65 @@
+;; -----------------------------------------------------------------------------
+;; KW Top Bar — opened per monitor by ~/.config/eww/scripts/kw-bar-launch.sh
+;; -----------------------------------------------------------------------------
+
+;; --- data sources ------------------------------------------------------------
+
+(defpoll bar-bat   :interval "3s"  :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--"}'   "~/.config/eww/scripts/bar/battery.sh")
+(defpoll bar-net   :interval "5s"  :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-slash.svg","label":"--"}'         "~/.config/eww/scripts/bar/net.sh")
+(defpoll bar-audio :interval "2s"  :initial '{"icon":"/home/khaled/.config/eww/icons/speaker-none.svg","label":"--"}'       "~/.config/eww/scripts/bar/audio.sh")
+(defpoll bar-time  :interval "10s" :initial "--:--" "date '+%I:%M'")
+(defpoll bar-date  :interval "60s" :initial ""      "date '+%a %d/%m'")
+
+;; --- building blocks ---------------------------------------------------------
+
+(defwidget bar-stat [icon text]
+  (box :class "bar-stat" :orientation "h" :space-evenly false :spacing 6 :valign "center"
+    (image :class "bar-icon" :path icon :image-width 16 :image-height 16)
+    (label :class "bar-text" :text text :show-truncated false)))
+
+(defwidget bar-left []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
+    (button :class "bar-launcher"
+            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh"
+            :onrightclick "hyprlock --grace 0 &"
+      (label :class "bar-launcher-text" :text "KW" :show-truncated false))))
+
+(defwidget bar-center []
+  (box :orientation "h" :halign "center" :valign "center"
+    (button :class "bar-clock-btn"
+            :tooltip "Calendar"
+            :onclick "~/.config/eww/scripts/kw-calendar.sh"
+      (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
+        (label :class "bar-time" :text bar-time)
+        (label :class "bar-date" :text bar-date)))))
+
+(defwidget bar-right []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "end" :valign "center"
+    (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)
+    (button :class "bar-stat-btn"
+            :tooltip "Toggle mute"
+            :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && eww update \"bar-audio=$(~/.config/eww/scripts/bar/audio.sh)\""
+            :onrightclick "pavucontrol &"
+      (bar-stat :icon {bar-audio.icon} :text {bar-audio.label}))
+    (button :class "bar-stat-btn"
+            :tooltip {bar-net.label}
+            :onclick "~/.config/eww/scripts/networkmanager.sh"
+      (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
+    (box :class "bar-stat-btn"
+      (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
+
+(defwidget kw-bar []
+  (centerbox :class "kw-bar" :orientation "h"
+    (bar-left)
+    (bar-center)
+    (bar-right)))
+
+;; --- window ------------------------------------------------------------------
+
+(defwindow bar
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  :screen 1
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "36px" :anchor "top center")
+  (kw-bar))

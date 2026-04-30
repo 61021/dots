@@ -1,0 +1,169 @@
+;; -----------------------------------------------------------------------------
+;; KW Sidebar — toggled from the "KW" button in the bar
+;; -----------------------------------------------------------------------------
+
+;; --- data sources ------------------------------------------------------------
+
+(defpoll kw-time      :interval "10s"  :initial "--:--"                                   "date '+%H:%M'")
+(defpoll kw-date      :interval "60s"  :initial ""                                        "date '+%a, %b %-d'")
+
+(defpoll sys-stats    :interval "3s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
+(defpoll vol-pct      :interval "2s"   :initial "0"                                       "~/.config/eww/scripts/volume.sh get")
+(defpoll bri-pct      :interval "5s"   :initial "0"                                       "~/.config/eww/scripts/brightness.sh get")
+(defpoll weather-info :interval "900s" :initial '{"temp":"--","cond":"","label":""}'      "~/.config/eww/scripts/weather.sh")
+
+(defpoll vpn-state    :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/vpn.sh  | jq -r .class")
+(defpoll warp-state   :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/warp.sh | jq -r .class")
+(defpoll vpn-tooltip  :interval "3s"   :initial "VPN"          "~/.config/eww/scripts/vpn.sh  | jq -r .tooltip | tr '\\r' '\\n'")
+(defpoll warp-tooltip :interval "3s"   :initial "WARP"         "~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\\r' '\\n'")
+
+(defpoll bt-state   :interval "5s" :initial "disconnected"
+  "rfkill list bluetooth | grep -q 'Soft blocked: no' && echo connected || echo disconnected")
+(defpoll mute-state :interval "2s" :initial "connected"
+  "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected")
+(defpoll mic-state  :interval "2s" :initial "connected"
+  "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected")
+(defpoll dnd-state  :interval "5s" :initial "connected"
+  "[ \"$(dunstctl is-paused)\" = 'true' ] && echo disconnected || echo connected")
+(defpoll eye-state  :interval "3s" :initial "disconnected"
+  "pgrep -x hyprsunset >/dev/null && echo connected || echo disconnected")
+
+;; --- building blocks ---------------------------------------------------------
+
+(defwidget kw-icon-button [icon tooltip onclick ?state]
+  (button
+    :class "kw-icon-button ${state ?: ""}"
+    :tooltip tooltip
+    :onclick onclick
+    :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');"))
+
+(defwidget kw-section [title]
+  (box :orientation "v" :space-evenly false :spacing 8
+    (label :class "kw-section-title" :xalign 0 :text title)
+    (children)))
+
+(defwidget kw-clock []
+  (box :class "kw-clock" :orientation "v" :space-evenly false :spacing 2 :halign "center"
+    (label :class "kw-clock-time" :text kw-time :show-truncated false :xalign 0.5)
+    (label :class "kw-clock-date" :text kw-date :show-truncated false :xalign 0.5)))
+
+(defwidget kw-ring [value label class]
+  (box :orientation "v" :space-evenly false :spacing 3 :halign "center"
+    (overlay
+      (circular-progress :class "kw-ring ${class}" :value value :thickness 5 :start-at 75
+                         :width 50 :height 50)
+      (label :class "kw-ring-val" :text "${value}" :halign "center" :valign "center"))
+    (label :class "kw-ring-label" :text label)))
+
+(defwidget kw-sys-rings []
+  (box :class "kw-ring-row" :orientation "h" :space-evenly true :spacing 4
+    (kw-ring :value {sys-stats.cpu}                               :label "CPU"  :class "kw-ring-cpu")
+    (kw-ring :value {sys-stats.mem}                               :label "RAM"  :class "kw-ring-mem")
+    (kw-ring :value {sys-stats.temp > 100 ? 100 : sys-stats.temp} :label "TEMP" :class "kw-ring-temp")))
+
+(defwidget kw-slider [icon value onchange]
+  (box :class "kw-slider-row" :orientation "h" :space-evenly false :spacing 8 :valign "center"
+    (image :class "kw-slider-icon" :path icon :image-width 16 :image-height 16)
+    (scale :class "kw-slider" :hexpand true :min 0 :max 101 :value value :onchange onchange)
+    (label :class "kw-slider-val" :text "${value}" :xalign 1)))
+
+(defwidget kw-weather []
+  (box :class "kw-weather" :orientation "h" :space-evenly false :spacing 10 :valign "center"
+    (image :class "kw-weather-icon" :path "${EWW_CONFIG_DIR}/icons/sun.svg"
+           :image-width 22 :image-height 22)
+    (box :orientation "v" :space-evenly false :spacing 1 :hexpand true
+      (label :class "kw-weather-temp" :text {weather-info.temp} :xalign 0)
+      (label :class "kw-weather-cond" :text {weather-info.cond} :xalign 0
+             :limit-width 18 :show-truncated true))))
+
+;; --- layout ------------------------------------------------------------------
+
+(defwidget kw-sidebar []
+  (box :class "kw-sidebar" :orientation "v" :space-evenly false :spacing 14
+    (kw-clock)
+    (kw-sys-rings)
+    (kw-slider :icon "${EWW_CONFIG_DIR}/icons/speaker-high.svg"
+               :value vol-pct
+               :onchange "~/.config/eww/scripts/volume.sh set {}")
+    (kw-slider :icon "${EWW_CONFIG_DIR}/icons/sun.svg"
+               :value bri-pct
+               :onchange "~/.config/eww/scripts/brightness.sh set {}")
+
+    (kw-section :title "SYSTEM"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/arrow-clockwise.svg"
+          :tooltip "Reload Hyprland"
+          :onclick "hyprctl reload >/dev/null && eww close kw-sidebar")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/lock-key.svg"
+          :tooltip "Lock screen"
+          :onclick "eww close kw-sidebar; hyprlock &")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg"
+          :tooltip "Reboot"
+          :onclick "eww close kw-sidebar; systemctl reboot")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/power.svg"
+          :tooltip "Power off"
+          :onclick "eww close kw-sidebar; systemctl poweroff")))
+
+    (kw-section :title "NETWORK"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
+          :tooltip "Bluetooth toggle"
+          :state bt-state
+          :onclick "rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
+          :tooltip vpn-tooltip
+          :state vpn-state
+          :onclick "~/.config/eww/scripts/vpn-toggle.sh")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
+          :tooltip warp-tooltip
+          :state warp-state
+          :onclick "~/.config/eww/scripts/warp-toggle.sh")))
+
+    (kw-section :title "AUDIO"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/speaker-high.svg"
+          :tooltip "Toggle speaker mute"
+          :state mute-state
+          :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/microphone.svg"
+          :tooltip "Toggle microphone mute"
+          :state mic-state
+          :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")))
+
+    (kw-section :title "COMFORT"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/bell.svg"
+          :tooltip "Toggle do-not-disturb (dunst)"
+          :state dnd-state
+          :onclick "dunstctl set-paused toggle")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/moon.svg"
+          :tooltip "Toggle eye comfort (no blue light)"
+          :state eye-state
+          :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh")))
+
+    (box :vexpand true)
+    (kw-weather)))
+
+;; --- window ------------------------------------------------------------------
+
+(defwindow kw-sidebar
+  :stacking "overlay"
+  :focusable false
+  :geometry (geometry
+    :x "0px"
+    :y "0px"
+    :width "240px"
+    :height "100%"
+    :anchor "top left")
+  (kw-sidebar))

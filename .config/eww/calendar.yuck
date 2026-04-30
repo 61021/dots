@@ -1,0 +1,13 @@
+;; -----------------------------------------------------------------------------
+;; Calendar popover — opened by the bar's clock button.
+;; -----------------------------------------------------------------------------
+
+(defwidget kw-calendar []
+  (box :class "kw-calendar" :orientation "v" :space-evenly false
+    (calendar :class "kw-calendar-cal")))
+
+(defwindow kw-calendar
+  :stacking "overlay"
+  :focusable false
+  :geometry (geometry :x "0" :y "0" :anchor "top center")
+  (kw-calendar))

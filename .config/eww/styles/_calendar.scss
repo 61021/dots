@@ -1,0 +1,61 @@
+/* Calendar popover - opens from the bar's clock button. */
+
+.kw-calendar {
+  background-color: $bg-0;
+  border: 1px solid $border-soft;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-top: none;
+  padding: 12px 14px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
+}
+
+.kw-calendar-cal,
+.kw-calendar-cal * {
+  background-color: transparent;
+  color: $fg-0;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 15px;
+  font-feature-settings: "tnum";
+  outline: none;
+  border: none;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.kw-calendar-cal {
+  padding: 6px 4px 4px 4px;
+
+  &.day {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: $fg-0;
+  }
+
+  &.header,
+  &.highlight {
+    color: $fg-1;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  &.button {
+    color: $fg-hi;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 4px 8px;
+  }
+
+  &:selected,
+  &.day:selected {
+    background-color: $accent;
+    color: $bg-0;
+    border-radius: 8px;
+  }
+
+  &.day:indeterminate {
+    color: $fg-1;
+    opacity: 0.4;
+  }
+}

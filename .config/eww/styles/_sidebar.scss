@@ -1,0 +1,177 @@
+/* Sidebar - frame, sections, icon buttons, clock, rings, sliders, weather. */
+
+.kw-sidebar {
+  background-color: $bg-0;
+  border: none;
+  border-right: 1px solid $border-soft;
+  border-radius: 0;
+  padding: 20px;
+  margin: 0;
+  color: $fg-0;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
+}
+
+.kw-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: $fg-1;
+  letter-spacing: 1.4px;
+  padding: 0 4px;
+  margin-bottom: 2px;
+}
+
+.kw-icon-button {
+  background-color: $bg-1;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  background-clip: border-box;
+  border: 1px solid $border-soft;
+  border-radius: 10px;
+  padding: 6px;
+  min-width: 34px;
+  min-height: 34px;
+  outline: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  transition: 200ms ease;
+
+  &:hover {
+    background-color: $bg-2;
+    border-color: rgba(137, 221, 255, 0.35);
+  }
+
+  &:active {
+    background-color: $bg-2;
+    border-color: rgba(137, 221, 255, 0.55);
+  }
+
+  &.connected {
+    background-color: rgba(74, 222, 128, 0.08);
+    border-color: rgba(74, 222, 128, 0.55);
+  }
+  &.connecting {
+    background-color: rgba(250, 204, 21, 0.08);
+    border-color: rgba(250, 204, 21, 0.55);
+  }
+}
+
+/* Clock */
+.kw-clock {
+  margin: 4px 0 2px 0;
+  padding: 8px 0 4px 0;
+  background-color: transparent;
+  border: none;
+}
+.kw-clock-time {
+  color: $fg-hi;
+  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-shadow: 0 0 18px rgba(137, 221, 255, 0.35);
+}
+.kw-clock-date {
+  color: $fg-1;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+/* Rings (CPU/RAM/TEMP) */
+.kw-ring-row {
+  padding: 4px 0;
+}
+.kw-ring,
+.kw-ring-cpu,
+.kw-ring-mem,
+.kw-ring-temp {
+  color: $fg-hi;
+  background-color: rgba(255, 255, 255, 0.06);
+  font-size: 10px;
+}
+.kw-ring-val {
+  color: $fg-hi;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 11px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+.kw-ring-label {
+  color: $fg-1;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+}
+
+/* Sliders */
+.kw-slider-row {
+  padding: 2px 0;
+}
+.kw-slider {
+  padding: 6px 0;
+  min-height: 18px;
+
+  trough {
+    min-height: 4px;
+    border-radius: 999px;
+    background-color: rgba(255, 255, 255, 0.12);
+    background-image: none;
+    border: none;
+    box-shadow: none;
+
+    highlight,
+    highlight:hover,
+    highlight:disabled {
+      background-color: $fg-hi;
+      background-image: none;
+      border-radius: 999px;
+      border: none;
+      box-shadow: none;
+      min-height: 4px;
+    }
+  }
+
+  slider,
+  slider:hover,
+  slider:active,
+  slider:disabled {
+    background-color: $fg-hi;
+    background-image: none;
+    border: none;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+    min-width: 14px;
+    min-height: 14px;
+    border-radius: 999px;
+    margin: -6px;
+    padding: 0;
+  }
+}
+.kw-slider-val {
+  color: $fg-1;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 10px;
+  font-feature-settings: "tnum";
+  min-width: 28px;
+}
+
+/* Weather */
+.kw-weather {
+  background-color: transparent;
+  border: none;
+  padding: 6px 2px 2px 2px;
+}
+.kw-weather-temp {
+  color: $fg-hi;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 16px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+}
+.kw-weather-cond {
+  color: $fg-1;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+}
