@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Apply a monitor layout based on what's currently connected.
+#   0 externals -> laptop only (cafe).
+#   1 external  -> laptop on left, external to its right.
+#   2+ externals -> laptop off, externals arranged per WORK_ORDER (work / TV+ext).
+# All keyword changes are batched so Hyprland never sees an overlapping state.
+set -euo pipefail
+
+WORK_ORDER=("HDMI-A-1" "DP-1" "DP-2")
+
+batch=()
+push() { batch+=("keyword monitor $1"); }
+
+mons_json="$(hyprctl -j monitors all)"
+mapfile -t externals < <(echo "$mons_json" | jq -r '.[] | select(.name != "eDP-1") | .name')
+n=${#externals[@]}
+
+case "$n" in
+  0)
+    push "eDP-1,2880x1800@120,0x0,2.0"
+    ;;
+  1)
+    push "eDP-1,2880x1800@120,0x0,2.0"
+    # Laptop is 2880/2 = 1440 logical wide, so the external sits at x=1440.
+    push "${externals[0]},preferred,1440x0,1.0"
+    ;;
+  *)
+    push "eDP-1,disable"
+    ordered=()
+    for name in "${WORK_ORDER[@]}"; do
+      for ext in "${externals[@]}"; do
+        [[ "$ext" == "$name" ]] && ordered+=("$ext")
+      done
+    done
+    for ext in $(printf '%s\n' "${externals[@]}" | sort); do
+      [[ " ${ordered[*]} " == *" $ext "* ]] || ordered+=("$ext")
+    done
+    x=0
+    for ext in "${ordered[@]}"; do
+      push "$ext,1920x1080@100,${x}x0,1.0"
+      x=$((x + 1920))
+    done
+    ;;
+esac
+
+# Apply all monitor keywords atomically (avoids overlap errors during the swap).
+joined="$(printf ' ; %s' "${batch[@]}")"
+hyprctl --batch "${joined# ; }" >/dev/null
+
+# Refresh bars (one per active monitor).
+~/.config/eww/scripts/kw-bar-launch.sh >/dev/null 2>&1 || true

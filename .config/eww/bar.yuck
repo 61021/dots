@@ -27,7 +27,6 @@
 (defwidget bar-center []
   (box :orientation "h" :halign "center" :valign "center"
     (button :class "bar-clock-btn"
-            :tooltip "Calendar"
             :onclick "~/.config/eww/scripts/kw-calendar.sh"
       (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
         (label :class "bar-time" :text bar-time)
