@@ -90,7 +90,7 @@ end
 complete --command j --exclusive --arguments '(__jump_hint)'
 
 
-set -Ux nvm_default_version 22.14.0
+set -Ux nvm_default_version 24.15.0
 
 set -gx SSH_AUTH_SOCK /run/user/(id -u)/ssh-agent.socket
 
