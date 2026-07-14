@@ -13,7 +13,6 @@
 !.gtkrc-2.0.mine
 !.xinitrc
 !README.md
-!install.sh
 
 # ── stuff/ (only constants and scripts) ──────────────────────
 !stuff/
@@ -31,6 +30,7 @@ stuff/*
 !.config/fish
 !.config/flameshot
 !.config/fontconfig
+!.config/git-hooks
 !.config/gtk-3.0
 !.config/gtk-4.0
 !.config/hypr
