@@ -1,0 +1,7 @@
+# feh themes — invoked by `feh --theme <name>` or as the default ("feh")
+
+# `feh` with no theme automatically uses the `feh` entry below.
+
+feh --scale-down --auto-zoom --image-bg black --geometry 1280x800
+slideshow --scale-down --auto-zoom --image-bg black --slideshow-delay 4
+wall --bg-fill

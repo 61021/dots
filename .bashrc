@@ -1,0 +1,14 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+PS1='[\u@\h \W]\$ '
+export ELECTRON_ENABLE_TEXT_SHAPING=1
+
+# Vite+ bin (https://viteplus.dev)
+. "$HOME/.vite-plus/env"

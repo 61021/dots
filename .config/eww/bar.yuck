@@ -1,0 +1,90 @@
+;; -----------------------------------------------------------------------------
+;; KW Top Bar — opened per monitor by ~/.config/eww/scripts/kw-bar-launch.sh
+;; -----------------------------------------------------------------------------
+
+;; --- data sources ------------------------------------------------------------
+
+(defpoll bar-bat   :interval "3s"  :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--","state":"ok"}' "~/.config/eww/scripts/bar/battery.sh")
+(defpoll bar-time  :interval "10s" :initial "--:--" "date '+%I:%M'")
+(defpoll bar-date  :interval "60s" :initial ""      "date '+%a %d/%m'")
+
+(deflisten bar-net   :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-slash.svg","label":"--"}'   "~/.config/eww/scripts/bar/net-listen.sh")
+(deflisten bar-audio :initial '{"icon":"/home/khaled/.config/eww/icons/speaker-none.svg","label":"--"}' "~/.config/eww/scripts/bar/audio-listen.sh")
+(deflisten bar-notif :initial '{"count":0,"dnd":false,"last":""}'                                       "~/.config/eww/scripts/bar/notif-listen.sh")
+(deflisten bar-workspaces :initial "[]" "~/.config/eww/scripts/bar/workspaces.py")
+
+;; --- building blocks ---------------------------------------------------------
+
+(defwidget bar-stat [icon text]
+  (box :class "bar-stat" :orientation "h" :space-evenly false :spacing 6 :valign "center"
+    (box :class "bar-icon" :valign "center" :style "background-image: url('${icon}');")
+    (label :class "bar-text" :text text :show-truncated false)))
+
+(defwidget bar-workspaces []
+  (eventbox :onscroll "hyprctl dispatch workspace $([ '{}' = 'up' ] && echo m-1 || echo m+1)"
+    (box :class "bar-ws" :orientation "h" :space-evenly false :spacing 3 :valign "center"
+      (for ws in bar-workspaces
+        (button :class "bar-ws-btn${ws.active ? " active" : ws.urgent ? " urgent" : ""}"
+                :tooltip "Workspace ${ws.id} - ${arraylength(ws.icons)} window${arraylength(ws.icons) == 1 ? "" : "s"}"
+                :onclick "hyprctl dispatch workspace ${ws.id}"
+          (box :orientation "h" :space-evenly false :spacing 5 :halign "center" :valign "center"
+            (for icon in {ws.icons}
+              (box :class "bar-ws-app" :valign "center" :style "background-image: url('${icon}');"))
+            (label :class "bar-ws-empty" :text "·" :visible {arraylength(ws.icons) == 0} :show-truncated false)))))))
+
+(defwidget bar-left []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
+    (button :class "bar-launcher"
+            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh"
+            :onrightclick "hyprlock --grace 0 &"
+      (label :class "bar-launcher-text" :text "KW" :show-truncated false))
+    (bar-workspaces)))
+
+(defwidget bar-center []
+  (box :orientation "h" :halign "center" :valign "center"
+    (button :class "bar-clock-btn"
+            :onclick "~/.config/eww/scripts/kw-calendar.sh"
+      (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
+        (label :class "bar-time" :text bar-time)
+        (label :class "bar-date" :text bar-date)))))
+
+(defwidget bar-right []
+  (box :orientation "h" :space-evenly false :spacing 4 :halign "end" :valign "center"
+    (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)
+    (button :class "bar-stat-btn bar-bell"
+            :tooltip "${bar-notif.dnd ? "Do not disturb" : "Notifications"}${bar-notif.last != "" ? " - last: ${bar-notif.last}" : ""}"
+            :onclick "dunstctl set-paused toggle"
+            :onrightclick "dunstctl close-all"
+      (box :orientation "h" :space-evenly false :spacing 5 :valign "center"
+        (box :class "bar-icon" :valign "center"
+             :style "background-image: url('/home/khaled/.config/eww/icons/${bar-notif.dnd ? "bell-slash" : bar-notif.count > 0 ? "bell-active" : "bell"}.svg');")
+        (label :class "bar-notif-count" :visible {bar-notif.count > 0} :text {bar-notif.count} :show-truncated false)))
+    (button :class "bar-stat-btn"
+            :tooltip "Toggle mute"
+            :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+            :onrightclick "pavucontrol &"
+      (bar-stat :icon {bar-audio.icon} :text {bar-audio.label}))
+    (button :class "bar-stat-btn"
+            :tooltip {bar-net.label}
+            :onclick "~/.config/eww/scripts/networkmanager.sh"
+      (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
+    (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
+      (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
+
+(defwidget kw-bar []
+  (centerbox :class "kw-bar" :orientation "h"
+    (bar-left)
+    (bar-center)
+    (bar-right)))
+
+;; --- window ------------------------------------------------------------------
+
+(defwindow bar
+  :stacking "fg"
+  :exclusive true
+  :focusable false
+  ;; width is overridden at open time by kw-bar-launch.sh (--size <mon_w>x36)
+  ;; so the bar spans the monitor's full edge and layer-shell can reserve
+  ;; an exclusive zone. Anchor must be top-center for that to work.
+  :geometry (geometry :x "0" :y "0" :width "100px" :height "36px" :anchor "top center")
+  (kw-bar))
