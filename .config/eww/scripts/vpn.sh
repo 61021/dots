@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # eww status module for the dev2-uat OpenVPN connection (NetworkManager).
 # Outputs JSON with text/class/tooltip describing VPN state.
+set -u
 
 conn="dev2-uat-vpn"
 state_dir="${XDG_RUNTIME_DIR:-/tmp}/eww-vpn"
@@ -18,6 +19,8 @@ json() {
 }
 
 gstate=$(nmcli -g GENERAL.STATE connection show "$conn" 2>/dev/null | head -1)
+dev=""
+ip_addr=""
 
 if [ "$gstate" = "activated" ]; then
   rm -f "$connecting_flag"
@@ -27,17 +30,17 @@ if [ "$gstate" = "activated" ]; then
   fi
   [ -z "$dev" ] && dev="tun0"
   [ -z "$ip_addr" ] && ip_addr="—"
-  tooltip="VPN connected\rInterface: ${dev}\rIP: ${ip_addr}\r\rLeft-click: disconnect"
+  tooltip="VPN connected\nInterface: ${dev}\nIP: ${ip_addr}\n\nLeft-click: disconnect"
   json "$icon_on  VPN" "connected" "$tooltip"
 elif [ "$gstate" = "activating" ] || [ -f "$connecting_flag" ]; then
   # Drop a stale connecting flag (older than 1 min with nothing activating).
   if [ "$gstate" != "activating" ] && [ -f "$connecting_flag" ] \
      && [ -n "$(find "$connecting_flag" -mmin +1 2>/dev/null)" ]; then
     rm -f "$connecting_flag"
-    json "$icon_off  VPN" "disconnected" "VPN disconnected\r\rLeft-click: connect"
+    json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect"
   else
-    json "$icon_wait  VPN" "connecting" "Connecting to VPN…\r\rLeft-click: cancel"
+    json "$icon_wait  VPN" "connecting" "Connecting to VPN…\n\nLeft-click: cancel"
   fi
 else
-  json "$icon_off  VPN" "disconnected" "VPN disconnected\r\rLeft-click: connect\rRight-click: view log"
+  json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect\nRight-click: view log"
 fi

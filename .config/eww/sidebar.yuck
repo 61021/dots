@@ -4,27 +4,27 @@
 
 ;; --- data sources ------------------------------------------------------------
 
-(defpoll kw-time      :interval "10s"  :initial "--:--"                                   "date '+%H:%M'")
+(defpoll kw-time      :interval "30s"  :initial "--:--"                                   "date '+%H:%M'")
 (defpoll kw-date      :interval "60s"  :initial ""                                        "date '+%a, %b %-d'")
 
-(defpoll sys-stats    :interval "3s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
-(defpoll bri-pct      :interval "5s"   :initial "0"                                       "~/.config/eww/scripts/brightness.sh get")
+(defpoll sys-stats    :interval "5s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
+(defpoll bri-pct      :interval "30s"  :initial "0"                                       "~/.config/eww/scripts/brightness.sh get")
 (defpoll bat-detail   :interval "30s"  :initial '{"percent":-1,"status":"","charging":false,"time":"","health":0}' "~/.config/eww/scripts/battery-detail.sh")
-(defpoll notif-hist   :interval "5s"   :initial "[]"                                      "~/.config/eww/scripts/kw-notif-history.sh")
+(defpoll notif-hist   :interval "20s"  :initial "[]"                                      "~/.config/eww/scripts/kw-notif-history.sh")
 
 (deflisten vol-pct :initial "0" "~/.config/eww/scripts/vol-listen.sh")
 
 (defvar power-arm "")
 
-(defpoll vpn-state    :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/vpn.sh  | jq -r .class")
-(defpoll warp-state   :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/warp.sh | jq -r .class")
-(defpoll vpn-tooltip  :interval "3s"   :initial "VPN"          "~/.config/eww/scripts/vpn.sh  | jq -r .tooltip | tr '\\r' '\\n'")
-(defpoll warp-tooltip :interval "3s"   :initial "WARP"         "~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\\r' '\\n'")
+;; Single JSON poll per service — eww parses the fields (vpn.class / vpn.tooltip).
+;; kw-refresh.sh pushes instant state on click; the poll only catches external changes.
+(defpoll vpn  :interval "15s" :initial '{"text":"VPN","class":"disconnected","tooltip":"VPN","alt":"disconnected"}'  "~/.config/eww/scripts/vpn.sh")
+(defpoll warp :interval "15s" :initial '{"text":"WARP","class":"disconnected","tooltip":"WARP","alt":"disconnected"}' "~/.config/eww/scripts/warp.sh")
 
-(defpoll bt-state   :interval "5s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh bt")
-(defpoll dnd-state  :interval "5s" :initial "connected"    "~/.config/eww/scripts/kw-state.sh dnd")
-(defpoll eye-state  :interval "3s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh eye")
-(defpoll tv-state   :interval "3s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh tv")
+(defpoll bt-state   :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh bt")
+(defpoll dnd-state  :interval "20s" :initial "connected"    "~/.config/eww/scripts/kw-state.sh dnd")
+(defpoll eye-state  :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh eye")
+(defpoll tv-state   :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh tv")
 
 ;; --- building blocks ---------------------------------------------------------
 
@@ -48,7 +48,7 @@
        :visible {bar-player.status != ""}
     (box :orientation "h" :space-evenly false :spacing 10
       (box :class "kw-media-art" :valign "center"
-           :style "background-image: url('${bar-player.art != "" ? bar-player.art : "/home/khaled/.config/eww/icons/music-notes.svg"}');"
+           :style "background-image: url('${bar-player.art != "" ? bar-player.art : EWW_CONFIG_DIR + "/icons/music-notes.svg"}');"
            :visible true)
       (box :orientation "v" :space-evenly false :spacing 2 :valign "center" :hexpand true
         (label :class "kw-media-title"  :text {bar-player.title}  :limit-width 20 :show-truncated true :xalign 0)
@@ -158,13 +158,13 @@
           :onclick "(rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth); ~/.config/eww/scripts/kw-refresh.sh bt")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
-          :tooltip vpn-tooltip
-          :state vpn-state
+          :tooltip {vpn.tooltip}
+          :state {vpn.class}
           :onclick "~/.config/eww/scripts/vpn-toggle.sh; ~/.config/eww/scripts/kw-refresh.sh vpn")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
-          :tooltip warp-tooltip
-          :state warp-state
+          :tooltip {warp.tooltip}
+          :state {warp.class}
           :onclick "~/.config/eww/scripts/warp-toggle.sh")))
 
     (kw-section :title "COMFORT"

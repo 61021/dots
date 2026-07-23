@@ -1,4 +1,4 @@
-/* Sidebar - frame, sections, icon buttons, clock, rings, sliders, weather. */
+/* Sidebar - frame, sections, icon buttons, clock, rings, sliders. */
 
 .kw-sidebar {
   background-color: $bg-0;
@@ -35,34 +35,34 @@
   box-shadow: none;
   text-shadow: none;
   -gtk-icon-shadow: none;
-  transition: 200ms ease;
+  transition: $t-fast ease;
 
   &:hover {
     background-color: $bg-2;
-    border-color: rgba(137, 221, 255, 0.35);
+    border-color: rgba($accent, 0.35);
   }
 
   &:active {
     background-color: $bg-2;
-    border-color: rgba(137, 221, 255, 0.55);
+    border-color: rgba($accent, 0.55);
   }
 
   &.connected {
-    background-color: rgba(74, 222, 128, 0.08);
-    border-color: rgba(74, 222, 128, 0.55);
+    background-color: rgba($success, 0.08);
+    border-color: rgba($success, 0.55);
   }
   &.connecting {
-    background-color: rgba(250, 204, 21, 0.08);
-    border-color: rgba(250, 204, 21, 0.55);
+    background-color: rgba($warning, 0.08);
+    border-color: rgba($warning, 0.55);
   }
 
   &.danger:hover {
-    border-color: rgba(239, 68, 68, 0.45);
+    border-color: rgba($error, 0.45);
   }
   &.armed,
   &.armed:hover {
-    background-color: rgba(239, 68, 68, 0.16);
-    border-color: rgba(239, 68, 68, 0.75);
+    background-color: rgba($error, 0.16);
+    border-color: rgba($error, 0.75);
   }
 }
 
@@ -75,11 +75,11 @@
 }
 .kw-clock-time {
   color: $fg-hi;
-  font-family: "JetBrainsMono Nerd Font", "JetBrains Mono", monospace;
+  font-family: $font-mono;
   font-size: 26px;
   font-weight: 300;
   letter-spacing: 0;
-  text-shadow: 0 0 18px rgba(137, 221, 255, 0.35);
+  text-shadow: 0 0 18px rgba($accent, 0.35);
 }
 .kw-clock-date {
   color: $fg-1;
@@ -103,7 +103,7 @@
 }
 .kw-ring-val {
   color: $fg-hi;
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: $font-mono;
   font-size: 11px;
   font-weight: 600;
   font-feature-settings: "tnum";
@@ -167,7 +167,7 @@
 }
 .kw-slider-val {
   color: $fg-1;
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: $font-mono;
   font-size: 10px;
   font-feature-settings: "tnum";
   min-width: 28px;
@@ -205,9 +205,9 @@
   border-radius: 8px;
   padding: 2px 0;
   color: $fg-0;
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: $font-mono;
   font-size: 15px;
-  transition: 200ms ease;
+  transition: $t-fast ease;
   &:hover {
     background: rgba(255, 255, 255, 0.06);
     color: $fg-hi;
@@ -227,10 +227,10 @@
   color: $fg-1;
   font-size: 10px;
   letter-spacing: 0.8px;
-  transition: 200ms ease;
+  transition: $t-fast ease;
   &:hover {
     color: $error;
-    background: rgba(239, 68, 68, 0.08);
+    background: rgba($error, 0.08);
   }
 }
 .kw-notif {
@@ -256,7 +256,7 @@
 }
 .kw-battery-pct {
   color: $fg-hi;
-  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-family: $font-mono;
   font-size: 13px;
   font-weight: 600;
   font-feature-settings: "tnum";

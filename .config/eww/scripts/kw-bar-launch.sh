@@ -50,6 +50,11 @@ launch_all() {
   # pkill -x eww doesn't reach deflisten children (bash/python); orphaned to
   # PID 1 they idle forever since they only write on events. Reap them here.
   pkill -f "$HOME/.config/eww/scripts/(bar/|vol-listen)" 2>/dev/null || true
+  # ...and the long-lived CLIs those listeners spawn — killing the wrapper
+  # orphans them and they only die on their next (possibly never) write.
+  pkill -f 'playerctl --follow' 2>/dev/null || true
+  pkill -f 'nmcli monitor' 2>/dev/null || true
+  pkill -fx 'pactl subscribe' 2>/dev/null || true
 
   # Start a fresh daemon. Close fd 9 so it doesn't inherit the lock.
   eww daemon 9>&- >/dev/null 2>&1

@@ -6,6 +6,7 @@ fixed-width window that slides through long titles while Playing (paused
 / short titles / no player = no ticking, purely event-driven).
 """
 
+import glob
 import hashlib
 import json
 import os
@@ -82,7 +83,19 @@ def emit(cur: dict, offset: int) -> None:
     sys.stdout.flush()
 
 
+def prune_art(max_age_days: int = 7) -> None:
+    """Drop cached album art older than max_age_days so /tmp/kw-art-* stays bounded."""
+    cutoff = time.time() - max_age_days * 86400
+    for f in glob.glob("/tmp/kw-art-*"):
+        try:
+            if os.path.getmtime(f) < cutoff:
+                os.unlink(f)
+        except OSError:
+            pass
+
+
 def main() -> None:
+    prune_art()
     proc = subprocess.Popen(
         ["playerctl", "--follow", "metadata", "--format", "{{status}}|{{title}}"],
         stdout=subprocess.PIPE,

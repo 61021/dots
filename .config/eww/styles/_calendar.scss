@@ -10,7 +10,7 @@
   padding: 16px 18px 18px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
   color: $fg-0;
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: $font-sans;
 }
 
 /* --- header: "July 2026" + today subtitle + prev / today / next ---------- */
@@ -36,18 +36,9 @@
 }
 
 .kw-cal-nav {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  border-radius: 9px;
-  padding: 5px 10px;
-  transition: background 180ms ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
+  @include chip(9px, 5px 10px);
   &:active {
-    background: rgba(137, 221, 255, 0.1);
+    background: rgba($accent, 0.1);
   }
 }
 
@@ -69,7 +60,7 @@
 
 .kw-cal-today.away .kw-cal-today-dot {
   background-color: $accent;
-  box-shadow: 0 0 8px rgba(137, 221, 255, 0.6);
+  box-shadow: 0 0 8px rgba($accent, 0.6);
 }
 
 /* --- weekday header row --------------------------------------------------- */
@@ -110,6 +101,6 @@
     background-color: $accent;
     color: $bg-0;
     font-weight: 700;
-    box-shadow: 0 2px 16px rgba(137, 221, 255, 0.35);
+    box-shadow: 0 2px 16px rgba($accent, 0.35);
   }
 }

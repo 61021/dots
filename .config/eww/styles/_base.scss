@@ -1,4 +1,22 @@
-/* Base - global resets and shared window transparency. */
+/* Base - global resets, shared tokens, and window transparency. */
+
+// Shared tokens (palette hues live in ~/stuff/constants/colors/eww.scss)
+$font-sans: "IBM Plex Sans", sans-serif;
+$font-mono: "JetBrainsMono Nerd Font", monospace;
+$t-fast: 180ms;
+
+// Ghost chip: quiet button that only tints on hover.
+@mixin chip($radius: 8px, $pad: 2px 8px) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: $radius;
+  padding: $pad;
+  transition: background $t-fast ease;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
 
 * {
   font-family: "IBM Plex Sans", "JetBrainsMono Nerd Font", sans-serif;

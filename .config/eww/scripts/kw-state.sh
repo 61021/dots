@@ -4,10 +4,9 @@
 set -u
 case "${1:-}" in
   bt)   rfkill list bluetooth | grep -q 'Soft blocked: no' && echo connected || echo disconnected ;;
-  mute) wpctl get-volume @DEFAULT_AUDIO_SINK@   2>/dev/null | grep -q MUTED && echo disconnected || echo connected ;;
-  mic)  wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected ;;
   dnd)  [ "$(dunstctl is-paused)" = "true" ] && echo disconnected || echo connected ;;
-  eye)  pgrep -x hyprsunset >/dev/null && echo connected || echo disconnected ;;
+  eye)  t=$(hyprctl hyprsunset temperature 2>/dev/null)
+        if [ -n "$t" ] && [ "$t" -lt 6500 ] 2>/dev/null; then echo connected; else echo disconnected; fi ;;
   tv)   ~/.config/eww/scripts/tv-mode.sh get ;;
   *)    echo disconnected ;;
 esac

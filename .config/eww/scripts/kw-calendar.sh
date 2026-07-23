@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 # Click-to-toggle kw-calendar on the monitor under the cursor.
+# Open/closed state comes from the eww daemon itself (no flag file to go stale).
 set -euo pipefail
-flag=/tmp/kw-calendar.open
 
-if [ -f "$flag" ]; then
-  rm -f "$flag"
+if eww active-windows 2>/dev/null | grep -q '^kw-calendar'; then
   eww close kw-calendar 2>/dev/null || true
   exit 0
 fi
@@ -18,4 +17,3 @@ mon_id="$(echo "$monitors_json" | jq --argjson x "$cx" --argjson y "$cy" \
 
 ~/.config/eww/scripts/bar/calendar-data.py reset
 eww open --screen "$mon_id" kw-calendar
-touch "$flag"

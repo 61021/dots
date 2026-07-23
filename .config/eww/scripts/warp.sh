@@ -15,12 +15,12 @@ if ! command -v warp-cli >/dev/null 2>&1; then
   exit 0
 fi
 
-status_line=$(warp-cli status 2>/dev/null | grep -i 'status update' | head -1)
-state=$(printf '%s' "$status_line" | sed -E 's/.*Status update:\s*//I' | tr -d '\r')
+status_line=$(warp-cli status 2>/dev/null | grep -i 'status update' | head -1 | tr -d '\r')
+state=$(printf '%s' "$status_line" | sed -E 's/.*Status update:\s*//I')
 
 case "$state" in
   Connected)
-    tooltip="WARP connected\r${status_line}\r\rLeft-click: disconnect\rRight-click: status"
+    tooltip="WARP connected\n${status_line}\n\nLeft-click: disconnect\nRight-click: status"
     json "$icon_on  WARP" "connected" "$tooltip"
     ;;
   Connecting|"Connecting…"|"Connecting...")
@@ -30,9 +30,9 @@ case "$state" in
     json "$icon_wait  WARP" "connecting" "Disconnecting from WARP…"
     ;;
   Disconnected|"")
-    json "$icon_off  WARP" "disconnected" "WARP disconnected\r\rLeft-click: connect"
+    json "$icon_off  WARP" "disconnected" "WARP disconnected\n\nLeft-click: connect"
     ;;
   *)
-    json "$icon_off  WARP" "disconnected" "WARP: ${state:-unknown}\r\rLeft-click: connect"
+    json "$icon_off  WARP" "disconnected" "WARP: ${state:-unknown}\n\nLeft-click: connect"
     ;;
 esac

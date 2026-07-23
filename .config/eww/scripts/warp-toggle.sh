@@ -17,7 +17,5 @@ case "$state" in
     ;;
 esac
 
-# Refresh eww poll immediately.
-state_now="$(~/.config/eww/scripts/warp.sh | jq -r .class)"
-tooltip_now="$(~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\r' '\n')"
-eww update "warp-state=${state_now}" "warp-tooltip=${tooltip_now}" 2>/dev/null
+# Refresh eww poll immediately (single JSON var; eww reads .class/.tooltip).
+eww update "warp=$(~/.config/eww/scripts/warp.sh)" 2>/dev/null

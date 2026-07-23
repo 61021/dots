@@ -10,7 +10,7 @@
   (button :class "kw-cal-nav" :tooltip tip :valign "start"
           :onclick "~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
     (box :class "kw-cal-nav-icon" :valign "center"
-         :style "background-image: url('/home/khaled/.config/eww/icons/${icon}.svg');")))
+         :style "background-image: url('${EWW_CONFIG_DIR}/icons/${icon}.svg');")))
 
 (defwidget kw-calendar []
   (box :class "kw-calendar" :orientation "v" :space-evenly false :spacing 10

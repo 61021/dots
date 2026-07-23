@@ -4,8 +4,8 @@
 
 ;; --- data sources ------------------------------------------------------------
 
-(defpoll bar-bat   :interval "3s"  :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--","state":"ok"}' "~/.config/eww/scripts/bar/battery.sh")
-(defpoll bar-time  :interval "10s" :initial "--:--" "date '+%I:%M'")
+(defpoll bar-bat   :interval "30s" :initial '{"percent":0,"icon":"/home/khaled/.config/eww/icons/plug.svg","label":"--","state":"ok"}' "~/.config/eww/scripts/bar/battery.sh")
+(defpoll bar-time  :interval "30s" :initial "--:--" "date '+%I:%M'")
 (defpoll bar-date  :interval "60s" :initial ""      "date '+%a %d/%m'")
 
 (deflisten bar-net    :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-slash.svg","label":"--"}'   "~/.config/eww/scripts/bar/net-listen.sh")
@@ -58,7 +58,7 @@
             :onrightclick "playerctl next"
       (box :orientation "h" :space-evenly false :spacing 5 :valign "center"
         (box :class "bar-player-icon" :valign "center"
-             :style "background-image: url('/home/khaled/.config/eww/icons/music-notes${bar-player.status == "Playing" ? "-active" : ""}.svg');")
+             :style "background-image: url('${EWW_CONFIG_DIR}/icons/music-notes${bar-player.status == "Playing" ? "-active" : ""}.svg');")
         (label :class "bar-player-label${bar-player.status == "Playing" ? "" : " paused"}"
                :text {bar-player.display} :show-truncated false)))
     (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)

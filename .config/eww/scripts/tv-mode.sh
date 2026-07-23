@@ -11,7 +11,9 @@
 
 set -euo pipefail
 
-BAT_DIR="/sys/class/power_supply/BAT0"
+# First battery, whatever its index (BAT0/BAT1/...)
+set -- /sys/class/power_supply/BAT*
+BAT_DIR="$1"
 THRESH_FILE="$BAT_DIR/charge_control_end_threshold"
 CAP_FILE="$BAT_DIR/capacity"
 
