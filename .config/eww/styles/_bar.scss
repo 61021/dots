@@ -10,13 +10,14 @@
   font-weight: 500;
 }
 
+/* Right-cluster rhythm: the box gap (2px) is the ONLY space between chips;
+   every chip uses the same 2px 8px padding, no margins. */
 .bar-stat {
-  padding: 0 8px;
+  padding: 0;
 }
 
 .bar-tray {
   padding: 0 6px;
-  margin-right: 2px;
 }
 
 /* Icons are CSS backgrounds, not `image` widgets: eww's image loads pixbufs
@@ -40,8 +41,7 @@
   background: transparent;
   border: none;
   border-radius: 8px;
-  padding: 2px 4px;
-  margin: 0 1px;
+  padding: 2px 8px;
   transition: background 180ms ease;
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -49,17 +49,6 @@
   &:active {
     background: rgba(137, 221, 255, 0.1);
   }
-}
-
-.bar-bell {
-  padding: 2px 8px;
-}
-
-.bar-notif-count {
-  color: $accent;
-  font-size: 11px;
-  font-weight: 700;
-  font-feature-settings: "tnum";
 }
 
 .bar-bat {
@@ -79,7 +68,6 @@
   border: none;
   border-radius: 8px;
   padding: 4px 10px;
-  margin-right: 4px;
   transition: background 180ms ease;
   &:hover {
     background: rgba(255, 255, 255, 0.06);
@@ -99,7 +87,6 @@
   background: rgba(255, 255, 255, 0.04);
   border-radius: 9px;
   padding: 3px;
-  margin: 0 2px;
 }
 
 .bar-ws-btn {
@@ -165,6 +152,37 @@
   }
   &:active {
     background: rgba(137, 221, 255, 0.1);
+  }
+}
+
+/* Now playing - a quiet chip at the left of the right cluster; title only,
+   small and muted so it never competes with the stats. */
+.bar-player {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 2px 8px;
+  transition: background 180ms ease;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.bar-player-icon {
+  min-width: 13px;
+  min-height: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px 13px;
+}
+
+.bar-player-label {
+  color: $fg-1;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 10px;
+
+  &.paused {
+    color: rgba(107, 114, 128, 0.6);
   }
 }
 

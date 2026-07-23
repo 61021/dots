@@ -2,11 +2,13 @@
 """Streams Hyprland workspace state as JSON for the bar's `deflisten`.
 
 One compact array per line, e.g.:
-  [{"id": 2, "active": true, "icons": ["/usr/share/.../kitty.svg", ...]}, ...]
+  [{"id": 2, "monitor": "DP-1", "active": true, "urgent": false,
+    "icons": ["/usr/share/.../kitty.svg", ...]}, ...]
 
-Only occupied workspaces (plus the active one) are included; each window
-contributes one resolved app-icon path, so icon count == window count.
-Special workspaces (negative ids) are excluded.
+Only occupied workspaces (plus each monitor's visible one) are included;
+each window contributes one resolved app-icon path, so icon count ==
+window count. `active` means visible on its own monitor (each bar
+highlights its own). Special workspaces (negative ids) are excluded.
 """
 
 import configparser
@@ -110,7 +112,11 @@ def resolve_icon(cls: str) -> str:
 
 def emit() -> None:
     workspaces = [w for w in hypr_request("j/workspaces") if w["id"] > 0]
-    active_id = hypr_request("j/activeworkspace")["id"]
+    visible_ids = {
+        m["activeWorkspace"]["id"]
+        for m in hypr_request("j/monitors")
+        if not m.get("disabled")
+    }
 
     icons_by_ws: dict[int, list[str]] = {}
     urgent_ws: set[int] = set()
@@ -127,23 +133,24 @@ def emit() -> None:
         if addr in _urgent_addrs:
             urgent_ws.add(ws_id)
 
-    # Urgency is resolved by visiting the workspace (or the window dying).
+    # Urgency is resolved by the workspace becoming visible (or the
+    # window dying).
     _urgent_addrs.intersection_update(live_addrs)
-    if active_id in urgent_ws:
-        for client in clients:
-            if client["workspace"]["id"] == active_id:
-                _urgent_addrs.discard(client.get("address", "").removeprefix("0x"))
-        urgent_ws.discard(active_id)
+    for client in clients:
+        if client["workspace"]["id"] in visible_ids:
+            _urgent_addrs.discard(client.get("address", "").removeprefix("0x"))
+    urgent_ws.difference_update(visible_ids)
 
     out = [
         {
             "id": w["id"],
-            "active": w["id"] == active_id,
+            "monitor": w.get("monitor", ""),
+            "active": w["id"] in visible_ids,
             "urgent": w["id"] in urgent_ws,
             "icons": sorted(icons_by_ws.get(w["id"], [])),
         }
         for w in sorted(workspaces, key=lambda w: w["id"])
-        if w["id"] == active_id or icons_by_ws.get(w["id"])
+        if w["id"] in visible_ids or icons_by_ws.get(w["id"])
     ]
     sys.stdout.write(json.dumps(out, separators=(",", ":")) + "\n")
     sys.stdout.flush()
