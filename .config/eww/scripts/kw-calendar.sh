@@ -16,5 +16,6 @@ cy="$(echo "$cursor_json" | jq -r '.y')"
 mon_id="$(echo "$monitors_json" | jq --argjson x "$cx" --argjson y "$cy" \
   '[to_entries[] | select(.value.x <= $x and $x < (.value.x + .value.width) and .value.y <= $y and $y < (.value.y + .value.height))][0].key')"
 
+~/.config/eww/scripts/bar/calendar-data.py reset
 eww open --screen "$mon_id" kw-calendar
 touch "$flag"

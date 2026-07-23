@@ -1,13 +1,44 @@
 ;; -----------------------------------------------------------------------------
 ;; Calendar popover — opened by the bar's clock button.
+;; Custom month grid (GTK's `calendar` widget is unstylable); data comes from
+;; scripts/bar/calendar-data.py which pushes into `kw-cal` on open / prev / next.
 ;; -----------------------------------------------------------------------------
 
+(defvar kw-cal '{"month":"","year":"","sub":"","off":0,"days":[],"weeks":[]}')
+
+(defwidget kw-cal-nav [icon cmd tip]
+  (button :class "kw-cal-nav" :tooltip tip :valign "start"
+          :onclick "~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
+    (box :class "kw-cal-nav-icon" :valign "center"
+         :style "background-image: url('/home/khaled/.config/eww/icons/${icon}.svg');")))
+
 (defwidget kw-calendar []
-  (box :class "kw-calendar" :orientation "v" :space-evenly false
-    (calendar :class "kw-calendar-cal")))
+  (box :class "kw-calendar" :orientation "v" :space-evenly false :spacing 10
+    (box :class "kw-cal-head" :orientation "h" :space-evenly false :spacing 2
+      (box :orientation "v" :space-evenly false :spacing 2 :halign "start" :hexpand true
+        (box :orientation "h" :space-evenly false :spacing 7 :halign "start"
+          (label :class "kw-cal-month" :text {kw-cal.month})
+          (label :class "kw-cal-year" :text {kw-cal.year}))
+        (label :class "kw-cal-sub" :halign "start" :text {kw-cal.sub}))
+      (kw-cal-nav :icon "caret-left" :cmd "prev" :tip "Previous month")
+      (button :class "kw-cal-nav kw-cal-today${kw-cal.off != 0 ? " away" : ""}" :tooltip "Back to today"
+              :valign "start"
+              :onclick "~/.config/eww/scripts/bar/calendar-data.py reset"
+        (box :class "kw-cal-today-dot" :halign "center" :valign "center"))
+      (kw-cal-nav :icon "caret-right" :cmd "next" :tip "Next month"))
+    (box :orientation "v" :space-evenly false :spacing 3
+      (box :class "kw-cal-dow" :orientation "h" :space-evenly true
+        (for d in {kw-cal.days}
+          (label :class "kw-cal-dow-lbl${d.now ? " now" : ""}" :text {d.n})))
+      (for week in {kw-cal.weeks}
+        (box :orientation "h" :space-evenly true
+          (for day in week
+            (label :class "kw-cal-day${day.cur ? "" : " dim"}${day.we ? " we" : ""}${day.today ? " today" : ""}"
+                   :text {day.d})))))))
 
 (defwindow kw-calendar
-  :stacking "overlay"
+  :stacking "fg"
   :focusable false
+  :namespace "kw-calendar"
   :geometry (geometry :x "0" :y "0" :anchor "top center")
   (kw-calendar))

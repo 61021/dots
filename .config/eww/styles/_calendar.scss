@@ -1,61 +1,115 @@
-/* Calendar popover - opens from the bar's clock button. */
+/* Calendar popover - opens from the bar's clock button.
+   Custom yuck grid (see calendar.yuck) - not the GTK calendar widget. */
 
 .kw-calendar {
   background-color: $bg-0;
   border: 1px solid $border-soft;
-  border-bottom-left-radius: 12px;
-  border-bottom-right-radius: 12px;
   border-top: none;
-  padding: 12px 14px;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.7);
-}
-
-.kw-calendar-cal,
-.kw-calendar-cal * {
-  background-color: transparent;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
   color: $fg-0;
   font-family: "IBM Plex Sans", sans-serif;
-  font-size: 15px;
-  font-feature-settings: "tnum";
-  outline: none;
-  border: none;
-  box-shadow: none;
-  text-shadow: none;
 }
 
-.kw-calendar-cal {
-  padding: 6px 4px 4px 4px;
+/* --- header: "July 2026" + today subtitle + prev / today / next ---------- */
 
-  &.day {
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: $fg-0;
+.kw-cal-month {
+  color: $fg-hi;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.kw-cal-year {
+  color: $fg-1;
+  font-size: 19px;
+  font-weight: 400;
+  font-feature-settings: "tnum";
+}
+
+.kw-cal-sub {
+  color: $fg-1;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.kw-cal-nav {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 9px;
+  padding: 5px 10px;
+  transition: background 180ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
   }
+  &:active {
+    background: rgba(137, 221, 255, 0.1);
+  }
+}
 
-  &.header,
-  &.highlight {
+.kw-cal-nav-icon {
+  min-width: 13px;
+  min-height: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px 13px;
+}
+
+.kw-cal-today-dot {
+  min-width: 7px;
+  min-height: 7px;
+  border-radius: 4px;
+  background-color: $border-hard;
+  transition: background-color 180ms ease;
+}
+
+.kw-cal-today.away .kw-cal-today-dot {
+  background-color: $accent;
+  box-shadow: 0 0 8px rgba(137, 221, 255, 0.6);
+}
+
+/* --- weekday header row --------------------------------------------------- */
+
+.kw-cal-dow-lbl {
+  color: $fg-1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 6px 0 4px;
+
+  &.now {
+    color: $accent;
+  }
+}
+
+/* --- day grid -------------------------------------------------------------- */
+
+.kw-cal-day {
+  color: $fg-0;
+  font-size: 14px;
+  font-feature-settings: "tnum";
+  min-width: 40px;
+  min-height: 34px;
+  margin: 0 1px;
+  border-radius: 11px;
+
+  &.we {
     color: $fg-1;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
   }
 
-  &.button {
-    color: $fg-hi;
-    font-size: 16px;
-    font-weight: 600;
-    padding: 4px 8px;
+  &.dim {
+    color: $fg-1;
+    opacity: 0.35;
   }
 
-  &:selected,
-  &.day:selected {
+  &.today {
     background-color: $accent;
     color: $bg-0;
-    border-radius: 8px;
-  }
-
-  &.day:indeterminate {
-    color: $fg-1;
-    opacity: 0.4;
+    font-weight: 700;
+    box-shadow: 0 2px 16px rgba(137, 221, 255, 0.35);
   }
 }
