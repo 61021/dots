@@ -8,27 +8,23 @@
 (defpoll kw-date      :interval "60s"  :initial ""                                        "date '+%a, %b %-d'")
 
 (defpoll sys-stats    :interval "3s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
-(defpoll vol-pct      :interval "2s"   :initial "0"                                       "~/.config/eww/scripts/volume.sh get")
 (defpoll bri-pct      :interval "5s"   :initial "0"                                       "~/.config/eww/scripts/brightness.sh get")
-(defpoll weather-info :interval "900s" :initial '{"temp":"--","cond":"","label":""}'      "~/.config/eww/scripts/weather.sh")
+(defpoll bat-detail   :interval "30s"  :initial '{"percent":-1,"status":"","charging":false,"time":"","health":0}' "~/.config/eww/scripts/battery-detail.sh")
+(defpoll notif-hist   :interval "5s"   :initial "[]"                                      "~/.config/eww/scripts/kw-notif-history.sh")
+
+(deflisten vol-pct :initial "0" "~/.config/eww/scripts/vol-listen.sh")
+
+(defvar power-arm "")
 
 (defpoll vpn-state    :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/vpn.sh  | jq -r .class")
 (defpoll warp-state   :interval "3s"   :initial "disconnected" "~/.config/eww/scripts/warp.sh | jq -r .class")
 (defpoll vpn-tooltip  :interval "3s"   :initial "VPN"          "~/.config/eww/scripts/vpn.sh  | jq -r .tooltip | tr '\\r' '\\n'")
 (defpoll warp-tooltip :interval "3s"   :initial "WARP"         "~/.config/eww/scripts/warp.sh | jq -r .tooltip | tr '\\r' '\\n'")
 
-(defpoll bt-state   :interval "5s" :initial "disconnected"
-  "rfkill list bluetooth | grep -q 'Soft blocked: no' && echo connected || echo disconnected")
-(defpoll mute-state :interval "2s" :initial "connected"
-  "wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected")
-(defpoll mic-state  :interval "2s" :initial "connected"
-  "wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null | grep -q MUTED && echo disconnected || echo connected")
-(defpoll dnd-state  :interval "5s" :initial "connected"
-  "[ \"$(dunstctl is-paused)\" = 'true' ] && echo disconnected || echo connected")
-(defpoll eye-state  :interval "3s" :initial "disconnected"
-  "pgrep -x hyprsunset >/dev/null && echo connected || echo disconnected")
-(defpoll tv-state   :interval "3s" :initial "disconnected"
-  "~/.config/eww/scripts/tv-mode.sh get")
+(defpoll bt-state   :interval "5s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh bt")
+(defpoll dnd-state  :interval "5s" :initial "connected"    "~/.config/eww/scripts/kw-state.sh dnd")
+(defpoll eye-state  :interval "3s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh eye")
+(defpoll tv-state   :interval "3s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh tv")
 
 ;; --- building blocks ---------------------------------------------------------
 
@@ -38,6 +34,54 @@
     :tooltip tooltip
     :onclick onclick
     :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');"))
+
+;; Destructive power action: first click arms (red) for 3s, second executes.
+(defwidget kw-power-button [action icon tooltip]
+  (button
+    :class "kw-icon-button danger${power-arm == action ? " armed" : ""}"
+    :tooltip {power-arm == action ? "Click again to confirm" : tooltip}
+    :onclick "~/.config/eww/scripts/kw-power.sh ${action}"
+    :style "background-image: url('${icon}');"))
+
+(defwidget kw-media []
+  (box :class "kw-media" :orientation "v" :space-evenly false :spacing 10
+       :visible {bar-player.status != ""}
+    (box :orientation "h" :space-evenly false :spacing 10
+      (box :class "kw-media-art" :valign "center"
+           :style "background-image: url('${bar-player.art != "" ? bar-player.art : "/home/khaled/.config/eww/icons/music-notes.svg"}');"
+           :visible true)
+      (box :orientation "v" :space-evenly false :spacing 2 :valign "center" :hexpand true
+        (label :class "kw-media-title"  :text {bar-player.title}  :limit-width 20 :show-truncated true :xalign 0)
+        (label :class "kw-media-artist" :text {bar-player.artist} :limit-width 24 :show-truncated true :xalign 0)))
+    (box :class "kw-media-controls" :orientation "h" :space-evenly true
+      (button :class "kw-media-btn" :onclick "playerctl previous" (label :text "󰒮"))
+      (button :class "kw-media-btn kw-media-play" :onclick "playerctl play-pause"
+        (label :text {bar-player.status == "Playing" ? "󰏤" : "󰐊"}))
+      (button :class "kw-media-btn" :onclick "playerctl next" (label :text "󰒭")))))
+
+(defwidget kw-notifications []
+  (box :orientation "v" :space-evenly false :spacing 8
+       :visible {arraylength(notif-hist) > 0}
+    (box :orientation "h" :space-evenly false
+      (label :class "kw-section-title" :xalign 0 :hexpand true :text "NOTIFICATIONS")
+      (button :class "kw-notif-clear" :tooltip "Clear history"
+              :onclick "dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
+        (label :text "clear")))
+    (box :orientation "v" :space-evenly false :spacing 6
+      (for n in notif-hist
+        (box :class "kw-notif" :orientation "v" :space-evenly false :spacing 1
+          (label :class "kw-notif-app"     :text {n.app}     :xalign 0 :limit-width 30 :show-truncated true)
+          (label :class "kw-notif-summary" :text {n.summary} :xalign 0 :limit-width 32 :show-truncated true))))))
+
+(defwidget kw-battery []
+  (box :class "kw-battery" :orientation "v" :space-evenly false :spacing 2
+       :visible {bat-detail.percent >= 0}
+    (box :orientation "h" :space-evenly false
+      (label :class "kw-battery-pct${bat-detail.charging ? " charging" : ""}"
+             :text "${bat-detail.percent}%" :xalign 0 :hexpand true)
+      (label :class "kw-battery-health" :tooltip "Battery health" :text "♥ ${bat-detail.health}%" :xalign 1))
+    (label :class "kw-battery-time" :text {bat-detail.time != "" ? bat-detail.time : bat-detail.status}
+           :xalign 0 :limit-width 32 :show-truncated true)))
 
 (defwidget kw-section [title]
   (box :orientation "v" :space-evenly false :spacing 8
@@ -69,19 +113,10 @@
     (scale :class "kw-slider" :hexpand true :min 0 :max 101 :value value :onchange onchange)
     (label :class "kw-slider-val" :text "${value}" :xalign 1)))
 
-(defwidget kw-weather []
-  (box :class "kw-weather" :orientation "h" :space-evenly false :spacing 10 :valign "center"
-    (box :class "kw-weather-icon" :valign "center"
-         :style "background-image: url('${EWW_CONFIG_DIR}/icons/sun.svg');")
-    (box :orientation "v" :space-evenly false :spacing 1 :hexpand true
-      (label :class "kw-weather-temp" :text {weather-info.temp} :xalign 0)
-      (label :class "kw-weather-cond" :text {weather-info.cond} :xalign 0
-             :limit-width 18 :show-truncated true))))
-
 ;; --- layout ------------------------------------------------------------------
 
 (defwidget kw-sidebar []
-  (box :class "kw-sidebar" :orientation "v" :space-evenly false :spacing 14
+  (box :class "kw-sidebar" :orientation "v" :space-evenly false :spacing 12
     (kw-clock)
     (kw-sys-rings)
     (kw-slider :icon "${EWW_CONFIG_DIR}/icons/speaker-high.svg"
@@ -92,7 +127,7 @@
                :onchange "~/.config/eww/scripts/brightness.sh set {}")
 
     (kw-section :title "SYSTEM"
-      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+      (box :orientation "h" :space-evenly false :spacing 6 :halign "start"
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/arrow-clockwise.svg"
           :tooltip "Reload Hyprland"
@@ -102,13 +137,17 @@
           :tooltip "Lock screen"
           :onclick "eww close kw-sidebar; hyprlock &")
         (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/moon-stars.svg"
+          :tooltip "Suspend"
+          :onclick "eww close kw-sidebar; systemctl suspend")
+        (kw-power-button
+          :action "reboot"
           :icon "${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg"
-          :tooltip "Reboot"
-          :onclick "eww close kw-sidebar; systemctl reboot")
-        (kw-icon-button
+          :tooltip "Reboot")
+        (kw-power-button
+          :action "poweroff"
           :icon "${EWW_CONFIG_DIR}/icons/power.svg"
-          :tooltip "Power off"
-          :onclick "eww close kw-sidebar; systemctl poweroff")))
+          :tooltip "Power off")))
 
     (kw-section :title "NETWORK"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
@@ -116,30 +155,17 @@
           :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
           :tooltip "Bluetooth toggle"
           :state bt-state
-          :onclick "rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth")
+          :onclick "(rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth); ~/.config/eww/scripts/kw-refresh.sh bt")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
           :tooltip vpn-tooltip
           :state vpn-state
-          :onclick "~/.config/eww/scripts/vpn-toggle.sh")
+          :onclick "~/.config/eww/scripts/vpn-toggle.sh; ~/.config/eww/scripts/kw-refresh.sh vpn")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
           :tooltip warp-tooltip
           :state warp-state
           :onclick "~/.config/eww/scripts/warp-toggle.sh")))
-
-    (kw-section :title "AUDIO"
-      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
-        (kw-icon-button
-          :icon "${EWW_CONFIG_DIR}/icons/speaker-high.svg"
-          :tooltip "Toggle speaker mute"
-          :state mute-state
-          :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
-        (kw-icon-button
-          :icon "${EWW_CONFIG_DIR}/icons/microphone.svg"
-          :tooltip "Toggle microphone mute"
-          :state mic-state
-          :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")))
 
     (kw-section :title "COMFORT"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
@@ -147,26 +173,30 @@
           :icon "${EWW_CONFIG_DIR}/icons/bell.svg"
           :tooltip "Toggle do-not-disturb (dunst)"
           :state dnd-state
-          :onclick "dunstctl set-paused toggle")
+          :onclick "dunstctl set-paused toggle; ~/.config/eww/scripts/kw-refresh.sh dnd")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/moon.svg"
           :tooltip "Toggle eye comfort (no blue light)"
           :state eye-state
-          :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh")
+          :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh; sleep 0.2 && ~/.config/eww/scripts/kw-refresh.sh eye")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
           :tooltip "TV mode: keep awake, stop charging"
           :state tv-state
-          :onclick "~/.config/eww/scripts/tv-mode.sh toggle")))
+          :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv")))
+
+    (kw-media)
+    (kw-notifications)
 
     (box :vexpand true)
-    (kw-weather)))
+    (kw-battery)))
 
 ;; --- window ------------------------------------------------------------------
 
 (defwindow kw-sidebar
   :stacking "overlay"
   :focusable false
+  :namespace "kw-sidebar"
   :geometry (geometry
     :x "0px"
     :y "0px"

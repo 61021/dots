@@ -17,7 +17,7 @@ mon_id="$(echo "$mon" | jq -r '.key')"
 mon_h="$(echo "$mon" | jq -r '.value.height')"
 mon_scale="$(echo "$mon" | jq -r '.value.scale')"
 bar_h=36
-sidebar_w=240
+sidebar_w=300
 logical_h="$(awk -v v="$mon_h" -v s="$mon_scale" 'BEGIN{printf "%d", v/s}')"
 sidebar_h=$(( logical_h - bar_h ))
 

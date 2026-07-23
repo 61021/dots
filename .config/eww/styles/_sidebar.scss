@@ -55,6 +55,15 @@
     background-color: rgba(250, 204, 21, 0.08);
     border-color: rgba(250, 204, 21, 0.55);
   }
+
+  &.danger:hover {
+    border-color: rgba(239, 68, 68, 0.45);
+  }
+  &.armed,
+  &.armed:hover {
+    background-color: rgba(239, 68, 68, 0.16);
+    border-color: rgba(239, 68, 68, 0.75);
+  }
 }
 
 /* Clock */
@@ -164,28 +173,105 @@
   min-width: 28px;
 }
 
-/* Weather */
-.kw-weather {
-  background-color: transparent;
-  border: none;
-  padding: 6px 2px 2px 2px;
+/* Media card */
+.kw-media {
+  background-color: $bg-1;
+  border: 1px solid $border-soft;
+  border-radius: 12px;
+  padding: 12px;
 }
-.kw-weather-icon {
-  min-width: 22px;
-  min-height: 22px;
+.kw-media-art {
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 22px 22px;
+  background-size: cover;
 }
-.kw-weather-temp {
+.kw-media-title {
   color: $fg-hi;
-  font-family: "JetBrainsMono Nerd Font", monospace;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 600;
-  font-feature-settings: "tnum";
 }
-.kw-weather-cond {
+.kw-media-artist {
   color: $fg-1;
   font-size: 10px;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.4px;
+}
+.kw-media-btn {
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 2px 0;
+  color: $fg-0;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 15px;
+  transition: 200ms ease;
+  &:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: $fg-hi;
+  }
+}
+.kw-media-play {
+  color: $accent;
+  font-size: 17px;
+}
+
+/* Notification history */
+.kw-notif-clear {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  padding: 0 6px;
+  color: $fg-1;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  transition: 200ms ease;
+  &:hover {
+    color: $error;
+    background: rgba(239, 68, 68, 0.08);
+  }
+}
+.kw-notif {
+  background-color: $bg-1;
+  border: 1px solid $border-soft;
+  border-radius: 10px;
+  padding: 7px 10px;
+}
+.kw-notif-app {
+  color: $fg-1;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.kw-notif-summary {
+  color: $fg-0;
+  font-size: 11px;
+}
+
+/* Battery detail */
+.kw-battery {
+  padding: 0 4px;
+}
+.kw-battery-pct {
+  color: $fg-hi;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+
+  &.charging {
+    color: $success;
+  }
+}
+.kw-battery-health {
+  color: $fg-1;
+  font-size: 10px;
+  font-feature-settings: "tnum";
+}
+.kw-battery-time {
+  color: $fg-1;
+  font-size: 10px;
+  letter-spacing: 0.4px;
 }
