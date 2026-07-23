@@ -10,8 +10,6 @@
 !.bashrc
 !.gitconfig
 !.gtkrc-2.0
-!.gtkrc-2.0.mine
-!.xinitrc
 !README.md
 
 # ── stuff/ (only constants and scripts) ──────────────────────
@@ -24,6 +22,7 @@ stuff/*
 !.config/
 .config/*
 !.config/Thunar
+!.config/bat
 !.config/btop
 !.config/dunst
 !.config/fastfetch
@@ -36,9 +35,9 @@ stuff/*
 !.config/hypr
 !.config/kdeglobals
 !.config/kitty
+!.config/Kvantum
 !.config/mimeapps.list
 !.config/mpv
-!.config/nvim
 !.config/nwg-displays
 !.config/nwg-look
 !.config/packages
@@ -47,7 +46,6 @@ stuff/*
 !.config/qt6ct
 !.config/rofi
 !.config/user-dirs.dirs
-!.config/wofi
 !.config/xsettingsd
 !.config/snappy-switcher
 !.config/eww
@@ -73,10 +71,6 @@ stuff/*
 .config/fish/fish_variables
 .config/fish/generated_completions/
 .config/fish/.nvimlog
-
-# nvim: caches & state
-.config/nvim/.stylua-cache/
-.config/nvim/spell/
 
 # paru caches
 .config/paru/*.cache

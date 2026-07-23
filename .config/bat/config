@@ -1,0 +1,2 @@
+# bat — follow the terminal's ANSI palette instead of a baked-in theme
+--theme="ansi"
