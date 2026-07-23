@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Re-apply the monitor profile whenever Hyprland adds/removes a monitor."""
+import json
 import os
 import socket
 import subprocess
@@ -16,6 +17,37 @@ last_apply_done = 0.0
 
 def log(msg):
     print(f"[{time.strftime('%H:%M:%S')}] {msg}", flush=True)
+
+
+def monitor_set():
+    """Sorted connected-monitor names, or None if hyprctl is unavailable."""
+    try:
+        out = subprocess.run(
+            ["hyprctl", "-j", "monitors"], capture_output=True, text=True, timeout=5
+        ).stdout
+        return ",".join(sorted(m["name"] for m in json.loads(out)))
+    except Exception:
+        return None
+
+
+def settle(quiet=2.0, poll=0.5, timeout=20.0):
+    """Block until the monitor set has been unchanged for `quiet` seconds.
+
+    Docks bring monitors up one at a time; applying (and relaunching the
+    bar) mid-shuffle leaves eww with a wedged invisible surface.
+    """
+    last = monitor_set()
+    stable_since = time.monotonic()
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        time.sleep(poll)
+        cur = monitor_set()
+        if cur != last:
+            last = cur
+            stable_since = time.monotonic()
+        elif time.monotonic() - stable_since >= quiet:
+            return
+    log(f"settle timed out after {timeout}s; applying anyway")
 
 
 def apply():
@@ -54,7 +86,8 @@ def main():
                 if time.monotonic() - last_apply_done < DEBOUNCE_SECONDS:
                     log(f"ignoring {event} (debounce)")
                     continue
-                log(f"event: {event}")
+                log(f"event: {event}; waiting for topology to settle")
+                settle()
                 apply()
 
 
