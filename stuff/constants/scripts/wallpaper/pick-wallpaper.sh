@@ -65,5 +65,6 @@ done
 awww img "$WALL" --transition-type wipe --transition-fps 60 --transition-duration 1
 
 echo "$WALL" > "$HOME/.cache/last-wallpaper"
+ln -sfn "$WALL" "$HOME/.cache/current-wallpaper"   # stable path for hyprlock
 
 notify-send "Wallpaper" "$(basename "$WALL")" -i "$WALL" 2>/dev/null || true

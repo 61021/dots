@@ -3,6 +3,7 @@
 WALL="$(cat "$HOME/.cache/last-wallpaper" 2>/dev/null)"
 [[ -z "$WALL" || ! -f "$WALL" ]] && WALL="$HOME/stuff/constants/wallpapers/car.jpg"
 [[ ! -f "$WALL" ]] && exit 0
+ln -sfn "$WALL" "$HOME/.cache/current-wallpaper"   # stable path for hyprlock
 
 # Wait briefly for awww-daemon socket
 for i in {1..30}; do
