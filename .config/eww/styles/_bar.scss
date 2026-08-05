@@ -1,0 +1,172 @@
+/* Top bar - frame, stats, launcher, clock button. */
+
+.kw-bar {
+  background-color: $bg-0;
+  border-bottom: 1px solid $border-soft;
+  padding: 0 10px;
+  color: $fg-0;
+  font-family: $font-sans;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Right-cluster rhythm: the box gap (2px) is the ONLY space between chips;
+   every chip uses the same 2px 8px padding, no margins. */
+.bar-stat {
+  padding: 0;
+}
+
+.bar-tray {
+  padding: 0 6px;
+}
+
+/* Icons are CSS backgrounds, not `image` widgets: eww's image loads pixbufs
+   at logical size and upscales 2x on HiDPI (blurry); CSS paints at device
+   scale (crisp). Icon file comes in via inline `:style`. */
+.bar-icon {
+  min-width: 16px;
+  min-height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.bar-text {
+  color: $fg-0;
+  font-feature-settings: "tnum";
+  letter-spacing: 0.2px;
+}
+
+.bar-stat-btn {
+  @include chip;
+  &:active {
+    background: rgba($accent, 0.1);
+  }
+}
+
+.bar-bat {
+  &.charging .bar-text {
+    color: $success;
+  }
+  &.low .bar-text {
+    color: $warning;
+  }
+  &.critical .bar-text {
+    color: $error;
+  }
+}
+
+.bar-launcher {
+  @include chip(8px, 4px 10px);
+}
+
+.bar-launcher-text {
+  color: $fg-hi;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1.6px;
+}
+
+/* Workspaces - occupied ones only, each a pill of its windows' app icons;
+   the active one glows accent. */
+.bar-ws {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 9px;
+  padding: 3px;
+}
+
+.bar-ws-btn {
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  min-width: 22px;
+  padding: 2px 8px;
+  transition: all 180ms ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .bar-ws-app {
+    min-width: 16px;
+    min-height: 16px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    opacity: 0.55;
+    transition: opacity 180ms ease;
+  }
+
+  .bar-ws-empty {
+    color: $fg-1;
+    font-weight: 700;
+  }
+
+  &.active {
+    background: rgba($accent, 0.14);
+    border: 1px solid rgba($accent, 0.25);
+    padding: 1px 7px; /* compensate border so the pill doesn't jump */
+
+    .bar-ws-app {
+      opacity: 1;
+    }
+
+    .bar-ws-empty {
+      color: $accent;
+    }
+  }
+
+  &.urgent {
+    background: rgba($error, 0.16);
+    border: 1px solid rgba($error, 0.35);
+    padding: 1px 7px;
+
+    .bar-ws-app {
+      opacity: 1;
+    }
+  }
+}
+
+.bar-clock-btn {
+  @include chip(8px, 2px 10px);
+  &:active {
+    background: rgba($accent, 0.1);
+  }
+}
+
+/* Now playing - a quiet chip at the left of the right cluster; title only,
+   small and muted so it never competes with the stats. */
+.bar-player {
+  @include chip;
+}
+
+.bar-player-icon {
+  min-width: 13px;
+  min-height: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px 13px;
+}
+
+.bar-player-label {
+  color: $fg-1;
+  font-family: $font-mono;
+  font-size: 10px;
+
+  &.paused {
+    color: rgba($fg-1, 0.6);
+  }
+}
+
+.bar-time {
+  color: $fg-hi;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+  letter-spacing: 0.4px;
+}
+
+.bar-date {
+  color: $fg-1;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+}

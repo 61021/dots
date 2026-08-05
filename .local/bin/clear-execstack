@@ -1,0 +1,23 @@
+#!/usr/bin/env python
+import struct, shutil, sys
+PT_GNU_STACK = 0x6474E551
+PF_X = 0x1
+for path in sys.argv[1:]:
+    shutil.copy2(path, path + '.bak')
+    with open(path, 'r+b') as f:
+        hdr = f.read(64)
+        assert hdr[:4] == b'\x7fELF' and hdr[4] == 2 and hdr[5] == 1, 'not ELF64 LE'
+        e_phoff = struct.unpack_from('<Q', hdr, 0x20)[0]
+        e_phentsize = struct.unpack_from('<H', hdr, 0x36)[0]
+        e_phnum = struct.unpack_from('<H', hdr, 0x38)[0]
+        for i in range(e_phnum):
+            off = e_phoff + i * e_phentsize
+            f.seek(off)
+            p_type, p_flags = struct.unpack('<II', f.read(8))
+            if p_type == PT_GNU_STACK:
+                f.seek(off + 4)
+                f.write(struct.pack('<I', p_flags & ~PF_X))
+                print(f'{path}: PT_GNU_STACK flags {p_flags:#x} -> {p_flags & ~PF_X:#x}')
+                break
+        else:
+            sys.exit(f'{path}: no PT_GNU_STACK segment found')

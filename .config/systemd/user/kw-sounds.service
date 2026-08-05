@@ -1,0 +1,10 @@
+[Unit]
+Description=UI event sounds: USB hotplug + network connectivity (kw-sound)
+After=network.target
+
+[Service]
+ExecStart=%h/.local/bin/kw-sound-monitor
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

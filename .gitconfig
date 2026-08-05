@@ -1,0 +1,45 @@
+[user]
+	email = contact@khaledwaleed.com
+	name = Khaled Waleed
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true
+[rebase]
+	autostash = true
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+[diff]
+	algorithm = histogram
+[merge]
+	conflictstyle = zdiff3
+[rerere]
+	enabled = true
+[branch]
+	sort = -committerdate
+[tag]
+	sort = -version:refname
+[column]
+	ui = auto
+[core]
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
+	line-numbers = true
+# Work identity for ISCQI repos — must stay below [user] so it wins.
+[includeIf "hasconfig:remote.*.url:git@github.com:ISCQI/**"]
+	path = ~/.config/git/work.gitconfig
+[includeIf "hasconfig:remote.*.url:git@github.com-work:ISCQI/**"]
+	path = ~/.config/git/work.gitconfig
+[includeIf "hasconfig:remote.*.url:https://github.com/ISCQI/**"]
+	path = ~/.config/git/work.gitconfig

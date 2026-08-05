@@ -1,0 +1,106 @@
+/* Calendar popover - opens from the bar's clock button.
+   Custom yuck grid (see calendar.yuck) - not the GTK calendar widget. */
+
+.kw-calendar {
+  background-color: $bg-0;
+  border: 1px solid $border-soft;
+  border-top: none;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+  color: $fg-0;
+  font-family: $font-sans;
+}
+
+/* --- header: "July 2026" + today subtitle + prev / today / next ---------- */
+
+.kw-cal-month {
+  color: $fg-hi;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.kw-cal-year {
+  color: $fg-1;
+  font-size: 19px;
+  font-weight: 400;
+  font-feature-settings: "tnum";
+}
+
+.kw-cal-sub {
+  color: $fg-1;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.kw-cal-nav {
+  @include chip(9px, 5px 10px);
+  &:active {
+    background: rgba($accent, 0.1);
+  }
+}
+
+.kw-cal-nav-icon {
+  min-width: 13px;
+  min-height: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px 13px;
+}
+
+.kw-cal-today-dot {
+  min-width: 7px;
+  min-height: 7px;
+  border-radius: 4px;
+  background-color: $border-hard;
+  transition: background-color 180ms ease;
+}
+
+.kw-cal-today.away .kw-cal-today-dot {
+  background-color: $accent;
+  box-shadow: 0 0 8px rgba($accent, 0.6);
+}
+
+/* --- weekday header row --------------------------------------------------- */
+
+.kw-cal-dow-lbl {
+  color: $fg-1;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 6px 0 4px;
+
+  &.now {
+    color: $accent;
+  }
+}
+
+/* --- day grid -------------------------------------------------------------- */
+
+.kw-cal-day {
+  color: $fg-0;
+  font-size: 14px;
+  font-feature-settings: "tnum";
+  min-width: 40px;
+  min-height: 34px;
+  margin: 0 1px;
+  border-radius: 11px;
+
+  &.we {
+    color: $fg-1;
+  }
+
+  &.dim {
+    color: $fg-1;
+    opacity: 0.35;
+  }
+
+  &.today {
+    background-color: $accent;
+    color: $bg-0;
+    font-weight: 700;
+    box-shadow: 0 2px 16px rgba($accent, 0.35);
+  }
+}

@@ -1,0 +1,241 @@
+/* Wi-Fi panel - mac-style dropdown from the bar's network chip.
+   Widgets in wifi.yuck; nmcli data/actions in scripts/wifi/.
+   (Backdrop style is the shared .kw-backdrop in _base.scss.) */
+
+.kw-wifi-panel {
+  background-color: $bg-0;
+  border: 1px solid $border-soft;
+  border-top: none;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  padding: 12px 12px 8px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+  color: $fg-0;
+  font-family: $font-sans;
+  min-width: 320px;
+}
+
+/* --- header: title + radio switch ----------------------------------------- */
+
+.wifi-title {
+  color: $fg-hi;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 0 4px 6px;
+}
+
+.wifi-switch {
+  background: $bg-2;
+  border: 1px solid $border-hard;
+  border-radius: 12px;
+  box-shadow: none;
+  min-width: 40px;
+  min-height: 22px;
+  padding: 0 3px;
+  transition: background $t-fast ease, border-color $t-fast ease;
+
+  &.on {
+    background: $accent;
+    border-color: transparent;
+  }
+}
+
+.wifi-switch-knob {
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 8px;
+  background-color: $fg-1;
+  margin-left: 0;
+  transition: margin-left $t-fast ease, background-color $t-fast ease;
+
+  .wifi-switch.on & {
+    margin-left: 18px;
+    background-color: $bg-0;
+  }
+}
+
+.wifi-close {
+  @include chip(8px, 5px);
+}
+
+.wifi-close-icon {
+  min-width: 12px;
+  min-height: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  opacity: 0.7;
+}
+
+/* --- connected card --------------------------------------------------------- */
+
+.wifi-conn {
+  background-color: rgba($accent, 0.07);
+  border: 1px solid rgba($accent, 0.18);
+  border-radius: 12px;
+  padding: 8px 10px;
+  margin: 2px 0 4px;
+}
+
+.wifi-conn-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: $fg-hi;
+}
+
+.wifi-conn-sub {
+  font-size: 11px;
+  color: $accent;
+}
+
+.wifi-conn-x {
+  @include chip(8px, 5px);
+}
+
+.wifi-conn-x-icon {
+  min-width: 12px;
+  min-height: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  opacity: 0.7;
+}
+
+/* --- network rows ------------------------------------------------------------ */
+
+.wifi-sec-h {
+  color: $fg-1;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  padding: 8px 4px 3px;
+}
+
+.wifi-row {
+  @include chip(10px, 7px 9px);
+}
+
+.wifi-row.busy {
+  background: rgba($accent, 0.06);
+}
+
+.wifi-row-icon {
+  min-width: 16px;
+  min-height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+}
+
+.wifi-row-name {
+  font-size: 13px;
+  color: $fg-0;
+}
+
+.wifi-row-status {
+  font-size: 11px;
+  color: $accent;
+}
+
+.wifi-row-lock {
+  min-width: 12px;
+  min-height: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  opacity: 0.55;
+}
+
+.wifi-rescan {
+  @include chip(7px, 3px 6px);
+}
+
+.wifi-rescan-icon {
+  min-width: 12px;
+  min-height: 12px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  opacity: 0.8;
+}
+
+.wifi-empty {
+  color: $fg-1;
+  font-size: 12px;
+  padding: 4px 6px;
+}
+
+.wifi-off-msg {
+  color: $fg-1;
+  font-size: 13px;
+  padding: 18px 0 14px;
+}
+
+/* --- password prompt (standalone modal window kw-wifi-pw) ------------------- */
+
+.wifi-pw {
+  background-color: $bg-1;
+  border: 1px solid $border-hard;
+  border-radius: 14px;
+  padding: 14px;
+  min-width: 300px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
+  font-family: $font-sans;
+}
+
+.wifi-pw-title {
+  font-size: 12px;
+  color: $fg-0;
+}
+
+.wifi-pw-input {
+  background-color: $bg-2;
+  border: 1px solid $border-hard;
+  border-radius: 8px;
+  padding: 4px 10px;
+  color: $fg-hi;
+  caret-color: $accent;
+  font-size: 13px;
+  min-height: 24px;
+
+  &:focus {
+    border-color: rgba($accent, 0.5);
+  }
+}
+
+.wifi-pw-error {
+  color: $error;
+  font-size: 11px;
+}
+
+.wifi-pw-cancel {
+  @include chip(7px, 3px 10px);
+  font-size: 12px;
+  color: $fg-1;
+}
+
+/* --- footer -------------------------------------------------------------------- */
+
+.wifi-sep {
+  background-color: $border-soft;
+  min-height: 1px;
+  margin: 8px 2px 2px;
+}
+
+.wifi-foot-btn {
+  @include chip(10px, 7px 9px);
+}
+
+.wifi-foot-icon {
+  min-width: 13px;
+  min-height: 13px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 13px 13px;
+  opacity: 0.8;
+}
+
+.wifi-foot-label {
+  font-size: 13px;
+  color: $fg-0;
+}

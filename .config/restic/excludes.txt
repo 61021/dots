@@ -1,0 +1,11 @@
+node_modules
+.output
+.nuxt
+.next
+dist
+.cache
+target
+.turbo
+.vite
+*.log
+.DS_Store

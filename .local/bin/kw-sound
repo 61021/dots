@@ -1,0 +1,90 @@
+#!/usr/bin/env bash
+# kw-sound — central UI event-sound player.
+# Resolves freedesktop event names against XDG sound themes (Ocean first,
+# freedesktop fallback) and plays the first match. Every desktop sound on
+# this box goes through here so one switch mutes them all.
+#
+# Usage:
+#   kw-sound [-u] [-v VOL] [-g GAP_MS] <event> [fallback-event...]
+#   kw-sound off | on | status      # global kill switch for all UI sounds
+#   kw-sound list                   # event names available in active themes
+#
+#   -u        skip when the default sink is muted (key-feedback sounds)
+#   -v VOL    linear volume 0..1 (default: $KW_SOUND_VOLUME or 0.85)
+#   -g GAP_MS per-event debounce gap in ms (default 130)
+#
+# An absolute file path can be used in place of an event name.
+
+set -u
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/kw-sound"
+OFF_FLAG="$CACHE_DIR/off"
+THEMES=("${KW_SOUND_THEME:-ocean}" freedesktop)
+SOUND_DIRS=("${XDG_DATA_HOME:-$HOME/.local/share}/sounds" /usr/share/sounds)
+
+case "${1:-}" in
+  off)    mkdir -p "$CACHE_DIR"; touch "$OFF_FLAG"; exit 0 ;;
+  on)     rm -f "$OFF_FLAG"; exit 0 ;;
+  status) [[ -f $OFF_FLAG ]] && echo off || echo on; exit 0 ;;
+  list)
+    for base in "${SOUND_DIRS[@]}"; do
+      for theme in "${THEMES[@]}"; do
+        ls "$base/$theme/stereo" 2>/dev/null
+      done
+    done | grep -v '\.license$' | sed 's/\.[^.]*$//' | sort -u
+    exit 0
+    ;;
+esac
+
+unmuted_only=0
+volume="${KW_SOUND_VOLUME:-0.85}"
+gap=130
+while getopts 'uv:g:' opt; do
+  case "$opt" in
+    u) unmuted_only=1 ;;
+    v) volume="$OPTARG" ;;
+    g) gap="$OPTARG" ;;
+    *) exit 2 ;;
+  esac
+done
+shift $((OPTIND - 1))
+(( $# )) || { echo "usage: kw-sound [-u] [-v vol] [-g gap_ms] <event> [fallback...]" >&2; exit 2; }
+
+[[ -f $OFF_FLAG ]] && exit 0
+
+if (( unmuted_only )) && wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED; then
+  exit 0
+fi
+
+# Per-event debounce so key-repeat / notification bursts don't machine-gun.
+mkdir -p "$CACHE_DIR"
+stamp="$CACHE_DIR/${1//\//_}.stamp"
+now=$(date +%s%3N)
+last=$(cat "$stamp" 2>/dev/null || echo 0)
+(( now - last < gap )) && exit 0
+echo "$now" >"$stamp"
+
+file=""
+for event in "$@"; do
+  if [[ $event == /* ]]; then
+    [[ -f $event ]] && { file="$event"; break; }
+    continue
+  fi
+  for base in "${SOUND_DIRS[@]}"; do
+    for theme in "${THEMES[@]}"; do
+      for ext in oga ogg wav; do
+        f="$base/$theme/stereo/$event.$ext"
+        [[ -f $f ]] && { file="$f"; break 3; }
+      done
+    done
+  done
+  [[ -n $file ]] && break
+done
+[[ -z $file ]] && exit 0   # unknown event: stay silent rather than error
+
+if command -v pw-play >/dev/null; then
+  setsid -f pw-play --volume "$volume" "$file" >/dev/null 2>&1
+else
+  setsid -f paplay "$file" >/dev/null 2>&1
+fi
+exit 0

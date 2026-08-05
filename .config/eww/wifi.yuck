@@ -1,0 +1,118 @@
+;; -----------------------------------------------------------------------------
+;; Wi-Fi panel — mac-style dropdown opened by the bar's network chip (kw-wifi.sh).
+;; Data pushed into `kw-wifi` by scripts/wifi/wifi-updater.sh while the window
+;; is open. Password entry lives OUTSIDE the row loops so 2s list refreshes
+;; can't rebuild the input mid-typing (updater also pauses while prompting).
+;; -----------------------------------------------------------------------------
+
+(defvar kw-wifi '{"radio":true,"conn":{"ssid":"","signal":0,"icon":"wifi-none","sec":false},"known":[],"others":[]}')
+(defvar kw-wifi-prompt "")
+(defvar kw-wifi-error "")
+(defvar kw-wifi-busy "")
+
+(defwidget wifi-row [net]
+  (button :class "wifi-row${kw-wifi-busy == net.ssid ? " busy" : ""}"
+          :tooltip "${net.ssid} — signal ${net.signal}%${net.saved ? " · right-click to forget" : ""}"
+          :onclick "~/.config/eww/scripts/wifi/wifi-action.sh row-click '${net.ssid}' ${net.saved} ${net.sec} ${net.eap} &"
+          :onrightclick "${net.saved ? "~/.config/eww/scripts/wifi/wifi-action.sh forget '${net.ssid}' &" : "true"}"
+    (box :orientation "h" :space-evenly false :spacing 8
+      (box :class "wifi-row-icon" :valign "center"
+           :style "background-image: url('${EWW_CONFIG_DIR}/icons/${net.icon}${kw-wifi-busy == net.ssid ? "-active" : ""}.svg');")
+      (label :class "wifi-row-name" :halign "start" :hexpand true :limit-width 26 :text {net.ssid})
+      (label :class "wifi-row-status" :visible {kw-wifi-busy == net.ssid} :text "connecting…")
+      (box :class "wifi-row-lock" :valign "center" :visible {net.sec}
+           :style "background-image: url('${EWW_CONFIG_DIR}/icons/lock-key.svg');"))))
+
+(defwidget wifi-connected []
+  (box :class "wifi-conn" :visible {kw-wifi.conn.ssid != ""} :orientation "h" :space-evenly false :spacing 9
+    (box :class "wifi-row-icon" :valign "center"
+         :style "background-image: url('${EWW_CONFIG_DIR}/icons/${kw-wifi.conn.icon}-active.svg');")
+    (box :orientation "v" :space-evenly false :halign "start" :hexpand true :valign "center"
+      (label :class "wifi-conn-name" :halign "start" :limit-width 24 :text {kw-wifi.conn.ssid})
+      (label :class "wifi-conn-sub" :halign "start" :text "Connected"))
+    (button :class "wifi-conn-x" :tooltip "Disconnect" :valign "center"
+            :onclick "~/.config/eww/scripts/wifi/wifi-action.sh disconnect '${kw-wifi.conn.ssid}' &"
+      (box :class "wifi-conn-x-icon" :valign "center"
+           :style "background-image: url('${EWW_CONFIG_DIR}/icons/x.svg');"))))
+
+(defwidget wifi-pw []
+  (box :class "wifi-pw" :orientation "v" :space-evenly false :spacing 7
+    (label :class "wifi-pw-title" :halign "start" :wrap true
+           :text "Password for “${kw-wifi-prompt}” — Enter to join")
+    (input :class "wifi-pw-input" :password true
+           :onaccept "~/.config/eww/scripts/wifi/wifi-action.sh connect-pass '${kw-wifi-prompt}' '{}' &")
+    (box :orientation "h" :space-evenly false :spacing 8
+      (label :class "wifi-pw-error" :halign "start" :hexpand true :text kw-wifi-error)
+      (button :class "wifi-pw-cancel" :halign "end"
+              :onclick "eww update kw-wifi-prompt='' kw-wifi-error=''; eww close kw-wifi-pw"
+        (label :text "Cancel")))))
+
+(defwidget kw-wifi-panel []
+  (box :class "kw-wifi-panel" :orientation "v" :space-evenly false :spacing 2
+    (box :class "wifi-head" :orientation "h" :space-evenly false :spacing 8
+      (label :class "wifi-title" :halign "start" :hexpand true :text "Wi-Fi")
+      (button :class "wifi-switch${kw-wifi.radio ? " on" : ""}" :valign "center"
+              :tooltip "Turn Wi-Fi ${kw-wifi.radio ? "off" : "on"}"
+              :onclick "~/.config/eww/scripts/wifi/wifi-action.sh toggle-radio &"
+        (box :class "wifi-switch-knob" :halign "start" :valign "center"))
+      ;; Guaranteed close: this handler is spawned by the daemon that owns the
+      ;; window, so `eww close` here always reaches the right daemon.
+      (button :class "wifi-close" :tooltip "Close" :valign "center"
+              :onclick "eww close kw-wifi-bg; eww close kw-wifi"
+        (box :class "wifi-close-icon" :valign "center"
+             :style "background-image: url('${EWW_CONFIG_DIR}/icons/x.svg');")))
+    (wifi-connected)
+    (label :class "wifi-off-msg" :visible {!kw-wifi.radio} :halign "center" :text "Wi-Fi is off")
+    (box :visible {kw-wifi.radio} :orientation "v" :space-evenly false :spacing 2
+      (label :class "wifi-sec-h" :visible {arraylength(kw-wifi.known) > 0} :halign "start" :show-truncated false :text "KNOWN NETWORKS")
+      (box :orientation "v" :space-evenly false
+        (for net in {kw-wifi.known}
+          (wifi-row :net net)))
+      (box :class "wifi-oth-head" :orientation "h" :space-evenly false
+        (label :class "wifi-sec-h" :halign "start" :hexpand true :show-truncated false :text "OTHER NETWORKS")
+        (button :class "wifi-rescan" :tooltip "Scan again" :valign "center"
+                :onclick "~/.config/eww/scripts/wifi/wifi-action.sh rescan &"
+          (box :class "wifi-rescan-icon" :valign "center"
+               :style "background-image: url('${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg');")))
+      (box :orientation "v" :space-evenly false
+        (for net in {kw-wifi.others}
+          (wifi-row :net net)))
+      (label :class "wifi-empty" :visible {arraylength(kw-wifi.others) == 0} :halign "start" :text "Scanning…"))
+    (box :class "wifi-sep")
+    (button :class "wifi-foot-btn" :onclick "~/.config/eww/scripts/wifi/wifi-action.sh settings &"
+      (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
+        (box :class "wifi-foot-icon" :valign "center"
+             :style "background-image: url('${EWW_CONFIG_DIR}/icons/gear-six.svg');")
+        (label :class "wifi-foot-label" :text "Wi-Fi Settings…")))))
+
+(defwindow kw-wifi
+  :stacking "fg"
+  :focusable false
+  :namespace "kw-wifi"
+  :geometry (geometry :x "0" :y "0" :anchor "top right")
+  (kw-wifi-panel))
+
+;; Password dialog — the ONLY focusable wifi window. On this eww build
+;; `focusable true` = an EXCLUSIVE keyboard grab (legacy layer-shell API), and
+;; Hyprland starves every other surface of input while such a layer exists —
+;; the main panel must therefore NEVER be focusable. A modal grab is only
+;; acceptable here, for the lifetime of the password prompt.
+(defwindow kw-wifi-pw
+  :stacking "fg"
+  :focusable true
+  :namespace "kw-wifi-pw"
+  :geometry (geometry :x "0" :y "0" :anchor "center")
+  (wifi-pw))
+
+;; Invisible full-surface backdrop opened beneath the panel (layerrule order
+;; puts it below kw-wifi): clicking anywhere outside the panel dismisses it.
+;; Top-anchored so it starts BELOW the bar's exclusive zone — it must never
+;; overlap the bar or it eats clicks aimed at the chips.
+(defwindow kw-wifi-bg
+  :stacking "fg"
+  :focusable false
+  :namespace "kw-wifi-bg"
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "100%" :anchor "top center")
+  (eventbox :class "kw-backdrop"
+            :onclick "~/.config/eww/scripts/kw-wifi.sh &"
+    (box :hexpand true :vexpand true)))

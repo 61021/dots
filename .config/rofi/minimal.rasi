@@ -1,0 +1,166 @@
+/*****----- Configuration -----*****/
+configuration {
+    modi:                       "drun";
+    show-icons:                 false;
+    display-drun:               "Apps";
+    drun-display-format:        "{name}";
+    sidebar-mode:               false;
+}
+
+/*****----- Palette (shared) -----*****/
+@import "~/stuff/constants/colors/rofi.rasi"
+
+* {
+    font: "IBM Plex Sans 11";
+}
+
+/*****----- Window -----*****/
+window {
+    transparency:        "real";
+    location:            center;
+    anchor:              center;
+    width:               620px;
+    border-radius:       12px;
+    border:              1px solid;
+    border-color:        @border;
+    background-color:    rgba(0, 0, 0, 0.90);
+    cursor:              "default";
+    padding:             0px;
+}
+
+/*****----- Layout -----*****/
+mainbox {
+    enabled:             true;
+    spacing:             0px;
+    padding:             14px;
+    background-color:    transparent;
+    orientation:         vertical;
+    children:            [ "inputbar", "message", "listview" ];
+}
+
+/*****----- Search bar -----*****/
+inputbar {
+    enabled:             true;
+    spacing:             10px;
+    padding:             12px 0 12px 0;
+    margin:              0 0 12px 0;
+    border-radius:       8px;
+    background-color:    transparent;
+    text-color:          @fg0;
+    children:            [ "textbox-prompt-colon", "entry" ];
+}
+textbox-prompt-colon {
+    enabled:             true;
+    expand:              false;
+    str:                 "";
+    font:                "JetBrainsMono Nerd Font 12";
+    text-color:          @fg1;
+    background-color:    transparent;
+    vertical-align:      0.5;
+}
+entry {
+    enabled:             true;
+    expand:              true;
+    padding:             2px 0;
+    background-color:    transparent;
+    text-color:          @fg0;
+    cursor:              text;
+    placeholder:         "What shall we open, master?";
+    placeholder-color:   @fg1;
+    vertical-align:      0.5;
+}
+
+/*****----- Listview -----*****/
+listview {
+    enabled:             true;
+    columns:             1;
+    lines:               5;
+    cycle:               true;
+    dynamic:             true;
+    scrollbar:           false;
+    layout:              vertical;
+    fixed-height:        true;
+    fixed-columns:       true;
+    spacing:             2px;
+    background-color:    transparent;
+    text-color:          @fg0;
+    cursor:              "default";
+}
+
+/*****----- Rows -----*****/
+element {
+    enabled:             true;
+    spacing:             12px;
+    padding:             10px 12px;
+    border-radius:       8px;
+    background-color:    transparent;
+    text-color:          @fg0;
+    cursor:              pointer;
+}
+element normal.normal,
+element alternate.normal {
+    background-color:    transparent;
+    text-color:          @fg0;
+}
+element selected.normal,
+element selected.active,
+element selected.urgent {
+    background-color:    @bg-sel;
+    text-color:          @fg0;
+    border:              0;
+}
+element-icon {
+    background-color:    transparent;
+    text-color:          inherit;
+    size:                22px;
+    cursor:              inherit;
+    vertical-align:      0.5;
+}
+element-text {
+    background-color:    transparent;
+    text-color:          inherit;
+    cursor:              inherit;
+    vertical-align:      0.5;
+    horizontal-align:    0.0;
+}
+
+/*****----- Mode switcher (chips) -----*****/
+mode-switcher {
+    enabled:             true;
+    spacing:             6px;
+    margin:              12px 0 0 0;
+    background-color:    transparent;
+    text-color:          @fg1;
+}
+button {
+    padding:             6px 14px;
+    border-radius:       999px;
+    background-color:    @bg1;
+    text-color:          @fg1;
+    cursor:              pointer;
+    horizontal-align:    0.5;
+}
+button selected {
+    background-color:    @bg2;
+    text-color:          @fg0;
+}
+
+/*****----- Messages -----*****/
+message {
+    background-color:    transparent;
+    margin:              0 0 8px 0;
+}
+textbox {
+    padding:             8px 12px;
+    border-radius:       10px;
+    background-color:    @bg1;
+    text-color:          @fg1;
+    vertical-align:      0.5;
+    horizontal-align:    0.0;
+}
+error-message {
+    padding:             12px;
+    border-radius:       10px;
+    background-color:    @bg1;
+    text-color:          @fg0;
+}

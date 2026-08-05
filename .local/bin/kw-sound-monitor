@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# kw-sound-monitor — background watchers that turn system events into sounds
+# (runs as the kw-sounds.service user unit).
+#   * USB device plug/unplug            -> device-added / device-removed
+#   * NetworkManager connectivity gain/loss -> network-connectivity-*
+# Charger plug/unplug is NOT here — charge-sound.sh (hyprland exec-once)
+# already owns that.
+
+KW="$HOME/.local/bin/kw-sound"
+
+usb_watch() {
+  local action=""
+  # --property prints key=value blocks per event; ACTION precedes DEVTYPE.
+  # A composite device enumerates several interfaces but only one usb_device,
+  # and the 700ms debounce in kw-sound absorbs hubs bringing up children.
+  stdbuf -oL udevadm monitor --udev --subsystem-match=usb --property 2>/dev/null |
+    while IFS= read -r line; do
+      case "$line" in
+        ACTION=*) action="${line#ACTION=}" ;;
+        DEVTYPE=usb_device)
+          case "$action" in
+            add)    "$KW" -g 700 device-added ;;
+            remove) "$KW" -g 700 device-removed ;;
+          esac
+          ;;
+      esac
+    done
+}
+
+net_watch() {
+  stdbuf -oL nmcli monitor 2>/dev/null |
+    while IFS= read -r line; do
+      case "$line" in
+        *"Connectivity is now 'full'"*)
+          "$KW" -g 3000 network-connectivity-established ;;
+        *"Connectivity is now 'none'"* | *"Connectivity is now 'limited'"*)
+          "$KW" -g 3000 network-connectivity-lost ;;
+      esac
+    done
+}
+
+# Each watcher restarts if its monitor process dies (e.g. NM restart).
+while :; do usb_watch; sleep 3; done &
+while :; do net_watch; sleep 3; done &
+wait

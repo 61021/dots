@@ -1,0 +1,90 @@
+# ─────────────────────────────────────────────────────────────
+# Dotfiles repo: ignore everything in $HOME by default,
+# then explicitly allow-list what should be tracked.
+# ─────────────────────────────────────────────────────────────
+/*
+!.gitignore
+
+# ── Top-level dotfiles ───────────────────────────────────────
+!.bash_profile
+!.bashrc
+!.gitconfig
+!.gitleaksignore
+!.gtkrc-2.0
+!README.md
+
+# ── stuff/ (only constants and scripts) ──────────────────────
+!stuff/
+stuff/*
+!stuff/constants
+!stuff/scripts
+
+# ── .config/ ─────────────────────────────────────────────────
+!.config/
+.config/*
+!.config/Thunar
+!.config/bat
+!.config/btop
+!.config/dunst
+!.config/fastfetch
+!.config/fish
+!.config/flameshot
+!.config/fontconfig
+!.config/git-hooks
+!.config/gtk-3.0
+!.config/gtk-4.0
+!.config/hypr
+!.config/kdeglobals
+!.config/kitty
+!.config/Kvantum
+!.config/mimeapps.list
+!.config/mpv
+!.config/nwg-displays
+!.config/nwg-look
+!.config/packages
+!.config/paru
+!.config/qt5ct
+!.config/qt6ct
+!.config/rofi
+!.config/user-dirs.dirs
+!.config/xsettingsd
+!.config/snappy-switcher
+!.config/eww
+!.config/feh
+!.config/systemd
+.config/systemd/user/snappy-switcher.service
+!.config/restic
+.config/restic/*
+!.config/restic/excludes.txt
+
+# ── .local/bin (named scripts ONLY — never binaries or shims) ─
+!.local
+.local/*
+!.local/bin
+.local/bin/*
+!.local/bin/kw-*
+!.local/bin/clear-execstack
+
+# ─────────────────────────────────────────────────────────────
+# Defensive ignores: drop noise inside allow-listed folders
+# ─────────────────────────────────────────────────────────────
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/*.bak
+**/*.swp
+**/*.swo
+**/*~
+
+# python: bytecode caches
+**/__pycache__/
+**/*.pyc
+
+# fish: per-machine state
+.config/fish/fish_history
+.config/fish/fish_variables
+.config/fish/generated_completions/
+.config/fish/.nvimlog
+
+# paru caches
+.config/paru/*.cache

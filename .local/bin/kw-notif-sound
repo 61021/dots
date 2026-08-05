@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# kw-notif-sound — dunst hook (see the [kw-sound] rule in dunstrc).
+# Picks an event sound per notification. Dunst passes appname/summary/body/
+# icon/urgency as $1..$5 and also exports DUNST_* env vars.
+
+app="${DUNST_APP_NAME:-${1:-}}"
+summary="${DUNST_SUMMARY:-${2:-}}"
+urgency="${DUNST_URGENCY:-${5:-NORMAL}}"
+KW="$HOME/.local/bin/kw-sound"
+
+# hyprshot's "--notify" binds: play the shutter instead of the message blip
+case "$summary" in
+  "Screenshot saved"*) exec "$KW" camera-shutter ;;
+esac
+
+# low-bat-notification.sh sends with -a battery
+case "$app" in
+  battery)
+    case "$urgency" in
+      CRITICAL) exec "$KW" -g 500 battery-caution dialog-warning ;;
+      *)        exec "$KW" -g 500 battery-low message ;;
+    esac
+    ;;
+esac
+
+case "$urgency" in
+  CRITICAL) exec "$KW" -g 500 dialog-warning ;;
+  LOW)      exec "$KW" -g 300 -v 0.5 message ;;
+  *)        exec "$KW" -g 300 message ;;
+esac

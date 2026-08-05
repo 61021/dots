@@ -1,0 +1,27 @@
+/*****----- Clipboard history picker — minimal.rasi plus image thumbnails -----*****/
+@theme "~/.config/rofi/minimal.rasi"
+
+configuration {
+    show-icons:          true;
+}
+
+window {
+    width:               720px;
+}
+
+listview {
+    lines:               6;
+    fixed-height:        false;
+}
+
+element-icon {
+    size:                64px;
+}
+
+entry {
+    placeholder:         "Search clipboard…";
+}
+
+textbox-prompt-colon {
+    str:                 "";
+}

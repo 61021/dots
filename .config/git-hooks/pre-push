@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# pre-push: scan outgoing commits for secrets with gitleaks.
+# The dotfiles repo is public — refuse to push anything that looks like a leak.
+set -u
+
+if ! command -v gitleaks >/dev/null 2>&1; then
+    echo "pre-push: gitleaks not installed (paru -S gitleaks) — skipping secret scan" >&2
+    exit 0
+fi
+
+zero=0000000000000000000000000000000000000000
+status=0
+
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+    # deleting a remote ref — nothing outgoing to scan
+    [ "$local_sha" = "$zero" ] && continue
+
+    if [ "$remote_sha" = "$zero" ]; then
+        range="$local_sha" # new ref: scan its full history
+    else
+        range="$remote_sha..$local_sha"
+    fi
+
+    if ! gitleaks git --log-opts="$range" --redact --no-banner "$HOME"; then
+        status=1
+    fi
+done
+
+if [ "$status" -ne 0 ]; then
+    echo "" >&2
+    echo "pre-push: gitleaks found potential secrets in outgoing commits — push aborted." >&2
+    echo "pre-push: bypass (only if certain) with: dots push --no-verify" >&2
+fi
+
+exit "$status"
