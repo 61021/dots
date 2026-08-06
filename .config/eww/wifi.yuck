@@ -13,8 +13,8 @@
 (defwidget wifi-row [net]
   (button :class "wifi-row${kw-wifi-busy == net.ssid ? " busy" : ""}"
           :tooltip "${net.ssid} — signal ${net.signal}%${net.saved ? " · right-click to forget" : ""}"
-          :onclick "~/.config/eww/scripts/wifi/wifi-action.sh row-click '${net.ssid}' ${net.saved} ${net.sec} ${net.eap} &"
-          :onrightclick "${net.saved ? "~/.config/eww/scripts/wifi/wifi-action.sh forget '${net.ssid}' &" : "true"}"
+          :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh row-click '${net.ssid}' ${net.saved} ${net.sec} ${net.eap} &"
+          :onrightclick "${net.saved ? "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh forget '${net.ssid}' &" : "true"}"
     (box :orientation "h" :space-evenly false :spacing 8
       (box :class "wifi-row-icon" :valign "center"
            :style "background-image: url('${EWW_CONFIG_DIR}/icons/${net.icon}${kw-wifi-busy == net.ssid ? "-active" : ""}.svg');")
@@ -31,7 +31,7 @@
       (label :class "wifi-conn-name" :halign "start" :limit-width 24 :text {kw-wifi.conn.ssid})
       (label :class "wifi-conn-sub" :halign "start" :text "Connected"))
     (button :class "wifi-conn-x" :tooltip "Disconnect" :valign "center"
-            :onclick "~/.config/eww/scripts/wifi/wifi-action.sh disconnect '${kw-wifi.conn.ssid}' &"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh disconnect '${kw-wifi.conn.ssid}' &"
       (box :class "wifi-conn-x-icon" :valign "center"
            :style "background-image: url('${EWW_CONFIG_DIR}/icons/x.svg');"))))
 
@@ -44,7 +44,7 @@
     (box :orientation "h" :space-evenly false :spacing 8
       (label :class "wifi-pw-error" :halign "start" :hexpand true :text kw-wifi-error)
       (button :class "wifi-pw-cancel" :halign "end"
-              :onclick "eww update kw-wifi-prompt='' kw-wifi-error=''; eww close kw-wifi-pw"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & eww update kw-wifi-prompt='' kw-wifi-error=''; eww close kw-wifi-pw"
         (label :text "Cancel")))))
 
 (defwidget kw-wifi-panel []
@@ -53,12 +53,12 @@
       (label :class "wifi-title" :halign "start" :hexpand true :text "Wi-Fi")
       (button :class "wifi-switch${kw-wifi.radio ? " on" : ""}" :valign "center"
               :tooltip "Turn Wi-Fi ${kw-wifi.radio ? "off" : "on"}"
-              :onclick "~/.config/eww/scripts/wifi/wifi-action.sh toggle-radio &"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh toggle-radio &"
         (box :class "wifi-switch-knob" :halign "start" :valign "center"))
       ;; Guaranteed close: this handler is spawned by the daemon that owns the
       ;; window, so `eww close` here always reaches the right daemon.
       (button :class "wifi-close" :tooltip "Close" :valign "center"
-              :onclick "eww close kw-wifi-bg; eww close kw-wifi"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & eww close kw-wifi-bg; eww close kw-wifi"
         (box :class "wifi-close-icon" :valign "center"
              :style "background-image: url('${EWW_CONFIG_DIR}/icons/x.svg');")))
     (wifi-connected)
@@ -71,7 +71,7 @@
       (box :class "wifi-oth-head" :orientation "h" :space-evenly false
         (label :class "wifi-sec-h" :halign "start" :hexpand true :show-truncated false :text "OTHER NETWORKS")
         (button :class "wifi-rescan" :tooltip "Scan again" :valign "center"
-                :onclick "~/.config/eww/scripts/wifi/wifi-action.sh rescan &"
+                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh rescan &"
           (box :class "wifi-rescan-icon" :valign "center"
                :style "background-image: url('${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg');")))
       (box :orientation "v" :space-evenly false
@@ -79,7 +79,7 @@
           (wifi-row :net net)))
       (label :class "wifi-empty" :visible {arraylength(kw-wifi.others) == 0} :halign "start" :text "Scanning…"))
     (box :class "wifi-sep")
-    (button :class "wifi-foot-btn" :onclick "~/.config/eww/scripts/wifi/wifi-action.sh settings &"
+    (button :class "wifi-foot-btn" :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/wifi/wifi-action.sh settings &"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
         (box :class "wifi-foot-icon" :valign "center"
              :style "background-image: url('${EWW_CONFIG_DIR}/icons/gear-six.svg');")
@@ -114,5 +114,5 @@
   :namespace "kw-wifi-bg"
   :geometry (geometry :x "0" :y "0" :width "100%" :height "100%" :anchor "top center")
   (eventbox :class "kw-backdrop"
-            :onclick "~/.config/eww/scripts/kw-wifi.sh &"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh &"
     (box :hexpand true :vexpand true)))

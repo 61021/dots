@@ -36,15 +36,15 @@
 (defwidget bar-left [monitor]
   (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
     (button :class "bar-launcher"
-            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh &"
-            :onrightclick "hyprlock --grace 0 &"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh &"
+            :onrightclick "~/.local/bin/kw-lock --grace 0 &"
       (label :class "bar-launcher-text" :text "KW" :show-truncated false))
     (bar-workspaces :monitor monitor)))
 
 (defwidget bar-center []
   (box :orientation "h" :halign "center" :valign "center"
     (button :class "bar-clock-btn"
-            :onclick "~/.config/eww/scripts/kw-calendar.sh &"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-calendar.sh &"
       (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
         (label :class "bar-time" :text bar-time)
         (label :class "bar-date" :text bar-date)))))
@@ -54,24 +54,24 @@
     (button :class "bar-player"
             :visible {bar-player.status != ""}
             :tooltip {bar-player.label}
-            :onclick "playerctl play-pause"
-            :onrightclick "playerctl next"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
+            :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next"
       (box :orientation "h" :space-evenly false :spacing 5 :valign "center"
         (box :class "bar-player-icon" :valign "center"
              :style "background-image: url('${EWW_CONFIG_DIR}/icons/music-notes${bar-player.status == "Playing" ? "-active" : ""}.svg');")
         (label :class "bar-player-label${bar-player.status == "Playing" ? "" : " paused"}"
                :text {bar-player.display} :show-truncated false)))
     (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)
-    (eventbox :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -)"
+    (eventbox :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
       (button :class "bar-stat-btn"
               :tooltip "Toggle mute (scroll to change volume)"
-              :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-              :onrightclick "pavucontrol &"
+              :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
+              :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
         (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
     (button :class "bar-stat-btn"
             :tooltip {bar-net.label}
             :timeout "2s"
-            :onclick "~/.config/eww/scripts/kw-wifi.sh"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
       (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
     (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
       (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))

@@ -1,26 +1,106 @@
 #!/usr/bin/env bash
-# kw-sound — central UI event-sound player.
-# Resolves freedesktop event names against XDG sound themes (Ocean first,
-# freedesktop fallback) and plays the first match. Every desktop sound on
-# this box goes through here so one switch mutes them all.
+# kw-sound — central UI event-sound player, backed by the sound server's
+# sample cache. Resolves freedesktop event names against XDG sound themes
+# (Ocean first, freedesktop fallback). Every desktop sound on this box goes
+# through here so one switch mutes them all.
+#
+# v1 spawned pw-play per event: process start + PipeWire connect + ogg decode
+# on every click landed sounds 100-300ms late under load. Now each event is
+# rendered once (volume baked in — play-sample has no volume argument) and
+# uploaded into the sample cache; a play is one fire-and-forget IPC that
+# starts server-side in ~10ms. Misses (first play, PipeWire restart) self-heal
+# in the background; kw-sounds.service preloads everything at login.
 #
 # Usage:
 #   kw-sound [-u] [-v VOL] [-g GAP_MS] <event> [fallback-event...]
 #   kw-sound off | on | status      # global kill switch for all UI sounds
 #   kw-sound list                   # event names available in active themes
+#   kw-sound preload                # render + upload every wired event
 #
-#   -u        skip when the default sink is muted (key-feedback sounds)
+#   -u        legacy "skip when sink muted" flag — accepted as a no-op
+#             (a muted default sink silences cached samples anyway)
 #   -v VOL    linear volume 0..1 (default: $KW_SOUND_VOLUME or 0.85)
 #   -g GAP_MS per-event debounce gap in ms (default 130)
 #
 # An absolute file path can be used in place of an event name.
 
 set -u
+export LC_ALL=C
 
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/kw-sound"
 OFF_FLAG="$CACHE_DIR/off"
+RENDER_DIR="$CACHE_DIR/render"
 THEMES=("${KW_SOUND_THEME:-ocean}" freedesktop)
 SOUND_DIRS=("${XDG_DATA_HOME:-$HOME/.local/share}/sounds" /usr/share/sounds)
+
+# Every event@volume pair wired on this box — preloaded at service start so
+# the first click after boot is as instant as the hundredth. "vol event [fallback...]"
+PRELOAD=(
+  '0.60 button-pressed'                      # eww / bar / panel button clicks
+  '0.45 button-pressed-modifier'             # workspace switches
+  '0.55 completion-rotation'                 # panel / launcher / picker opens
+  '0.45 message-contact-in'                  # window opened
+  '0.45 message-contact-out'                 # window closed
+  '0.85 message-attention window-attention'  # urgent window
+  '0.35 message'                             # clipboard copy blip
+  '0.50 message'                             # dunst LOW urgency
+  '0.85 message'                             # dunst normal urgency
+  '0.85 dialog-warning'                      # dunst CRITICAL
+  '0.70 dialog-warning-auth'                 # power button armed
+  '0.85 desktop-logout'                      # reboot/poweroff confirmed
+  '0.75 outcome-success'                     # wifi connected
+  '0.75 outcome-failure'                     # wifi connect failed
+  '0.70 trash-empty'                         # cliphist wipe
+  '0.85 audio-volume-change'                 # volume keys / bar scroll
+  '0.85 camera-shutter'                      # screenshots
+  '0.85 desktop-login'                       # session start chime
+  '0.85 service-login'                       # unlock
+  '0.85 service-logout'                      # lock
+  '0.85 device-added'                        # USB / monitor plugged
+  '0.85 device-removed'
+  '0.85 network-connectivity-established'
+  '0.85 network-connectivity-lost'
+  '0.85 battery-caution dialog-warning'      # dunst battery rules
+  '0.85 battery-low message'
+  '0.85 power-plug'                          # charge-sound.sh routes here
+  '0.85 power-unplug'
+)
+
+resolve() { # <event|path>... -> prints first matching file
+  local event base theme ext f
+  for event in "$@"; do
+    if [[ $event == /* ]]; then
+      [[ -f $event ]] && { printf '%s\n' "$event"; return 0; }
+      continue
+    fi
+    for base in "${SOUND_DIRS[@]}"; do
+      for theme in "${THEMES[@]}"; do
+        for ext in oga ogg wav; do
+          f="$base/$theme/stereo/$event.$ext"
+          [[ -f $f ]] && { printf '%s\n' "$f"; return 0; }
+        done
+      done
+    done
+  done
+  return 1
+}
+
+# Render the volume into a wav and upload it under a stable name. Renders
+# persist across boots in $RENDER_DIR; uploads live until the server restarts.
+ensure_sample() { # <name> <vol> <event|path>...
+  local name="$1" vol="$2" file wav tmp
+  shift 2
+  file="$(resolve "$@")" || return 1
+  wav="$RENDER_DIR/${name#kw.}.wav"
+  if [[ ! -f $wav ]]; then
+    mkdir -p "$RENDER_DIR"
+    tmp="$wav.$$"
+    # -f wav: the tmp suffix hides the extension ffmpeg would sniff
+    ffmpeg -v error -y -i "$file" -af "volume=$vol" -ar 48000 -ac 2 -c:a pcm_s16le -f wav "$tmp" 2>/dev/null \
+      && mv -f "$tmp" "$wav" || { rm -f "$tmp"; return 1; }
+  fi
+  pactl upload-sample "$wav" "$name" 2>/dev/null
+}
 
 case "${1:-}" in
   off)    mkdir -p "$CACHE_DIR"; touch "$OFF_FLAG"; exit 0 ;;
@@ -34,14 +114,22 @@ case "${1:-}" in
     done | grep -v '\.license$' | sed 's/\.[^.]*$//' | sort -u
     exit 0
     ;;
+  preload)
+    for _ in $(seq 1 15); do pactl info >/dev/null 2>&1 && break; sleep 1; done
+    for entry in "${PRELOAD[@]}"; do
+      set -- $entry # word-splitting intended
+      vol=$(printf '%.2f' "$1"); shift
+      ensure_sample "kw.$1@$vol" "$vol" "$@"
+    done
+    exit 0
+    ;;
 esac
 
-unmuted_only=0
 volume="${KW_SOUND_VOLUME:-0.85}"
 gap=130
 while getopts 'uv:g:' opt; do
   case "$opt" in
-    u) unmuted_only=1 ;;
+    u) : ;; # no-op, see header
     v) volume="$OPTARG" ;;
     g) gap="$OPTARG" ;;
     *) exit 2 ;;
@@ -52,39 +140,28 @@ shift $((OPTIND - 1))
 
 [[ -f $OFF_FLAG ]] && exit 0
 
-if (( unmuted_only )) && wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null | grep -q MUTED; then
-  exit 0
-fi
-
 # Per-event debounce so key-repeat / notification bursts don't machine-gun.
 mkdir -p "$CACHE_DIR"
 stamp="$CACHE_DIR/${1//\//_}.stamp"
-now=$(date +%s%3N)
+now=${EPOCHREALTIME/./}
+now=${now%???} # µs -> ms
 last=$(cat "$stamp" 2>/dev/null || echo 0)
 (( now - last < gap )) && exit 0
 echo "$now" >"$stamp"
 
-file=""
-for event in "$@"; do
-  if [[ $event == /* ]]; then
-    [[ -f $event ]] && { file="$event"; break; }
-    continue
-  fi
-  for base in "${SOUND_DIRS[@]}"; do
-    for theme in "${THEMES[@]}"; do
-      for ext in oga ogg wav; do
-        f="$base/$theme/stereo/$event.$ext"
-        [[ -f $f ]] && { file="$f"; break 3; }
-      done
-    done
-  done
-  [[ -n $file ]] && break
-done
-[[ -z $file ]] && exit 0   # unknown event: stay silent rather than error
+vol2=$(printf '%.2f' "$volume")
+name="kw.${1//\//_}@$vol2"
 
-if command -v pw-play >/dev/null; then
+if command -v pactl >/dev/null; then
+  # Fire-and-forget: play-sample blocks for the sample's duration, and the
+  # miss path renders+uploads — none of that may delay the caller (eww kills
+  # onclick handlers after 200ms).
+  (
+    pactl play-sample "$name" 2>/dev/null \
+      || { ensure_sample "$name" "$vol2" "$@" && pactl play-sample "$name"; }
+  ) >/dev/null 2>&1 &
+elif command -v pw-play >/dev/null; then
+  file="$(resolve "$@")" || exit 0
   setsid -f pw-play --volume "$volume" "$file" >/dev/null 2>&1
-else
-  setsid -f paplay "$file" >/dev/null 2>&1
 fi
 exit 0

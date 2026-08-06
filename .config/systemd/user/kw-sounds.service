@@ -1,5 +1,5 @@
 [Unit]
-Description=UI event sounds: USB hotplug + network connectivity (kw-sound)
+Description=UI event sounds: sample-cache preload + Hyprland/USB/network watchers (kw-sound)
 After=network.target
 
 [Service]

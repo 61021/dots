@@ -8,7 +8,7 @@
 
 (defwidget kw-cal-nav [icon cmd tip]
   (button :class "kw-cal-nav" :tooltip tip :valign "start"
-          :onclick "~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
+          :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
     (box :class "kw-cal-nav-icon" :valign "center"
          :style "background-image: url('${EWW_CONFIG_DIR}/icons/${icon}.svg');")))
 
@@ -23,7 +23,7 @@
       (kw-cal-nav :icon "caret-left" :cmd "prev" :tip "Previous month")
       (button :class "kw-cal-nav kw-cal-today${kw-cal.off != 0 ? " away" : ""}" :tooltip "Back to today"
               :valign "start"
-              :onclick "~/.config/eww/scripts/bar/calendar-data.py reset"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py reset"
         (box :class "kw-cal-today-dot" :halign "center" :valign "center"))
       (kw-cal-nav :icon "caret-right" :cmd "next" :tip "Next month"))
     (box :orientation "v" :space-evenly false :spacing 3

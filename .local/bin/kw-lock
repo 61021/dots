@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # kw-lock — hyprlock wrapper with lock/unlock sounds.
-# Used by the SUPER+L bind and hypridle's lock_cmd; the pidof guard keeps
-# hypridle from stacking instances (was inline in hypridle.conf before).
+# Used by the SUPER+L bind, hypridle's lock_cmd, and the bar/sidebar lock
+# buttons; extra args pass through to hyprlock (e.g. --grace 0). The pidof
+# guard keeps hypridle from stacking instances (was inline in hypridle.conf).
 
 pidof hyprlock >/dev/null && exit 0
 "$HOME/.local/bin/kw-sound" service-logout
-hyprlock
+hyprlock "$@"
 "$HOME/.local/bin/kw-sound" service-login

@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 # kw-sound-monitor — background watchers that turn system events into sounds
 # (runs as the kw-sounds.service user unit).
-#   * USB device plug/unplug            -> device-added / device-removed
+#   * Hyprland IPC (.socket2)  -> workspace switch / window open+close /
+#                                 urgent window / monitor hotplug
+#   * USB device plug/unplug   -> device-added / device-removed
 #   * NetworkManager connectivity gain/loss -> network-connectivity-*
 # Charger plug/unplug is NOT here — charge-sound.sh (hyprland exec-once)
 # already owns that.
 
 KW="$HOME/.local/bin/kw-sound"
+
+# Warm the sample cache so the first click after boot is already instant.
+"$KW" preload &
 
 usb_watch() {
   local action=""
@@ -39,7 +44,56 @@ net_watch() {
     done
 }
 
-# Each watcher restarts if its monitor process dies (e.g. NM restart).
+# One listener covers EVERY workspace switch (keys, scroll, bar clicks) and
+# window open/close, so no keybind needs its own sound wiring. The unit's env
+# has no HYPRLAND_INSTANCE_SIGNATURE — discover the newest event socket.
+hypr_watch() {
+  python3 - "$KW" <<'PY'
+import glob, os, socket, subprocess, sys, time
+
+kw = sys.argv[1]
+run = os.environ.get("XDG_RUNTIME_DIR", f"/run/user/{os.getuid()}")
+socks = glob.glob(os.path.join(run, "hypr", "*", ".socket2.sock"))
+if not socks:
+    time.sleep(3)
+    sys.exit(1)
+sock_path = max(socks, key=os.path.getmtime)
+
+SOUNDS = {
+    "workspace":      ["-v", ".45", "-g", "150", "button-pressed-modifier"],
+    "activespecial":  ["-v", ".45", "-g", "150", "button-pressed-modifier"],
+    "openwindow":     ["-v", ".45", "-g", "400", "message-contact-in"],
+    "closewindow":    ["-v", ".45", "-g", "400", "message-contact-out"],
+    "urgent":         ["-g", "1500", "message-attention", "window-attention"],
+    "monitoradded":   ["-g", "700", "device-added"],
+    "monitorremoved": ["-g", "700", "device-removed"],
+}
+
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect(sock_path)
+
+# A socket younger than a minute means Hyprland just started: apps restoring
+# at login would machine-gun open-window sounds over the login chime.
+quiet_until = time.time() + 6 if time.time() - os.path.getmtime(sock_path) < 60 else 0
+
+buf = b""
+while True:
+    data = s.recv(4096)
+    if not data:
+        sys.exit(1)  # hyprland gone; outer loop reconnects
+    buf += data
+    while b"\n" in buf:
+        line, buf = buf.split(b"\n", 1)
+        ev = line.split(b">>", 1)[0].decode(errors="replace")
+        args = SOUNDS.get(ev)
+        if args and time.time() >= quiet_until:
+            subprocess.Popen([kw, *args],
+                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+PY
+}
+
+# Each watcher restarts if its monitor process dies (e.g. NM/Hyprland restart).
 while :; do usb_watch; sleep 3; done &
 while :; do net_watch; sleep 3; done &
+while :; do hypr_watch; sleep 3; done &
 wait

@@ -32,7 +32,7 @@
   (button
     :class "kw-icon-button ${state ?: ""}"
     :tooltip tooltip
-    :onclick onclick
+    :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
     :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');"))
 
 ;; Destructive power action: first click arms (red) for 3s, second executes.
@@ -54,10 +54,10 @@
         (label :class "kw-media-title"  :text {bar-player.title}  :limit-width 20 :show-truncated true :xalign 0)
         (label :class "kw-media-artist" :text {bar-player.artist} :limit-width 24 :show-truncated true :xalign 0)))
     (box :class "kw-media-controls" :orientation "h" :space-evenly true
-      (button :class "kw-media-btn" :onclick "playerctl previous" (label :text "󰒮"))
-      (button :class "kw-media-btn kw-media-play" :onclick "playerctl play-pause"
+      (button :class "kw-media-btn" :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl previous" (label :text "󰒮"))
+      (button :class "kw-media-btn kw-media-play" :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
         (label :text {bar-player.status == "Playing" ? "󰏤" : "󰐊"}))
-      (button :class "kw-media-btn" :onclick "playerctl next" (label :text "󰒭")))))
+      (button :class "kw-media-btn" :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next" (label :text "󰒭")))))
 
 (defwidget kw-notifications []
   (box :orientation "v" :space-evenly false :spacing 8
@@ -65,7 +65,7 @@
     (box :orientation "h" :space-evenly false
       (label :class "kw-section-title" :xalign 0 :hexpand true :text "NOTIFICATIONS")
       (button :class "kw-notif-clear" :tooltip "Clear history"
-              :onclick "dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
         (label :text "clear")))
     (box :orientation "v" :space-evenly false :spacing 6
       (for n in notif-hist
@@ -135,7 +135,7 @@
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/lock-key.svg"
           :tooltip "Lock screen"
-          :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & hyprlock &")
+          :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & ~/.local/bin/kw-lock &")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/moon-stars.svg"
           :tooltip "Suspend"
@@ -214,5 +214,5 @@
   :namespace "kw-sidebar-bg"
   :geometry (geometry :x "0" :y "0" :width "100%" :height "100%" :anchor "top center")
   (eventbox :class "kw-backdrop"
-            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close &"
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh close &"
     (box :hexpand true :vexpand true)))

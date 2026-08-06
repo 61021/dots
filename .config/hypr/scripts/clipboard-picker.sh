@@ -49,6 +49,7 @@ if [[ ${1:-} == --warm ]]; then
 fi
 
 [[ -n $list ]] || exit 0
+~/.local/bin/kw-sound -v .55 -g 300 completion-rotation &
 mapfile -t entries <<<"$list"
 
 gen_missing
@@ -92,6 +93,7 @@ case $rc in
     fi
     ;;
 10)
+    ~/.local/bin/kw-sound -v .6 -g 80 button-pressed &
     cliphist delete <<<"$line"
     rm -f "$thumbs/${line%%$'\t'*}.png"
     exec "$0"

@@ -34,6 +34,9 @@ if hyprctl layers 2>/dev/null | grep -q 'namespace: kw-wifi,'; then
   exit 0
 fi
 
+# Panel-open sound; backgrounded so it costs nothing against the 200ms budget.
+~/.local/bin/kw-sound -v .55 -g 300 completion-rotation &
+
 monitors_json="$(hyprctl -j monitors)"
 cursor_json="$(hyprctl -j cursorpos)"
 cx="$(echo "$cursor_json" | jq -r '.x')"

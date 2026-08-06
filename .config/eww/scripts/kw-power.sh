@@ -9,9 +9,11 @@ armed="$(eww get power-arm 2>/dev/null || echo '')"
 if [ "$armed" = "$action" ]; then
   eww update power-arm='' 2>/dev/null
   eww close kw-sidebar >/dev/null 2>&1 || true
+  ~/.local/bin/kw-sound desktop-logout
   exec systemctl "$action"
 fi
 
+~/.local/bin/kw-sound -v .7 -g 80 dialog-warning-auth &
 eww update "power-arm=$action" 2>/dev/null
 (
   sleep 3

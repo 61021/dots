@@ -4,6 +4,7 @@
 # kills handler commands after its 200ms default timeout otherwise).
 set -u
 DIR="$HOME/.config/eww/scripts/wifi"
+KW="$HOME/.local/bin/kw-sound"
 
 refresh() {
   data="$("$DIR/wifi-data.py" 2>/dev/null)" || data=""
@@ -46,30 +47,36 @@ case "${1:-}" in
   connect-saved)
     eww update kw-wifi-busy="$2" 2>/dev/null
     if nmcli -w 15 connection up id "$2" >/dev/null 2>&1; then
+      "$KW" -v .75 outcome-success
       clear_state
     else
       # no `device wifi connect` fallback here: on a secured network it creates
       # a secretless autoconnect profile and summons the nm-applet password popup
+      "$KW" -v .75 outcome-failure
       eww update kw-wifi-busy='' kw-wifi-error='Connect failed — forget & retry' 2>/dev/null
     fi
     ;;
   connect-open)
     eww update kw-wifi-busy="$2" 2>/dev/null
     if nmcli -w 15 device wifi connect "$2" >/dev/null 2>&1; then
+      "$KW" -v .75 outcome-success
       clear_state
     else
       # a failed attempt leaves a broken profile behind — drop it so retry is clean
       nmcli connection delete id "$2" >/dev/null 2>&1
+      "$KW" -v .75 outcome-failure
       eww update kw-wifi-busy='' kw-wifi-error='Connect failed' 2>/dev/null
     fi
     ;;
   connect-pass)
     eww update kw-wifi-busy="$2" 2>/dev/null
     if nmcli -w 20 device wifi connect "$2" password "$3" >/dev/null 2>&1; then
+      "$KW" -v .75 outcome-success
       clear_state
     else
       # a failed attempt leaves a broken profile behind — drop it so retry is clean
       nmcli connection delete id "$2" >/dev/null 2>&1
+      "$KW" -v .75 outcome-failure
       eww update kw-wifi-busy='' kw-wifi-error='Wrong password — try again' 2>/dev/null
     fi
     ;;

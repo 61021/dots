@@ -25,7 +25,7 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.0 })
 ---------------------
 
 local terminal = "kitty"
-local menu     = "rofi -show drun -show-icons -matching fuzzy -sort -sorting-method fzf -theme $HOME/.config/rofi/minimal.rasi"
+local menu     = "~/.local/bin/kw-sound -v .55 -g 300 completion-rotation & rofi -show drun -show-icons -matching fuzzy -sort -sorting-method fzf -theme $HOME/.config/rofi/minimal.rasi"
 
 
 -------------------
@@ -266,7 +266,7 @@ hl.bind("CTRL + SHIFT + Return", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("hyprpicker -anqdl"))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/clipboard-picker.sh"))
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("cliphist wipe"))
+hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("~/.local/bin/kw-sound -v .7 trash-empty & cliphist wipe"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/stuff/constants/scripts/wallpaper/pick-wallpaper.sh"))
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-wifi.sh"))
 hl.bind(mainMod .. " + F1", hl.dsp.exec_cmd("~/.config/hypr/scripts/gamemode.sh"))
