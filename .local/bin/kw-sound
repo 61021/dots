@@ -19,7 +19,8 @@
 #
 #   -u        legacy "skip when sink muted" flag — accepted as a no-op
 #             (a muted default sink silences cached samples anyway)
-#   -v VOL    linear volume 0..1 (default: $KW_SOUND_VOLUME or 0.85)
+#   -v VOL    linear volume 0..1 (default: $KW_SOUND_VOLUME or 0.85),
+#             scaled by the master gain below before playback
 #   -g GAP_MS per-event debounce gap in ms (default 130)
 #
 # An absolute file path can be used in place of an event name.
@@ -32,6 +33,13 @@ OFF_FLAG="$CACHE_DIR/off"
 RENDER_DIR="$CACHE_DIR/render"
 THEMES=("${KW_SOUND_THEME:-ocean}" freedesktop)
 SOUND_DIRS=("${XDG_DATA_HOME:-$HOME/.local/share}/sounds" /usr/share/sounds)
+
+# Master gain multiplied into every volume (play, preload, pw-play fallback).
+# Call sites and PRELOAD keep their relative -v mix; retune overall loudness
+# here only, so sample names stay consistent between preload and play.
+MASTER_GAIN="${KW_SOUND_MASTER:-0.25}"
+
+scaled_vol() { awk -v v="$1" -v m="$MASTER_GAIN" 'BEGIN{printf "%.2f", v*m}'; }
 
 # Every event@volume pair wired on this box — preloaded at service start so
 # the first click after boot is as instant as the hundredth. "vol event [fallback...]"
@@ -118,7 +126,7 @@ case "${1:-}" in
     for _ in $(seq 1 15); do pactl info >/dev/null 2>&1 && break; sleep 1; done
     for entry in "${PRELOAD[@]}"; do
       set -- $entry # word-splitting intended
-      vol=$(printf '%.2f' "$1"); shift
+      vol=$(scaled_vol "$1"); shift
       ensure_sample "kw.$1@$vol" "$vol" "$@"
     done
     exit 0
@@ -149,7 +157,7 @@ last=$(cat "$stamp" 2>/dev/null || echo 0)
 (( now - last < gap )) && exit 0
 echo "$now" >"$stamp"
 
-vol2=$(printf '%.2f' "$volume")
+vol2=$(scaled_vol "$volume")
 name="kw.${1//\//_}@$vol2"
 
 if command -v pactl >/dev/null; then
@@ -162,6 +170,6 @@ if command -v pactl >/dev/null; then
   ) >/dev/null 2>&1 &
 elif command -v pw-play >/dev/null; then
   file="$(resolve "$@")" || exit 0
-  setsid -f pw-play --volume "$volume" "$file" >/dev/null 2>&1
+  setsid -f pw-play --volume "$vol2" "$file" >/dev/null 2>&1
 fi
 exit 0
