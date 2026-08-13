@@ -57,7 +57,7 @@ stuff/*
 .config/restic/*
 !.config/restic/excludes.txt
 
-# ── .local/bin (named scripts ONLY — never binaries or shims) ─
+# ── .local/bin (named scripts ONLY, never binaries or shims) ─
 !.local
 .local/*
 !.local/bin

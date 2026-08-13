@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# kw-notif-sound — dunst hook (see the [kw-sound] rule in dunstrc).
+# kw-notif-sound: dunst hook (see the [kw-sound] rule in dunstrc).
 # Picks an event sound per notification. Dunst passes appname/summary/body/
 # icon/urgency as $1..$5 and also exports DUNST_* env vars.
 

@@ -27,7 +27,7 @@ otp=$(zenity --entry --title="dev2-uat VPN" \
         --text="Enter your Authenticator code:" --width=280 2>/dev/null) || exit 0
 otp=$(printf '%s' "$otp" | tr -cd '0-9')
 if [ -z "$otp" ]; then
-  notify-send -u critical "VPN" "No code entered — not connecting."
+  notify-send -u critical "VPN" "No code entered, not connecting."
   exit 1
 fi
 

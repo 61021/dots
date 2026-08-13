@@ -1,6 +1,6 @@
 [Unit]
 Description=restic backup of ~/stuff to Contabo VPS
-# Repo password lives in ~/.config/restic/password (0600) — never commit it to dots.
+# Repo password lives in ~/.config/restic/password (0600); never commit it to dots.
 
 [Service]
 Type=oneshot

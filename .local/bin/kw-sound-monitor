@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# kw-sound-monitor — background watchers that turn system events into sounds
+# kw-sound-monitor: background watchers that turn system events into sounds
 # (runs as the kw-sounds.service user unit).
 #   * Hyprland IPC (.socket2)  -> workspace switch / window open+close /
 #                                 urgent window / monitor hotplug
 #   * USB device plug/unplug   -> device-added / device-removed
 #   * NetworkManager connectivity gain/loss -> network-connectivity-*
-# Charger plug/unplug is NOT here — charge-sound.sh (hyprland exec-once)
+# Charger plug/unplug is NOT here: charge-sound.sh (hyprland exec-once)
 # already owns that.
 
 KW="$HOME/.local/bin/kw-sound"
@@ -46,7 +46,7 @@ net_watch() {
 
 # One listener covers EVERY workspace switch (keys, scroll, bar clicks) and
 # window open/close, so no keybind needs its own sound wiring. The unit's env
-# has no HYPRLAND_INSTANCE_SIGNATURE — discover the newest event socket.
+# has no HYPRLAND_INSTANCE_SIGNATURE; discover the newest event socket.
 hypr_watch() {
   python3 - "$KW" <<'PY'
 import glob, os, socket, subprocess, sys, time

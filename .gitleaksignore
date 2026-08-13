@@ -1,3 +1,3 @@
-# gitleaks false positives — each reviewed by hand before adding.
+# gitleaks false positives, each reviewed by hand before adding.
 # Format: <commit>:<file>:<rule>:<line>  (fingerprints are commit-pinned, so
 # a future edit to the same file produces a NEW fingerprint = a new review.)

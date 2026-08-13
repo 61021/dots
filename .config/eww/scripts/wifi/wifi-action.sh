@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Actions for the kw-wifi panel. Every action ends by refreshing the panel data.
-# Called from yuck onclick handlers (always backgrounded with `&` there — eww
+# Called from yuck onclick handlers (always backgrounded with `&` there: eww
 # kills handler commands after its 200ms default timeout otherwise).
 set -u
 DIR="$HOME/.config/eww/scripts/wifi"
@@ -23,7 +23,7 @@ cursor_screen() {
 
 case "${1:-}" in
   row-click)
-    # row-click <ssid> <saved> <sec> <eap>  — decide what clicking a row does
+    # row-click <ssid> <saved> <sec> <eap>: decide what clicking a row does
     ssid="$2" saved="$3" sec="$4" eap="$5"
     if [ "$saved" = "true" ]; then
       exec "$0" connect-saved "$ssid"
@@ -53,7 +53,7 @@ case "${1:-}" in
       # no `device wifi connect` fallback here: on a secured network it creates
       # a secretless autoconnect profile and summons the nm-applet password popup
       "$KW" -v .75 outcome-failure
-      eww update kw-wifi-busy='' kw-wifi-error='Connect failed — forget & retry' 2>/dev/null
+      eww update kw-wifi-busy='' kw-wifi-error='Connect failed, forget & retry' 2>/dev/null
     fi
     ;;
   connect-open)
@@ -62,7 +62,7 @@ case "${1:-}" in
       "$KW" -v .75 outcome-success
       clear_state
     else
-      # a failed attempt leaves a broken profile behind — drop it so retry is clean
+      # a failed attempt leaves a broken profile behind; drop it so retry is clean
       nmcli connection delete id "$2" >/dev/null 2>&1
       "$KW" -v .75 outcome-failure
       eww update kw-wifi-busy='' kw-wifi-error='Connect failed' 2>/dev/null
@@ -74,10 +74,10 @@ case "${1:-}" in
       "$KW" -v .75 outcome-success
       clear_state
     else
-      # a failed attempt leaves a broken profile behind — drop it so retry is clean
+      # a failed attempt leaves a broken profile behind; drop it so retry is clean
       nmcli connection delete id "$2" >/dev/null 2>&1
       "$KW" -v .75 outcome-failure
-      eww update kw-wifi-busy='' kw-wifi-error='Wrong password — try again' 2>/dev/null
+      eww update kw-wifi-busy='' kw-wifi-error='Wrong password, try again' 2>/dev/null
     fi
     ;;
   disconnect)

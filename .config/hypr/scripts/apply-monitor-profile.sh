@@ -3,7 +3,7 @@
 #   0 externals -> laptop only (cafe).
 #   1 external  -> laptop on left, external to its right.
 #   2+ externals -> laptop off, externals arranged per WORK_ORDER (work / TV+ext).
-# Rules go through `hyprctl eval 'hl.monitor(...)'` — the Lua config manager
+# Rules go through `hyprctl eval 'hl.monitor(...)'`: the Lua config manager
 # rejects `hyprctl keyword`. Each eval chunk applies as one unit with a single
 # prop refresh at the end, so Hyprland never sees an overlapping state.
 set -euo pipefail
@@ -75,7 +75,7 @@ per=$((total_ws / nmon))
 rem=$((total_ws % nmon))
 
 # Moves first (relocate workspaces that already exist elsewhere; pcall'd
-# because they may not exist yet), then the rules — same order as the old
+# because they may not exist yet), then the rules, same order as the old
 # dispatch-then-keyword-batch flow. Workspace rules replace per-workspace,
 # so re-applying on every hotplug doesn't stack duplicates.
 moves=()

@@ -7,7 +7,7 @@
 set -euo pipefail
 
 # One toggle at a time: a double-fire racing the open path stacks a duplicate
-# surface on this eww build. fd 9 must not leak into anything long-lived —
+# surface on this eww build. fd 9 must not leak into anything long-lived:
 # an auto-forked daemon or the updater would hold the lock forever.
 exec 9>"${XDG_RUNTIME_DIR:-/tmp}/kw-wifi-toggle.lock"
 flock -n 9 || exit 0
@@ -16,7 +16,7 @@ if eww active-windows 2>/dev/null | grep -q '^kw-wifi: '; then
   eww close kw-wifi 2>/dev/null 9>&- || true
   eww close kw-wifi-bg 2>/dev/null 9>&- || true
   eww close kw-wifi-pw 2>/dev/null 9>&- || true
-  # Surfaces that survive the close belong to a daemon this CLI can't reach —
+  # Surfaces that survive the close belong to a daemon this CLI can't reach;
   # only a full relaunch kills them (mirrors kw-sidebar-toggle.sh).
   for _ in $(seq 1 12); do
     hyprctl layers 2>/dev/null | grep -q 'namespace: kw-wifi' || exit 0
@@ -27,7 +27,7 @@ if eww active-windows 2>/dev/null | grep -q '^kw-wifi: '; then
 fi
 
 # Self-heal: a kw-wifi surface exists on screen but THIS daemon doesn't own it
-# (daemon/socket split — bit us 2026-07-25 while another agent hacked on eww).
+# (daemon/socket split; bit us 2026-07-25 while another agent hacked on eww).
 # A stuck foreign surface can only die with its daemon: full relaunch.
 if hyprctl layers 2>/dev/null | grep -q 'namespace: kw-wifi,'; then
   setsid -f ~/.config/eww/scripts/kw-bar-launch.sh 9>&- >/dev/null 2>&1

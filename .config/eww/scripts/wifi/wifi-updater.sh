@@ -12,7 +12,7 @@ for _ in $(seq 1 900); do # hard cap ~30 min against leaks
     data="$("$DIR/wifi-data.py" 2>/dev/null)" || data=""
     case "$data" in
       '{'*) eww update "kw-wifi=$data" 2>/dev/null || exit 0 ;;
-      *) : ;; # never push garbage into the var — skip this tick
+      *) : ;; # never push garbage into the var; skip this tick
     esac
   fi
   sleep 2

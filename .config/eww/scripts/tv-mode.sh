@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# TV mode — turn the laptop into a headless server while the TV streams from
+# TV mode: turn the laptop into a headless server while the TV streams from
 # its Jellyfin: screen off and it STAYS off (stray keys/touchpad don't relight
 # it), idle/suspend/lid-suspend blocked so Jellyfin and long-running jobs
 # (Claude Code, downloads) keep working, charging halted just below the
 # current level so the battery doesn't sit pinned at 100%.
 #
-# Exit via the sidebar button or SUPER+SHIFT+T (hyprland.conf) — Hyprland
+# Exit via the sidebar button or SUPER+SHIFT+T (hyprland.conf); Hyprland
 # binds still fire while dpms is off.
 #
 # usage:
@@ -17,7 +17,7 @@
 # and suspended the box mid-stream (30-min systemctl suspend) was hypridle,
 # so TV mode kills it and restarts it on exit. Do NOT go back to SIGSTOP:
 # the compositor keeps delivering ext-idle-notify "idled" events to a
-# stopped client, and on SIGCONT hypridle replays the whole backlog —
+# stopped client, and on SIGCONT hypridle replays the whole backlog:
 # dim + lock + dpms-off + suspend fire back-to-back.
 
 set -euo pipefail
@@ -107,7 +107,7 @@ tv_on() {
     start_inhibitor
     kill_hypridle
 
-    # Battery: stop charging just below the current level. Best effort — a
+    # Battery: stop charging just below the current level. Best effort: a
     # broken sudo rule must not abort TV mode and leave the box suspendable
     # like the old `exit 1` here did.
     local cap target charge_note
@@ -119,7 +119,7 @@ tv_on() {
     if write_threshold "$target"; then
         charge_note="Charge stops at ${target}%."
     else
-        charge_note="Charge threshold NOT set (check sudoers rule) — still charging."
+        charge_note="Charge threshold NOT set (check sudoers rule); still charging."
     fi
 
     echo on > "$STATE_FILE"

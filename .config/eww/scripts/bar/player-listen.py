@@ -60,7 +60,7 @@ def state() -> dict:
         return dict(EMPTY)
     title = pctl("metadata", "title")
     artist = pctl("metadata", "artist")
-    label = f"{artist} \u2014 {title}" if artist else title
+    label = f"{artist} \u00b7 {title}" if artist else title
     art = art_path(pctl("metadata", "mpris:artUrl"))
     return {
         "status": status, "title": title, "artist": artist, "label": label, "art": art,

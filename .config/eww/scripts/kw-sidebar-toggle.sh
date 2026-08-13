@@ -4,12 +4,12 @@
 #
 # The open/close decision keys off `hyprctl layers`, NOT `eww active-windows`:
 # when the daemon socket file is dead, any eww CLI call silently forks a fresh
-# daemon that reports "no windows" — deciding on that opened a second sidebar
+# daemon that reports "no windows"; deciding on that opened a second sidebar
 # on the new daemon while the old daemon's sidebar + backdrop stayed up as
 # unclosable click-eating zombies (bit us 2026-08-05). A surface that survives
 # `eww close` belongs to a daemon this CLI can't reach; only a full relaunch
 # kills it (same heal as kw-wifi.sh). flock drops toggles that arrive while
-# one is mid-flight — this eww build stacks duplicate surfaces on double-open.
+# one is mid-flight: this eww build stacks duplicate surfaces on double-open.
 # Every eww call closes fd 9: an auto-forked daemon would inherit the lock
 # and hold it forever.
 set -euo pipefail

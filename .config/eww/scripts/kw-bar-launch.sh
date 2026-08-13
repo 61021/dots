@@ -50,7 +50,7 @@ launch_all() {
   # pkill -x eww doesn't reach deflisten children (bash/python); orphaned to
   # PID 1 they idle forever since they only write on events. Reap them here.
   pkill -f "$HOME/.config/eww/scripts/(bar/|wifi/|vol-listen)" 2>/dev/null || true
-  # ...and the long-lived CLIs those listeners spawn — killing the wrapper
+  # ...and the long-lived CLIs those listeners spawn: killing the wrapper
   # orphans them and they only die on their next (possibly never) write.
   pkill -f 'playerctl --follow' 2>/dev/null || true
   pkill -f 'nmcli monitor' 2>/dev/null || true
@@ -90,7 +90,7 @@ launch_all() {
 # call racing the daemon start forks its own daemon, which unlinks and
 # replaces the socket file, then dies. The surviving daemon keeps its
 # unlinked inode (ss still shows LISTEN on the path), bars render fine,
-# but every `eww open` from the popover scripts fails to connect — the
+# but every `eww open` from the popover scripts fails to connect; the
 # sidebar/calendar/wifi toggles go silently dead (bitten 2026-07-26 and
 # 2026-07-29). Connect with python: an eww CLI probe would itself fork
 # a windowless daemon on failure, which is the other wedge.

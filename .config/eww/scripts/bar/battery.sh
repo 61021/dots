@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Battery → JSON: {"percent": 87, "icon": "battery-high", "label": "87%", "state": "ok"}
-# state: charging | critical (<=10) | low (<=25) | ok — drives label tint in CSS.
+# state: charging | critical (<=10) | low (<=25) | ok; drives label tint in CSS.
 ICONS=~/.config/eww/icons
 BAT=$(ls /sys/class/power_supply/ 2>/dev/null | grep -m1 '^BAT')
 if [ -z "$BAT" ]; then

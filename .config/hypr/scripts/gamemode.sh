@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Gamemode toggle: strip animations/blur/shadows/gaps for performance.
-# Runtime tweaks go through `hyprctl eval`/`repl` — the Lua config manager
+# Runtime tweaks go through `hyprctl eval`/`repl`: the Lua config manager
 # rejects `hyprctl keyword`/`getoption`-style paths.
 HYPRGAMEMODE=$(hyprctl repl 'hl.get_config("animations.enabled")' 2>/dev/null)
 if [ "$HYPRGAMEMODE" = "true" ]; then

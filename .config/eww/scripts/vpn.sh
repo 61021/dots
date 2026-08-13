@@ -29,7 +29,7 @@ if [ "$gstate" = "activated" ]; then
     dev=$(ip -4 -o addr show 2>/dev/null | awk -v a="$ip_addr" '$4 ~ ("^" a "/"){print $2; exit}')
   fi
   [ -z "$dev" ] && dev="tun0"
-  [ -z "$ip_addr" ] && ip_addr="—"
+  [ -z "$ip_addr" ] && ip_addr="n/a"
   tooltip="VPN connected\nInterface: ${dev}\nIP: ${ip_addr}\n\nLeft-click: disconnect"
   json "$icon_on  VPN" "connected" "$tooltip"
 elif [ "$gstate" = "activating" ] || [ -f "$connecting_flag" ]; then

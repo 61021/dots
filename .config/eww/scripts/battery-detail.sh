@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Battery JSON for sidebar:
-# {percent, status, charging, time, health} — time = "2h 10m to empty|full".
+# {percent, status, charging, time, health}; time = "2h 10m to empty|full".
 set -eu
 bat=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -1 || true)
 if [ -z "$bat" ]; then

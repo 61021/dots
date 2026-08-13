@@ -1,5 +1,5 @@
 ;; -----------------------------------------------------------------------------
-;; Calendar popover — opened by the bar's clock button.
+;; Calendar popover, opened by the bar's clock button.
 ;; Custom month grid (GTK's `calendar` widget is unstylable); data comes from
 ;; scripts/bar/calendar-data.py which pushes into `kw-cal` on open / prev / next.
 ;; -----------------------------------------------------------------------------

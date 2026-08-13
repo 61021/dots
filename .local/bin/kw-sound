@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# kw-sound — central UI event-sound player, backed by the sound server's
+# kw-sound: central UI event-sound player, backed by the sound server's
 # sample cache. Resolves freedesktop event names against XDG sound themes
 # (Ocean first, freedesktop fallback). Every desktop sound on this box goes
 # through here so one switch mutes them all.
 #
 # v1 spawned pw-play per event: process start + PipeWire connect + ogg decode
 # on every click landed sounds 100-300ms late under load. Now each event is
-# rendered once (volume baked in — play-sample has no volume argument) and
+# rendered once (volume baked in; play-sample has no volume argument) and
 # uploaded into the sample cache; a play is one fire-and-forget IPC that
 # starts server-side in ~10ms. Misses (first play, PipeWire restart) self-heal
 # in the background; kw-sounds.service preloads everything at login.
@@ -17,7 +17,7 @@
 #   kw-sound list                   # event names available in active themes
 #   kw-sound preload                # render + upload every wired event
 #
-#   -u        legacy "skip when sink muted" flag — accepted as a no-op
+#   -u        legacy "skip when sink muted" flag, accepted as a no-op
 #             (a muted default sink silences cached samples anyway)
 #   -v VOL    linear volume 0..1 (default: $KW_SOUND_VOLUME or 0.85),
 #             scaled by the master gain below before playback
@@ -41,7 +41,7 @@ MASTER_GAIN="${KW_SOUND_MASTER:-0.25}"
 
 scaled_vol() { awk -v v="$1" -v m="$MASTER_GAIN" 'BEGIN{printf "%.2f", v*m}'; }
 
-# Every event@volume pair wired on this box — preloaded at service start so
+# Every event@volume pair wired on this box, preloaded at service start so
 # the first click after boot is as instant as the hundredth. "vol event [fallback...]"
 PRELOAD=(
   '0.60 button-pressed'                      # eww / bar / panel button clicks
@@ -162,7 +162,7 @@ name="kw.${1//\//_}@$vol2"
 
 if command -v pactl >/dev/null; then
   # Fire-and-forget: play-sample blocks for the sample's duration, and the
-  # miss path renders+uploads — none of that may delay the caller (eww kills
+  # miss path renders+uploads; none of that may delay the caller (eww kills
   # onclick handlers after 200ms).
   (
     pactl play-sample "$name" 2>/dev/null \

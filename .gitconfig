@@ -36,7 +36,7 @@
 [delta]
 	navigate = true
 	line-numbers = true
-# Work identity for ISCQI repos — must stay below [user] so it wins.
+# Work identity for ISCQI repos; must stay below [user] so it wins.
 [includeIf "hasconfig:remote.*.url:git@github.com:ISCQI/**"]
 	path = ~/.config/git/work.gitconfig
 [includeIf "hasconfig:remote.*.url:git@github.com-work:ISCQI/**"]

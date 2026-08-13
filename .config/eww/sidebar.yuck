@@ -1,5 +1,5 @@
 ;; -----------------------------------------------------------------------------
-;; KW Sidebar — toggled from the "KW" button in the bar
+;; KW Sidebar, toggled from the "KW" button in the bar
 ;; -----------------------------------------------------------------------------
 
 ;; --- data sources ------------------------------------------------------------
@@ -16,7 +16,7 @@
 
 (defvar power-arm "")
 
-;; Single JSON poll per service — eww parses the fields (vpn.class / vpn.tooltip).
+;; Single JSON poll per service; eww parses the fields (vpn.class / vpn.tooltip).
 ;; kw-refresh.sh pushes instant state on click; the poll only catches external changes.
 (defpoll vpn  :interval "15s" :initial '{"text":"VPN","class":"disconnected","tooltip":"VPN","alt":"disconnected"}'  "~/.config/eww/scripts/vpn.sh")
 (defpoll warp :interval "15s" :initial '{"text":"WARP","class":"disconnected","tooltip":"WARP","alt":"disconnected"}' "~/.config/eww/scripts/warp.sh")
@@ -181,7 +181,7 @@
           :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh; sleep 0.2 && ~/.config/eww/scripts/kw-refresh.sh eye")
         (kw-icon-button
           :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
-          :tooltip "TV mode: screen off, stay awake, stop charging — SUPER+SHIFT+T exits"
+          :tooltip "TV mode: screen off, stay awake, stop charging; SUPER+SHIFT+T exits"
           :state tv-state
           :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv")))
 

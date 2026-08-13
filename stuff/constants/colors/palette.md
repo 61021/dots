@@ -1,4 +1,4 @@
-# Palette — single source of truth
+# Palette: single source of truth
 
 # Edit this when changing colors, then mirror values into the per-tool files.
 

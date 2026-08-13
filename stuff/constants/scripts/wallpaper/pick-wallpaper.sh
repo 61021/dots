@@ -38,7 +38,7 @@ thumb_for() {
 }
 
 # Build rofi entries: "<basename>\0icon\x1f<thumb>\n"
-# (Stream directly — bash variables can't hold NUL bytes.)
+# (Stream directly: bash variables can't hold NUL bytes.)
 choice="$(
     for f in "${FILES[@]}"; do
         name="$(basename "$f")"

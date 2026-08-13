@@ -13,7 +13,7 @@ if grep -qx 'x-kde-passwordManagerHint' <<<"$types"; then
 fi
 
 cliphist store
-# Copy acknowledgment blip — after the password-manager filter above, so
+# Copy acknowledgment blip, after the password-manager filter above, so
 # sensitive copies stay silent too.
 ~/.local/bin/kw-sound -v .35 -g 800 message &
 

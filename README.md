@@ -5,7 +5,7 @@ Arch + Hyprland dotfiles, managed as a detached git dir over `$HOME`.
 ## How it works
 
 - The git dir lives at `~/.dots.git`, the work tree is `$HOME`. Plain `git`
-  never discovers it — all interaction goes through the `dots` fish function
+  never discovers it; all interaction goes through the `dots` fish function
   ([.config/fish/conf.d/dots.fish](.config/fish/conf.d/dots.fish)).
 - [.gitignore](.gitignore) ignores everything (`/*`) and explicitly
   allow-lists what gets tracked.
@@ -34,4 +34,4 @@ paru -S --needed - < ~/.config/packages/repo.txt
 paru -S --needed - < ~/.config/packages/aur.txt
 ```
 
-`checkout` refuses to overwrite existing files — move them aside first.
+`checkout` refuses to overwrite existing files; move them aside first.

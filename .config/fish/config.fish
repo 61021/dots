@@ -9,7 +9,7 @@ fish_add_path --global ~/.local/bin
 if status is-interactive
   set fish_greeting "Welcome to the Batcave, Master Wayne. How can I assist you today?"
 
-  # general — wrappers that add flags stay aliases
+  # general: wrappers that add flags stay aliases
   alias cp='cp -iv'
   alias mv='mv -iv'
   alias wget='wget -c'
@@ -29,7 +29,7 @@ if status is-interactive
   alias lspcifzf="lspci | fzf --preview-window='top:50%:nowrap' --preview=\"echo {} | grep -o '[0-9a-zA-Z][0-9a-zA-Z]:[0-9a-zA-Z][0-9a-zA-Z]\.[0-9a-zA-Z]' | xargs -I[] lspci -k -s [] | grep -z --color=always -e '[0-9a-zA-Z][0-9a-zA-Z]:[0-9a-zA-Z][0-9a-zA-Z]\.[0-9a-zA-Z]'\""
   alias ipsbs="pacman -Qi | awk '/^Name/ {name=$3} /^Installed Size/ {print $4 $5, name}' | sort -hr | less"
 
-  # shorthands — abbr so they expand inline and stay honest in history
+  # shorthands: abbr so they expand inline and stay honest in history
   abbr -a v nvim
   abbr -a vim nvim
   abbr -a nano nvim

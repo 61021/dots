@@ -1,5 +1,5 @@
 -- ─────────────────────────────────────────────────────────────
--- Hyprland config (Lua) — ported from hyprland.conf on 2026-07-29
+-- Hyprland config (Lua), ported from hyprland.conf on 2026-07-29
 -- (hyprlang .conf support is deprecated, removed in Hyprland 0.57)
 --
 -- API stubs for the LSP: /usr/share/hypr/stubs/hl.meta.lua
@@ -12,7 +12,7 @@
 ------------------
 
 -- Layout is managed by ~/.config/hypr/scripts/apply-monitor-profile.sh via
--- `hyprctl eval 'hl.monitor(...)'` (do not run nwg-displays — it writes the
+-- `hyprctl eval 'hl.monitor(...)'` (do not run nwg-displays; it writes the
 -- old monitors.conf). Static fallback only: the profile script overrides
 -- these on startup and every hotplug. Keeps eDP-1 at the right scale/rate
 -- if the watcher ever dies.
@@ -44,7 +44,7 @@ hl.on("hyprland.start", function()
     -- Idle daemon (lock / dpms / suspend per ~/.config/hypr/hypridle.conf)
     hl.exec_cmd("hypridle")
 
-    -- Night-light daemon — starts neutral (6500K); the sidebar eye button toggles 3000K via IPC
+    -- Night-light daemon: starts neutral (6500K); the sidebar eye button toggles 3000K via IPC
     hl.exec_cmd("hyprsunset -t 6500")
 
     -- Charger plug/unplug sound
@@ -53,7 +53,7 @@ hl.on("hyprland.start", function()
     -- Low battery notifications
     hl.exec_cmd("~/stuff/constants/scripts/battery/low-bat-notification.sh")
 
-    -- Cliphist (text + images) — via a hook that skips password-manager copies
+    -- Cliphist (text + images), via a hook that skips password-manager copies
     hl.exec_cmd("wl-paste --type text --watch ~/.config/hypr/scripts/cliphist-store.sh")
     hl.exec_cmd("wl-paste --type image --watch ~/.config/hypr/scripts/cliphist-store.sh")
 
@@ -185,10 +185,10 @@ hl.config({
         enable_swallow = true,
         swallow_regex  = "^(kitty)$",
 
-        -- VRR where the display supports it (eDP) — small power win, no-op on the fixed-rate externals
+        -- VRR where the display supports it (eDP): small power win, no-op on the fixed-rate externals
         vrr = 1,
 
-        -- Inlined from HyprMod (hyprland-gui.conf) on 2026-07-29 — HyprMod
+        -- Inlined from HyprMod (hyprland-gui.conf) on 2026-07-29: HyprMod
         -- writes hyprlang and can't manage a Lua config; edit these here.
         animate_mouse_windowdragging = true,
         disable_splash_rendering     = true,
@@ -274,7 +274,7 @@ hl.bind(mainMod .. " + G", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }))  -- was `fullscreen, 1`
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.layout("swapwithmaster"))
 hl.bind("SUPER + L", hl.dsp.exec_cmd("~/.local/bin/kw-lock"))
--- TV mode toggle — also the way OUT while the screen is off (binds still fire under dpms off)
+-- TV mode toggle; also the way OUT while the screen is off (binds still fire under dpms off)
 hl.bind(mainMod .. " + T",
     hl.dsp.exec_cmd("~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv"),
     { locked = true })

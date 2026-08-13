@@ -1,12 +1,12 @@
 -- ─────────────────────────────────────────────────────────────
--- Window, layer & workspace rules — required from hyprland.lua
+-- Window, layer & workspace rules (required from hyprland.lua)
 -- Docs: https://wiki.hypr.land/Configuring/Basics/Window-Rules/
 --
 -- All rules are named: named rules are updated in-place on reload
 -- instead of duplicated, and can be toggled via their handles.
 -- ─────────────────────────────────────────────────────────────
 
--- ── "Smart gaps" — no gaps/border when only one tiled window ─
+-- ── "Smart gaps": no gaps/border when only one tiled window ─
 -- hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
 -- hl.workspace_rule({ workspace = "f[1]",   gaps_out = 0, gaps_in = 0 })
 hl.window_rule({
@@ -75,7 +75,7 @@ hl.window_rule({
 })
 
 -- ── Picture-in-Picture ───────────────────────────────────────
--- (was `move 69.5% 4%` — percentages are now monitor expressions)
+-- (was `move 69.5% 4%`; percentages are now monitor expressions)
 hl.window_rule({
     name  = "pip",
     match = { title = "^(Picture-in-Picture)$" },

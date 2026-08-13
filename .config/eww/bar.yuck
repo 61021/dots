@@ -1,5 +1,5 @@
 ;; -----------------------------------------------------------------------------
-;; KW Top Bar — opened per monitor by ~/.config/eww/scripts/kw-bar-launch.sh
+;; KW Top Bar, opened per monitor by ~/.config/eww/scripts/kw-bar-launch.sh
 ;; -----------------------------------------------------------------------------
 
 ;; --- data sources ------------------------------------------------------------
