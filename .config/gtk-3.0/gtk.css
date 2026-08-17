@@ -34,3 +34,40 @@ headerbar {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   box-shadow: none;
 }
+
+/* Thunar OLED: Adwaita-dark paints its own grays over the black window
+   (file view, sidebar, toolbar, menubar, tabs read theme surface colors,
+   not the window background). ThunarWindow carries the .thunar style
+   class, so these stay scoped to Thunar; other GTK3 apps keep the
+   theme's surface contrast. */
+window.thunar menubar,
+window.thunar toolbar,
+window.thunar statusbar,
+window.thunar paned,
+window.thunar notebook > header,
+window.thunar scrolledwindow,
+window.thunar .standard-view,
+window.thunar .sidebar,
+window.thunar .view,
+window.thunar entry,
+window.thunar treeview header button,
+window.thunar scrollbar {
+  background-color: #000000;
+}
+
+window.thunar notebook > header tab {
+  background-color: transparent;
+}
+
+window.thunar notebook > header tab:checked {
+  background-color: rgba(255, 255, 255, 0.07);
+}
+
+/* Menus are separate toplevels, so they cannot be scoped to one app;
+   black context menus apply to every GTK3 app, which matches the OLED
+   base above. The hairline keeps them separable from black surfaces. */
+menu,
+.menu {
+  background-color: #000000;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
