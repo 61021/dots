@@ -1,5 +1,5 @@
 [Unit]
-Description=restic backup of ~/stuff to Contabo VPS
+Description=restic backup of ~/stuff + machine state to Contabo VPS
 # Repo password lives in ~/.config/restic/password (0600); never commit it to dots.
 
 [Service]
@@ -7,4 +7,5 @@ Type=oneshot
 Nice=10
 IOSchedulingClass=idle
 ExecStart=/usr/bin/restic -r sftp:myserver:/home/khaled/backups/desktop --password-file %h/.config/restic/password backup %h/stuff --exclude-file %h/.config/restic/excludes.txt --tag stuff
+ExecStart=/usr/bin/restic -r sftp:myserver:/home/khaled/backups/desktop --password-file %h/.config/restic/password backup %h/.ssh %h/.config/gh %h/.config/fish/fish_variables %h/.config/systemd/user %h/.config/restic --tag machine-state
 ExecStartPost=/usr/bin/restic -r sftp:myserver:/home/khaled/backups/desktop --password-file %h/.config/restic/password forget --keep-daily 7 --keep-weekly 4 --keep-monthly 6 --prune
