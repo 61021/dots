@@ -6,6 +6,8 @@ bibata-cursor-theme
 cloudflare-warp-bin
 evillimiter-ng
 eww
+figma-agent-linux-bin
+figma-linux
 flaresolverr
 hyprmod-git
 jellyfin-desktop
@@ -21,7 +23,6 @@ pfetch
 prowlarr-bin
 radarr-bin
 recyclarr
-snappy-switcher
 sonarr
 spotify
 telegram-desktop-bin

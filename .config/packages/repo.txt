@@ -27,7 +27,7 @@ fd
 feh
 firefox
 fish
-flameshot
+fwupd
 fzf
 geary
 git
@@ -35,6 +35,7 @@ git-delta
 github-cli
 gitleaks
 glow
+gnome-text-editor
 gnome-themes-extra
 grim
 gst-plugin-pipewire
@@ -108,6 +109,7 @@ slurp
 smartmontools
 sof-firmware
 steam
+thermald
 thunar
 tlp
 tlpui
