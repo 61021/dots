@@ -1,7 +1,16 @@
 # feh themes: invoked by `feh --theme <name>` or as the default ("feh")
 
 # `feh` with no theme automatically uses the `feh` entry below.
+# --font names the ttf file inside --fontpath (used by the d/i overlays);
+# the --thumb/--index options only apply to thumbnail mode (feh -t).
 
-feh --scale-down --auto-zoom --image-bg black --geometry 1280x800
-slideshow --scale-down --auto-zoom --image-bg black --slideshow-delay 4
+feh --scale-down --auto-zoom --image-bg black \
+    --geometry 1280x800 --sort filename --version-sort --cache-size 256 \
+    --draw-tinted --fontpath /usr/share/fonts/TTF \
+    --font JetBrainsMonoNLNerdFont-Regular/12 \
+    --thumb-width 200 --thumb-height 200 --index-info '%n'
+
+slideshow --scale-down --auto-zoom --image-bg black \
+    --sort filename --version-sort --slideshow-delay 4
+
 wall --bg-fill

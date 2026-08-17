@@ -1,0 +1,14 @@
+# feh keys: only overrides live here, defaults stay for everything else.
+# A line replaces ALL default keys of its action (3 keys max), and a bare
+# action unbinds it. n/p and the keypad zoom keys fall off the end here.
+
+# vim-style browsing; h was toggle_pause, which moves to P
+next_img space Right l
+prev_img BackSpace Left h
+toggle_pause P
+
+# zoom on plain +/=/- (they shipped bound to reload-delay tweaking)
+zoom_in Up plus equal
+zoom_out Down minus
+reload_plus
+reload_minus

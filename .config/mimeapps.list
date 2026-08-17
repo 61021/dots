@@ -11,6 +11,13 @@ text/plain=org.gnome.TextEditor.desktop
 x-scheme-handler/figma=figma-linux.desktop
 video/webm=mpv.desktop
 image/png=feh.desktop
+image/webp=feh.desktop
+image/bmp=feh.desktop
+image/tiff=feh.desktop
+image/heic=feh.desktop
+image/heif=feh.desktop
+image/avif=feh.desktop
+image/jxl=feh.desktop
 application/pdf=firefox.desktop
 text/markdown=org.gnome.TextEditor.desktop
 

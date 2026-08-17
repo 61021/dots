@@ -74,6 +74,14 @@ hl.window_rule({
     center = true,
 })
 
+-- feh: float at its own --geometry size (set in .config/feh/themes)
+hl.window_rule({
+    name   = "float-feh",
+    match  = { class = "^(feh)$" },
+    float  = true,
+    center = true,
+})
+
 -- ── Picture-in-Picture ───────────────────────────────────────
 -- (was `move 69.5% 4%`; percentages are now monitor expressions)
 hl.window_rule({

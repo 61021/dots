@@ -1,0 +1,9 @@
+# feh buttons: scroll zooms instead of switching images, since touchpad
+# scrolling kept flipping through the folder. Bare action = unbind.
+next_img
+prev_img
+zoom_in 4
+zoom_out 5
+
+# ctrl+drag blurred the image, too easy to hit while panning
+blur
