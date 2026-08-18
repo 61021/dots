@@ -25,7 +25,7 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1.0 })
 ---------------------
 
 local terminal = "kitty"
-local menu     = "~/.local/bin/kw-sound -v .55 -g 300 completion-rotation & rofi -show drun -show-icons -matching fuzzy -sort -sorting-method fzf -theme $HOME/.config/rofi/minimal.rasi"
+local menu     = "~/.local/bin/kw-sound -v .55 -g 300 completion-rotation & rofi -show drun -show-icons -matching fuzzy -theme $HOME/.config/rofi/minimal.rasi"
 
 
 -------------------
