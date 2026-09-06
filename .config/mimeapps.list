@@ -20,6 +20,9 @@ image/avif=feh.desktop
 image/jxl=feh.desktop
 application/pdf=firefox.desktop
 text/markdown=org.gnome.TextEditor.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+x-scheme-handler/claude=com.anthropic.Claude.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
 
 [Added Associations]
 image/jpeg=org.gnome.Loupe.desktop;feh.desktop;
@@ -28,3 +31,4 @@ text/plain=firefox.desktop;
 video/webm=mpv.desktop;
 image/png=feh.desktop;
 application/pdf=firefox.desktop;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=org.gnome.TextEditor.desktop;libreoffice-writer.desktop;
