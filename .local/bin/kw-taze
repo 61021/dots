@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Batch dep updates across repos, via taze. Read-only by default.
+#   kw-taze report [mode] <dir>...      table of pending updates
+#   kw-taze sweep  [mode] <dir>...      branch + bump + install + build + commit
+# mode: patch | minor (default) | major | latest
+set -uo pipefail
+
+CMD=${1:-report}; shift || true
+MODE=minor
+case "${1:-}" in patch|minor|major|latest) MODE=$1; shift;; esac
+DIRS=("$@")
+[ ${#DIRS[@]} -eq 0 ] && DIRS=("$PWD")
+TAZE=(vpx taze "$MODE" --no-node-version --no-github-actions -r)
+STAMP=$(date +%Y-%m-%d)
+OUT=$(mktemp -d)
+
+pm_of() { [ -f "$1/bun.lock" ] || [ -f "$1/bun.lockb" ] && echo bun || echo pnpm; }
+
+report() {
+  for d in "${DIRS[@]}"; do
+    d=${d%/}; n=$(basename "$d")
+    "${TAZE[@]}" -C "$d" >"$OUT/$n" 2>&1
+    grep -oE '[0-9]+ (major|minor|patch)' "$OUT/$n" |
+      awk -v n="$n" '{c[$2]+=$1} END {printf "%-30s %3d major  %3d minor  %3d patch\n", n, c["major"], c["minor"], c["patch"]}'
+  done | sort -k2 -rn
+  echo; echo "full output: $OUT"
+}
+
+sweep() {
+  for d in "${DIRS[@]}"; do
+    d=${d%/}; n=$(basename "$d")
+    if [ -n "$(git -C "$d" status --porcelain 2>/dev/null)" ]; then
+      printf '%-30s SKIP (dirty tree)\n' "$n"; continue
+    fi
+    base=$(git -C "$d" rev-parse --abbrev-ref HEAD)
+    git -C "$d" checkout -q -B "chore/deps-$STAMP" || { printf '%-30s FAIL (branch)\n' "$n"; continue; }
+    "${TAZE[@]}" -C "$d" -w >"$OUT/$n" 2>&1
+    if git -C "$d" diff --quiet; then
+      printf '%-30s up to date\n' "$n"; git -C "$d" checkout -q "$base"; continue
+    fi
+    pm=$(pm_of "$d")
+    if ! (cd "$d" && "$pm" install >>"$OUT/$n" 2>&1 && { ! grep -q '"build"' package.json || "$pm" run build >>"$OUT/$n" 2>&1; }); then
+      printf '%-30s FAIL (see %s)\n' "$n" "$OUT/$n"
+      git -C "$d" checkout -q -- . && git -C "$d" checkout -q "$base"
+      continue
+    fi
+    git -C "$d" add -A
+    git -C "$d" commit -q -m "chore(deps): update $MODE dependencies" \
+      -m "Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
+    printf '%-30s OK on chore/deps-%s (was %s)\n' "$n" "$STAMP" "$base"
+  done
+  echo; echo "logs: $OUT   push nothing automatically; review then push"
+}
+
+case "$CMD" in
+  report) report;;
+  sweep)  sweep;;
+  *) echo "usage: kw-taze {report|sweep} [patch|minor|major|latest] <dir>..." >&2; exit 2;;
+esac
