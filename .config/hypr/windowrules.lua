@@ -100,6 +100,15 @@ hl.window_rule({
     center = true,
 })
 
+-- ── Screenshot overlays (slurp, hyprpicker) ──────────────────
+-- grim fires the instant slurp exits; an animated close leaves the
+-- sliding overlay baked into the PNG as a gray band.
+hl.layer_rule({
+    name    = "screenshot-overlays",
+    match   = { namespace = "^(selection|hyprpicker)$" },
+    no_anim = true,
+})
+
 -- ── eww sidebar: slide in from the left edge ─────────────────
 hl.layer_rule({
     name      = "kw-sidebar-anim",
