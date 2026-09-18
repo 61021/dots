@@ -8,7 +8,7 @@
 (defpoll bar-time  :interval "30s" :initial "--:--" "date '+%I:%M'")
 (defpoll bar-date  :interval "60s" :initial ""      "date '+%a %d/%m'")
 
-(deflisten bar-net    :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-slash.svg","label":"--"}'   "~/.config/eww/scripts/bar/net-listen.sh")
+(deflisten net :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-x.svg","label":"--","tip":"","state":"offline","radio":true,"conn":{"ssid":"","signal":0,"icon":"wifi-none","sec":false,"band":"","ip":"","sub":""},"busy":"","scanning":false}' "~/.config/eww/scripts/net/nm-listen.py")
 (deflisten bar-audio  :initial '{"icon":"/home/khaled/.config/eww/icons/speaker-none.svg","label":"--"}' "~/.config/eww/scripts/bar/audio-listen.sh")
 (deflisten bar-player :initial '{"status":"","title":"","artist":"","label":"","art":"","display":"","album":"","player":"","shuffle":"","loop":""}' "~/.config/eww/scripts/bar/player-listen.py")
 (deflisten bar-workspaces :initial "[]" "~/.config/eww/scripts/bar/workspaces.py")
@@ -69,10 +69,10 @@
               :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
         (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
     (button :class "bar-stat-btn"
-            :tooltip {bar-net.label}
+            :tooltip {net.tip}
             :timeout "2s"
             :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
-      (bar-stat :icon {bar-net.icon} :text {bar-net.label}))
+      (bar-stat :icon {net.icon} :text {net.label}))
     (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
       (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
 

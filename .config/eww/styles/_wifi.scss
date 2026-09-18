@@ -1,6 +1,6 @@
 /* Wi-Fi panel - mac-style dropdown from the bar's network chip.
-   Widgets in wifi.yuck; nmcli data/actions in scripts/wifi/.
-   (Backdrop style is the shared .kw-backdrop in _base.scss.) */
+   Widgets in wifi.yuck; data from scripts/net/nm-listen.py, actions in
+   scripts/wifi/. (Backdrop style is the shared .kw-backdrop in _base.scss.) */
 
 .kw-wifi-panel {
   background-color: $bg-0;
@@ -22,6 +22,12 @@
   font-size: 15px;
   font-weight: 700;
   padding: 0 4px 6px;
+}
+
+.wifi-scan {
+  color: $fg-1;
+  font-size: 11px;
+  padding: 0 0 5px;
 }
 
 .wifi-switch {
@@ -101,6 +107,12 @@
   opacity: 0.7;
 }
 
+.wifi-err {
+  color: $error;
+  font-size: 11px;
+  padding: 2px 6px 4px;
+}
+
 /* --- network rows ------------------------------------------------------------ */
 
 .wifi-sec-h {
@@ -157,6 +169,15 @@
   background-position: center;
   background-size: 12px 12px;
   opacity: 0.8;
+}
+
+@keyframes kw-pulse {
+  from { opacity: 0.25; }
+  to { opacity: 1; }
+}
+
+.wifi-rescan.spin .wifi-rescan-icon {
+  animation: kw-pulse 700ms ease-in-out infinite alternate;
 }
 
 .wifi-empty {
