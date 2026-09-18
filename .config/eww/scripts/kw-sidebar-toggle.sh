@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Toggle the kw-sidebar (+ click-outside backdrop) on the monitor under the
-# cursor. Invariant: at most ONE sidebar can ever be on screen.
+# Toggle the kw-sidebar (+ click-outside backdrop) on the focused monitor. Invariant: at most ONE sidebar can ever be on screen.
 #
 # The open/close decision keys off `hyprctl layers`, NOT `eww active-windows`:
 # when the daemon socket file is dead, any eww CLI call silently forks a fresh
@@ -39,19 +38,10 @@ fi
 # Panel-open sound (button clicks give the press half; this is the response).
 ~/.local/bin/kw-sound -v .55 -g 300 completion-rotation &
 
-monitors_json="$(hyprctl -j monitors)"
-cursor_json="$(hyprctl -j cursorpos)"
-cx="$(echo "$cursor_json" | jq -r '.x')"
-cy="$(echo "$cursor_json" | jq -r '.y')"
-mon="$(echo "$monitors_json" | jq --argjson x "$cx" --argjson y "$cy" \
-  '[to_entries[] | select(.value.x <= $x and $x < (.value.x + .value.width) and .value.y <= $y and $y < (.value.y + .value.height))][0]')"
-mon_id="$(echo "$mon" | jq -r '.key')"
-mon_h="$(echo "$mon" | jq -r '.value.height')"
-mon_scale="$(echo "$mon" | jq -r '.value.scale')"
-bar_h=36
+# One hyprctl + one jq: the focused monitor is the one that got the click.
+read -r mon_id sidebar_h < <(hyprctl -j monitors | jq -r \
+  '[to_entries[] | select(.value.focused)][0] | "\(.key // 0) \(((.value.height / .value.scale) | floor) - 36)"')
 sidebar_w=300
-logical_h="$(awk -v v="$mon_h" -v s="$mon_scale" 'BEGIN{printf "%d", v/s}')"
-sidebar_h=$(( logical_h - bar_h ))
 
 eww open --screen "$mon_id" kw-sidebar-bg 9>&- >/dev/null 2>&1 || true
 eww open --screen "$mon_id" --size "${sidebar_w}x${sidebar_h}" kw-sidebar 9>&- \
