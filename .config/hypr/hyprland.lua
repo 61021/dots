@@ -217,12 +217,12 @@ hl.curve("easeInOutCirc", { type = "bezier", points = { {0.85, 0},   {0.15, 1}  
 hl.curve("easeOutCirc",   { type = "bezier", points = { {0, 0.55},   {0.45, 1}    } })
 hl.curve("easeOutExpo",   { type = "bezier", points = { {0.16, 1},   {0.3, 1}     } })
 
-hl.animation({ leaf = "windows",          enabled = true, speed = 3,   bezier = "md3_decel",   style = "popin 60%" })
-hl.animation({ leaf = "border",           enabled = true, speed = 10,  bezier = "default" })
-hl.animation({ leaf = "fade",             enabled = true, speed = 2.5, bezier = "md3_decel" })
-hl.animation({ leaf = "layers",           enabled = true, speed = 2,   bezier = "md3_decel",   style = "slide" })
-hl.animation({ leaf = "workspaces",       enabled = true, speed = 3.5, bezier = "easeOutExpo", style = "slide" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3,   bezier = "md3_decel",   style = "slidevert" })
+hl.animation({ leaf = "windows",          enabled = true, speed = 1.8,   bezier = "md3_decel",   style = "popin 60%" })
+hl.animation({ leaf = "border",           enabled = true, speed = 5,  bezier = "default" })
+hl.animation({ leaf = "fade",             enabled = true, speed = 1.5, bezier = "md3_decel" })
+hl.animation({ leaf = "layers",           enabled = true, speed = 1.2,   bezier = "md3_decel",   style = "slide" })
+hl.animation({ leaf = "workspaces",       enabled = true, speed = 2, bezier = "easeOutExpo", style = "slide" })
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.8,   bezier = "md3_decel",   style = "slidevert" })
 
 
 ---------------
