@@ -35,8 +35,6 @@ if [ "${1:-}" = "close" ] || [ "$(surfaces)" -gt 0 ]; then
   exit 0
 fi
 
-# Panel-open sound (button clicks give the press half; this is the response).
-~/.local/bin/kw-sound -v .55 -g 300 completion-rotation &
 
 # One hyprctl + one jq: the focused monitor is the one that got the click.
 read -r mon_id sidebar_h < <(hyprctl -j monitors | jq -r \

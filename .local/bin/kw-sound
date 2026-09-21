@@ -37,7 +37,7 @@ SOUND_DIRS=("${XDG_DATA_HOME:-$HOME/.local/share}/sounds" /usr/share/sounds)
 # Master gain multiplied into every volume (play, preload, pw-play fallback).
 # Call sites and PRELOAD keep their relative -v mix; retune overall loudness
 # here only, so sample names stay consistent between preload and play.
-MASTER_GAIN="${KW_SOUND_MASTER:-0.25}"
+MASTER_GAIN="${KW_SOUND_MASTER:-0.18}"
 
 scaled_vol() { awk -v v="$1" -v m="$MASTER_GAIN" 'BEGIN{printf "%.2f", v*m}'; }
 
@@ -45,12 +45,8 @@ scaled_vol() { awk -v v="$1" -v m="$MASTER_GAIN" 'BEGIN{printf "%.2f", v*m}'; }
 # the first click after boot is as instant as the hundredth. "vol event [fallback...]"
 PRELOAD=(
   '0.60 button-pressed'                      # eww / bar / panel button clicks
-  '0.45 button-pressed-modifier'             # workspace switches
-  '0.55 completion-rotation'                 # panel / launcher / picker opens
-  '0.45 message-contact-in'                  # window opened
-  '0.45 message-contact-out'                 # window closed
+  '0.55 completion-rotation'                 # launcher / clipboard picker opens
   '0.85 message-attention window-attention'  # urgent window
-  '0.35 message'                             # clipboard copy blip
   '0.50 message'                             # dunst LOW urgency
   '0.85 message'                             # dunst normal urgency
   '0.85 dialog-warning'                      # dunst CRITICAL
