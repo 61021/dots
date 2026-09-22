@@ -1,8 +1,0 @@
-[Unit]
-Description=Pull PocketBase snapshots and files from myserver to ~/backups/pocketbase
-
-[Service]
-Type=oneshot
-Nice=10
-IOSchedulingClass=idle
-ExecStart=%h/.local/bin/kw-pb-backup
