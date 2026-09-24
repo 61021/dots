@@ -63,10 +63,6 @@ hl.on("hyprland.start", function()
     -- Startup chime (kw-sound routes all UI event sounds; Ocean theme w/ freedesktop fallback)
     hl.exec_cmd("sleep 2 && ~/.local/bin/kw-sound desktop-login service-login")
 
-    -- Snappy Switcher (Alt+Tab window switcher)
-    -- small delay so the Hyprland IPC socket is ready before the daemon connects
-    hl.exec_cmd("sleep 2 && snappy-switcher --daemon")
-
     -- Monitor profile watcher: applies the right layout on startup and on every
     -- monitor add/remove. Also starts the eww daemon and bar via kw-bar-launch.sh.
     hl.exec_cmd("~/.config/hypr/scripts/monitor-watch.py")
@@ -302,9 +298,9 @@ hl.bind("CTRL + SHIFT + F12", hl.dsp.exec_cmd("hyprshot -m region --clipboard-on
 hl.bind("Print",         hl.dsp.exec_cmd("hyprshot -m output -o ~/stuff/screenshots --notify"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m window -o ~/stuff/screenshots --notify"))
 
--- Snappy Switcher (Alt+Tab)
-hl.bind("ALT + Tab", hl.dsp.exec_cmd("snappy-switcher next"))
-hl.bind("ALT + SHIFT + Tab", hl.dsp.exec_cmd("snappy-switcher prev"))
+-- Alt+Tab cycles windows on the current workspace
+hl.bind("ALT + Tab", hl.dsp.window.cycle_next())
+hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }))
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]
