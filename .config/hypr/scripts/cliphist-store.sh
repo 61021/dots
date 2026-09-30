@@ -12,7 +12,21 @@ if grep -qx 'x-kde-passwordManagerHint' <<<"$types"; then
     exit 0
 fi
 
-cliphist store
+in="$(mktemp -p "${XDG_RUNTIME_DIR:-/tmp}" cliphist-in.XXXXXX)" || exit 1
+trap 'rm -f "$in"' EXIT
+cat >"$in"
+[[ -s $in ]] || exit 0
+
+list="$(cliphist list | tr -d '\0')"
+top="${list%%$'\n'*}"
+
+# wl-clip-persist re-offers every selection it takes over: content already on
+# top is a no-op, which also spares an image a second thumbnail render.
+if [[ -n $top ]] && cliphist decode <<<"$top" | cmp -s - "$in"; then
+    exit 0
+fi
+
+cliphist store <"$in"
 
 grep -q '^image/' <<<"$types" || exit 0
 

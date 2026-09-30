@@ -56,6 +56,8 @@ hl.on("hyprland.start", function()
     -- Cliphist (text + images), via a hook that skips password-manager copies
     hl.exec_cmd("wl-paste --type text --watch ~/.config/hypr/scripts/cliphist-store.sh")
     hl.exec_cmd("wl-paste --type image --watch ~/.config/hypr/scripts/cliphist-store.sh")
+    -- Keep the clipboard alive after the source app exits (regular only: primary breaks GTK selection)
+    hl.exec_cmd("wl-clip-persist --clipboard regular")
 
     -- Cursor
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Ice 24")
