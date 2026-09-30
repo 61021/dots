@@ -1,70 +1,86 @@
-/* Wi-Fi panel - mac-style dropdown from the bar's network chip.
+/* Wi-Fi panel - floating popover from the bar's network chip.
    Widgets in wifi.yuck; data from scripts/net/nm-listen.py, actions in
    scripts/wifi/. (Backdrop style is the shared .kw-backdrop in _base.scss.) */
 
+$wifi-w: 316px;
+
 .kw-wifi-panel {
   background-color: $bg-0;
-  border: 1px solid $border-soft;
-  border-top: none;
-  border-bottom-left-radius: 18px;
-  border-bottom-right-radius: 18px;
-  padding: 12px 12px 8px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 12px 10px 8px;
   color: $fg-0;
   font-family: $font-sans;
-  min-width: 320px;
+  min-width: $wifi-w;
 }
 
 /* --- header: title + radio switch ----------------------------------------- */
 
+.wifi-head {
+  padding: 2px 6px 6px;
+  min-height: 24px;
+}
+
 .wifi-title {
   color: $fg-hi;
-  font-size: 15px;
-  font-weight: 700;
-  padding: 0 4px 6px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .wifi-scan {
   color: $fg-1;
   font-size: 11px;
-  padding: 0 0 5px;
 }
 
+/* iOS-style switch: pill track, white knob that slides via margin */
 .wifi-switch {
-  background: $bg-2;
-  border: 1px solid $border-hard;
-  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.14);
+  background-image: none;
+  border: none;
+  border-radius: 999px;
   box-shadow: none;
-  min-width: 40px;
-  min-height: 22px;
-  padding: 0 3px;
-  transition: background $t-fast ease, border-color $t-fast ease;
+  outline: none;
+  min-width: 34px;
+  min-height: 20px;
+  padding: 2px;
+  transition: background-color $t-fast ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
 
   &.on {
-    background: $accent;
-    border-color: transparent;
+    background-color: $accent;
+
+    &:hover {
+      background-color: lighten($accent, 6%);
+    }
   }
 }
 
 .wifi-switch-knob {
   min-width: 16px;
   min-height: 16px;
-  border-radius: 8px;
-  background-color: $fg-1;
+  border-radius: 999px;
+  background-color: $fg-hi;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   margin-left: 0;
-  transition: margin-left $t-fast ease, background-color $t-fast ease;
+  transition: margin-left $t-fast ease;
 
   .wifi-switch.on & {
-    margin-left: 18px;
-    background-color: $bg-0;
+    margin-left: 14px;
   }
 }
 
-.wifi-close {
-  @include chip(8px, 5px);
+/* --- shared small icon button (disconnect, rescan) -------------------------- */
+
+.wifi-icon-btn {
+  @include chip(999px, 0);
+  min-width: 24px;
+  min-height: 24px;
 }
 
-.wifi-close-icon {
+.wifi-icon-btn-glyph {
   min-width: 12px;
   min-height: 12px;
   background-repeat: no-repeat;
@@ -73,14 +89,33 @@
   opacity: 0.7;
 }
 
+@keyframes kw-pulse {
+  from { opacity: 0.2; }
+  to { opacity: 0.9; }
+}
+
+.wifi-icon-btn.spin .wifi-icon-btn-glyph {
+  animation: kw-pulse 700ms ease-in-out infinite alternate;
+}
+
+/* --- signal meter: level icon drawn over a dim full-arc track -------------- */
+
+.wifi-signal {
+  min-width: 16px;
+  min-height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
+}
+
 /* --- connected card --------------------------------------------------------- */
 
 .wifi-conn {
-  background-color: rgba($accent, 0.07);
-  border: 1px solid rgba($accent, 0.18);
+  background-color: rgba($accent, 0.08);
+  border: 1px solid rgba($accent, 0.2);
   border-radius: 12px;
-  padding: 8px 10px;
-  margin: 2px 0 4px;
+  padding: 9px 8px 9px 12px;
+  margin: 0 0 4px;
 }
 
 .wifi-conn-name {
@@ -92,51 +127,35 @@
 .wifi-conn-sub {
   font-size: 11px;
   color: $accent;
-}
-
-.wifi-conn-x {
-  @include chip(8px, 5px);
-}
-
-.wifi-conn-x-icon {
-  min-width: 12px;
-  min-height: 12px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px 12px;
-  opacity: 0.7;
+  font-feature-settings: "tnum";
 }
 
 .wifi-err {
   color: $error;
   font-size: 11px;
-  padding: 2px 6px 4px;
+  padding: 2px 8px 4px;
 }
 
 /* --- network rows ------------------------------------------------------------ */
 
 .wifi-sec-h {
   color: $fg-1;
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  padding: 8px 4px 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 8px 6px 4px;
+}
+
+.wifi-oth-head {
+  padding-right: 2px;
 }
 
 .wifi-row {
-  @include chip(10px, 7px 9px);
+  @include chip(10px, 8px 10px);
 }
 
 .wifi-row.busy {
-  background: rgba($accent, 0.06);
-}
-
-.wifi-row-icon {
-  min-width: 16px;
-  min-height: 16px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 16px 16px;
+  background: rgba($accent, 0.08);
 }
 
 .wifi-row-name {
@@ -155,84 +174,73 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: 12px 12px;
-  opacity: 0.55;
-}
-
-.wifi-rescan {
-  @include chip(7px, 3px 6px);
-}
-
-.wifi-rescan-icon {
-  min-width: 12px;
-  min-height: 12px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 12px 12px;
-  opacity: 0.8;
-}
-
-@keyframes kw-pulse {
-  from { opacity: 0.25; }
-  to { opacity: 1; }
-}
-
-.wifi-rescan.spin .wifi-rescan-icon {
-  animation: kw-pulse 700ms ease-in-out infinite alternate;
+  opacity: 0.4;
 }
 
 .wifi-empty {
   color: $fg-1;
   font-size: 12px;
-  padding: 4px 6px;
+  padding: 6px 10px;
 }
 
 .wifi-off-msg {
   color: $fg-1;
-  font-size: 13px;
-  padding: 18px 0 14px;
+  font-size: 12px;
+  padding: 20px 0 16px;
 }
 
-/* --- password prompt (standalone modal window kw-wifi-pw) ------------------- */
+/* --- password sheet (standalone focusable window kw-wifi-pw) ---------------- */
 
 .wifi-pw {
   background-color: $bg-1;
-  border: 1px solid $border-hard;
-  border-radius: 14px;
-  padding: 14px;
-  min-width: 300px;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+  padding: 14px 16px 12px;
+  min-width: $wifi-w - 12px;
   font-family: $font-sans;
 }
 
 .wifi-pw-title {
-  font-size: 12px;
-  color: $fg-0;
+  font-size: 14px;
+  font-weight: 600;
+  color: $fg-hi;
+}
+
+.wifi-pw-hint {
+  font-size: 11px;
+  color: $fg-1;
 }
 
 .wifi-pw-input {
   background-color: $bg-2;
-  border: 1px solid $border-hard;
-  border-radius: 8px;
-  padding: 4px 10px;
+  background-image: none;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  box-shadow: none;
+  padding: 6px 12px;
   color: $fg-hi;
   caret-color: $accent;
   font-size: 13px;
   min-height: 24px;
 
   &:focus {
-    border-color: rgba($accent, 0.5);
+    border-color: rgba($accent, 0.6);
   }
 }
 
-.wifi-pw-error {
+.wifi-pw-status {
   color: $error;
   font-size: 11px;
+
+  &.busy {
+    color: $accent;
+  }
 }
 
 .wifi-pw-cancel {
-  @include chip(7px, 3px 10px);
+  @include chip(8px, 4px 12px);
   font-size: 12px;
-  color: $fg-1;
+  color: $fg-0;
 }
 
 /* --- footer -------------------------------------------------------------------- */
@@ -240,20 +248,20 @@
 .wifi-sep {
   background-color: $border-soft;
   min-height: 1px;
-  margin: 8px 2px 2px;
+  margin: 6px 6px 2px;
 }
 
 .wifi-foot-btn {
-  @include chip(10px, 7px 9px);
+  @include chip(10px, 8px 10px);
 }
 
 .wifi-foot-icon {
-  min-width: 13px;
-  min-height: 13px;
+  min-width: 14px;
+  min-height: 14px;
   background-repeat: no-repeat;
   background-position: center;
-  background-size: 13px 13px;
-  opacity: 0.8;
+  background-size: 14px 14px;
+  opacity: 0.7;
 }
 
 .wifi-foot-label {

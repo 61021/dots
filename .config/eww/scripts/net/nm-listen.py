@@ -49,6 +49,7 @@ CONNECTING = {
     int(NM.DeviceState.IP_CHECK),
     int(NM.DeviceState.SECONDARIES),
 }
+LEVEL_HYSTERESIS = 6  # % a row's strength must clear a bucket edge by before its icon changes
 DEBOUNCE_MS = 120
 LIST_THROTTLE_MS = 500
 SCAN_PERIOD_S = 15
@@ -107,6 +108,7 @@ class NetWatch:
         self.scan_timeout = None
         self.scan_timer = None
         self.panel_opened_at = None
+        self.row_levels = {}
 
         c = self.client
         for sig in (
@@ -210,6 +212,11 @@ class NetWatch:
 
     def on_panel_open(self, *_):
         self.panel_opened_at = GLib.get_monotonic_time() / 1e6
+        # The startup push can land before the daemon is ready; re-send the
+        # rows so the panel never opens on an empty list.
+        if self.last_list is not None:
+            self.list_last_push = 0.0
+            self.push_list()
         self.request_scan()
         if self.scan_timer is None:
             self.scan_timer = GLib.timeout_add_seconds(SCAN_PERIOD_S, self.on_scan_tick)
@@ -294,21 +301,23 @@ class NetWatch:
             if not busy and active_ap is not None:
                 busy = ssid_of(active_ap)
 
-        conn = {"ssid": "", "signal": 0, "icon": "wifi-none", "sec": False, "band": "", "ip": "", "sub": ""}
+        conn = {"ssid": "", "uuid": "", "signal": 0, "icon": "wifi-none", "sec": False, "band": "", "ip": "", "sub": ""}
         wifi_up = dev is not None and dev_state == int(NM.DeviceState.ACTIVATED) and active_ap is not None
         if wifi_up:
             strength = int(active_ap.get_strength()) // 5 * 5
             ip4 = dev.get_ip4_config()
             addrs = ip4.get_addresses() if ip4 else []
             freq_band = band(int(active_ap.get_frequency()))
+            ac = dev.get_active_connection()
             conn = {
                 "ssid": ssid_of(active_ap),
+                "uuid": ac.get_uuid() if ac else "",
                 "signal": strength,
                 "icon": level(strength),
                 "sec": secured(active_ap),
                 "band": freq_band,
                 "ip": addrs[0].get_address() if addrs else "",
-                "sub": f"Connected · {freq_band}",
+                "sub": f"Connected · {freq_band} · {strength}%",
             }
 
         if primary_type == "802-3-ethernet" or (eth_up and not wifi_up):
@@ -347,12 +356,17 @@ class NetWatch:
             "scanning": bool(self.scanning),
         }
 
-        saved = set()
+        # SSID -> saved profile UUIDs, most recently used first. Profile names
+        # are not SSIDs ("Wi-Fi connection 1"), so actions go by UUID.
+        saved = {}
         for con in c.get_connections():
             if con.get_connection_type() == "802-11-wireless":
                 ssid = ssid_of_connection(con)
                 if ssid:
-                    saved.add(ssid)
+                    s_con = con.get_setting_connection()
+                    saved.setdefault(ssid, []).append((s_con.get_timestamp() if s_con else 0, con.get_uuid()))
+        for ssid in saved:
+            saved[ssid] = [u for _, u in sorted(saved[ssid], reverse=True)]
 
         best = {}
         for ap in dev.get_access_points() if (dev and radio) else []:
@@ -363,22 +377,39 @@ class NetWatch:
             cur = best.get(ssid)
             if cur is None or strength > cur[0]:
                 wpa, rsn = int(ap.get_wpa_flags()), int(ap.get_rsn_flags())
+                uuids = saved.get(ssid, [])
                 best[ssid] = (
                     strength,
                     {
                         "ssid": ssid,
-                        "icon": level(strength),
                         "sec": secured(ap),
                         "eap": bool((wpa | rsn) & EAP),
-                        "saved": ssid in saved,
+                        "saved": bool(uuids),
+                        "uuid": uuids[0] if uuids else "",
+                        "uuids": " ".join(uuids),
                     },
                 )
+        for strength, row in best.values():
+            row["icon"] = self.row_level(row["ssid"], strength)
+        self.row_levels = {ssid: self.row_levels[ssid] for ssid in best}
         rows = sorted((r for _, r in best.values()), key=lambda r: r["ssid"].casefold())
         lists = {
             "known": [r for r in rows if r["saved"]][:8],
             "others": [r for r in rows if not r["saved"]][:12],
         }
         return hot, lists
+
+    def row_level(self, ssid, strength):
+        """Strength bucket with hysteresis: every row icon change rebuilds the
+        whole list (eww `for`), so jitter around a bucket edge must not."""
+        edges = {"wifi-none": (0, 25), "wifi-low": (25, 50), "wifi-medium": (50, 75), "wifi-high": (75, 101)}
+        prev = self.row_levels.get(ssid)
+        if prev is not None:
+            lo, hi = edges[prev]
+            if lo - LEVEL_HYSTERESIS <= strength < hi + LEVEL_HYSTERESIS:
+                return prev
+        self.row_levels[ssid] = level(strength)
+        return self.row_levels[ssid]
 
     # --- lifecycle ----------------------------------------------------------
 
