@@ -203,7 +203,7 @@
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
           :label "TV mode"
-          :tooltip "Screen off, stay awake, stop charging. ALT+T exits"
+          :tooltip "Screen off, stay awake, stop charging. ALT+SHIFT+T exits"
           :state tv-state
           :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv")))
 

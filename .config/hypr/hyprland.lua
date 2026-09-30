@@ -262,7 +262,6 @@ hl.bind("CTRL + SHIFT + Return", hl.dsp.exec_cmd(terminal), { description = "Ope
 hl.bind(mainMod .. " + Q", hl.dsp.window.close(), { description = "Close window" })
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("hyprpicker -anqdl"), { description = "Pick a color" })
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/clipboard-picker.sh"), { description = "Clipboard history" })
-hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("~/.local/bin/kw-sound -v .7 trash-empty & cliphist wipe"), { description = "Wipe clipboard history" })
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/stuff/constants/scripts/wallpaper/pick-wallpaper.sh"), { description = "Pick wallpaper" })
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-wifi.sh"), { description = "Wi-Fi panel" })
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-sidebar-toggle.sh"), { description = "Control center" })
@@ -273,8 +272,9 @@ hl.bind(mainMod .. " + G", hl.dsp.window.float({ action = "toggle" }), { descrip
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }), { description = "Maximize window" })  -- was `fullscreen, 1`
 hl.bind(mainMod .. " + SHIFT + M", hl.dsp.layout("swapwithmaster"), { description = "Swap with master" })
 hl.bind("SUPER + L", hl.dsp.exec_cmd("~/.local/bin/kw-lock"), { description = "Lock screen" })
--- TV mode toggle; also the way OUT while the screen is off (binds still fire under dpms off)
-hl.bind(mainMod .. " + T",
+-- TV mode toggle; also the way OUT while the screen is off (binds still fire under dpms off).
+-- Three keys on purpose: it turns the screen off and stops charging.
+hl.bind(mainMod .. " + SHIFT + T",
     hl.dsp.exec_cmd("~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv"),
     { locked = true, description = "TV mode on or off" })
 

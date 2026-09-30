@@ -5,7 +5,7 @@
 # (Claude Code, downloads) keep working, charging halted just below the
 # current level so the battery doesn't sit pinned at 100%.
 #
-# Exit via the sidebar button or SUPER+SHIFT+T (hyprland.conf); Hyprland
+# Exit via the sidebar button or ALT+SHIFT+T (hyprland.lua); Hyprland
 # binds still fire while dpms is off.
 #
 # usage:
@@ -123,7 +123,7 @@ tv_on() {
     fi
 
     echo on > "$STATE_FILE"
-    notify "TV mode ON" "${charge_note} Screen off, suspend blocked. SUPER+SHIFT+T to exit."
+    notify "TV mode ON" "${charge_note} Screen off, suspend blocked. ALT+SHIFT+T to exit."
     hyprctl dispatch 'hl.dsp.dpms({ action = "off" })' >/dev/null 2>&1 || true
 }
 
