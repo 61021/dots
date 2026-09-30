@@ -26,6 +26,34 @@ if [[ -n $top ]] && cliphist decode <<<"$top" | cmp -s - "$in"; then
     exit 0
 fi
 
+# Text that differs only in leading/trailing whitespace (a terminal line copy's
+# trailing newline) replaces its older copies instead of sitting beside them.
+# Candidates come from cliphist's preview: whitespace collapsed, 100 runes + "…".
+dedupe_trimmed() {
+    local text old line
+    text="$(<"$in")"
+    text="${text#"${text%%[![:space:]]*}"}"
+    text="${text%"${text##*[![:space:]]}"}"
+    [[ -n $text ]] || return 0
+    while IFS= read -r line; do
+        old="$(cliphist decode <<<"$line")"
+        old="${old#"${old%%[![:space:]]*}"}"
+        old="${old%"${old##*[![:space:]]}"}"
+        [[ $old == "$text" ]] && cliphist delete <<<"$line"
+    done < <(head -n 100 <<<"$list" | TEXT="$text" gawk -F'\t' '
+        BEGIN {
+            p = ENVIRON["TEXT"]
+            gsub(/[[:space:]]+/, " ", p)
+            if (length(p) > 100)
+                p = substr(p, 1, 100) "…"
+        }
+        substr($0, index($0, "\t") + 1) == p')
+}
+
+if (($(stat -c %s "$in") <= 16384)) && ! grep -qaP '\x00' "$in"; then
+    dedupe_trimmed
+fi
+
 cliphist store <"$in"
 
 grep -q '^image/' <<<"$types" || exit 0
