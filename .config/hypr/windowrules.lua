@@ -124,19 +124,17 @@ hl.layer_rule({
     no_anim = true,  -- was `animation none`
 })
 
--- ── eww bar + calendar popover ───────────────────────────────
--- Same layer (top). Hyprland renders higher `order` FIRST (= below),
--- so order 1 puts the calendar underneath the bar and its slide-up
--- close animation disappears behind the clock instead of over it.
+-- ── eww calendar + wifi popovers: floating cards, one motion ──
+-- Same layer as the bar (top). Hyprland renders higher `order` FIRST
+-- (= below), so order 1 keeps a popover under the bar. mac-style: a
+-- quick subtle scale+fade.
 hl.layer_rule({
     name      = "kw-calendar",
     match     = { namespace = "^kw-calendar$" },
     order     = 1,
-    animation = "slide top",
+    animation = "popin 95%",
 })
 
--- ── eww wifi panel: same popover treatment as the calendar ───
--- mac-style: quick subtle scale+fade, not the calendar's slide
 hl.layer_rule({
     name      = "kw-wifi",
     match     = { namespace = "^kw-wifi$" },
