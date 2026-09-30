@@ -69,7 +69,6 @@ if [[ ${1:-} == --warm ]]; then
 fi
 
 [[ -n $list ]] || ((npins)) || exit 0
-~/.local/bin/kw-sound -v .55 -g 300 completion-rotation &
 entries=()
 [[ -n $list ]] && mapfile -t entries <<<"$list"
 
@@ -220,7 +219,6 @@ if ((idx < npins)); then
         if ((rc == 0)); then paste_into_target; fi
         ;;
     10 | 12)
-        ~/.local/bin/kw-sound -v .6 -g 80 button-pressed &
         unpin
         exec "$0"
         ;;
@@ -239,13 +237,11 @@ case $rc in
     if ((rc == 0)); then paste_into_target; fi
     ;;
 10)
-    ~/.local/bin/kw-sound -v .6 -g 80 button-pressed &
     cliphist delete <<<"$line"
     rm -f "$thumbs/${line%%$'\t'*}.png"
     exec "$0"
     ;;
 12)
-    ~/.local/bin/kw-sound -v .6 -g 80 button-pressed &
     pin_entry
     exec "$0"
     ;;
