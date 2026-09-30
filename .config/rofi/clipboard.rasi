@@ -18,6 +18,13 @@ element-icon {
     size:                64px;
 }
 
+/* Pinned rows (rofi -a): accent text, push-pin icon on text pins */
+element normal.active,
+element alternate.active,
+element selected.active {
+    text-color:          @accent;
+}
+
 entry {
     placeholder:         "Search clipboard…";
 }
