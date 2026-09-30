@@ -53,6 +53,14 @@
   padding: 3px;
 }
 
+/* Shown only while the default mic is muted: easy to miss on a call otherwise */
+.bar-mic {
+  background: rgba($error, 0.14);
+  &:hover {
+    background: rgba($error, 0.22);
+  }
+}
+
 .bar-bat {
   &.charging .bar-text {
     color: $success;
