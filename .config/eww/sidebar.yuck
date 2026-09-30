@@ -4,7 +4,7 @@
 
 ;; --- data sources ------------------------------------------------------------
 
-(defpoll kw-time      :interval "30s"  :initial "--:--"                                   "date '+%H:%M'")
+(defpoll kw-time      :interval "30s"  :initial "--:--"                                   "date '+%I:%M'")
 (defpoll kw-date      :interval "60s"  :initial ""                                        "date '+%A, %b %-d'")
 
 (defpoll sys-stats    :interval "5s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
