@@ -49,7 +49,7 @@ launch_all() {
 
   # pkill -x eww doesn't reach deflisten children (bash/python); orphaned to
   # PID 1 they idle forever since they only write on events. Reap them here.
-  pkill -f "$HOME/.config/eww/scripts/(bar/|net/|wifi/|vol-listen)" 2>/dev/null || true
+  pkill -f "$HOME/.config/eww/scripts/(bar/|net/|wifi/)" 2>/dev/null || true
   # ...and the long-lived CLIs those listeners spawn: killing the wrapper
   # orphans them and they only die on their next (possibly never) write.
   pkill -f 'playerctl --follow' 2>/dev/null || true

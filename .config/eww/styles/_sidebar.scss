@@ -1,11 +1,11 @@
-/* Sidebar - frame, sections, icon buttons, clock, rings, sliders. */
+/* Sidebar - header, rings, quick-settings tiles, media, notifications, power row. */
 
 .kw-sidebar {
   background-color: $bg-0;
   border: none;
   border-right: 1px solid $border-soft;
   border-radius: 0;
-  padding: 20px;
+  padding: 18px 16px 14px 16px;
   margin: 0;
   color: $fg-0;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
@@ -13,93 +13,69 @@
 
 .kw-section-title {
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 600;
   color: $fg-1;
-  letter-spacing: 1.4px;
-  padding: 0 4px;
-  margin-bottom: 2px;
+  letter-spacing: 0.3px;
+  padding: 0 2px;
 }
 
-.kw-icon-button {
-  background-color: $bg-1;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 18px 18px;
-  background-clip: border-box;
-  border: 1px solid $border-soft;
-  border-radius: 10px;
-  padding: 6px;
-  min-width: 34px;
-  min-height: 34px;
-  outline: none;
-  box-shadow: none;
-  text-shadow: none;
-  -gtk-icon-shadow: none;
-  transition: $t-fast ease;
-
-  &:hover {
-    background-color: $bg-2;
-    border-color: rgba($accent, 0.35);
-  }
-
-  &:active {
-    background-color: $bg-2;
-    border-color: rgba($accent, 0.55);
-  }
-
-  &.connected {
-    background-color: rgba($success, 0.08);
-    border-color: rgba($success, 0.55);
-  }
-  &.connecting {
-    background-color: rgba($warning, 0.08);
-    border-color: rgba($warning, 0.55);
-  }
-
-  &.danger:hover {
-    border-color: rgba($error, 0.45);
-  }
-  &.armed,
-  &.armed:hover {
-    background-color: rgba($error, 0.16);
-    border-color: rgba($error, 0.75);
-  }
-}
-
-/* Clock */
-.kw-clock {
-  margin: 4px 0 2px 0;
-  padding: 8px 0 4px 0;
-  background-color: transparent;
-  border: none;
+/* Header: clock left, battery right */
+.kw-header {
+  padding: 0 2px;
 }
 .kw-clock-time {
   color: $fg-hi;
   font-family: $font-mono;
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 300;
-  letter-spacing: 0;
-  text-shadow: 0 0 18px rgba($accent, 0.35);
+  font-feature-settings: "tnum";
 }
 .kw-clock-date {
   color: $fg-1;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: 2px;
-  margin-top: 2px;
 }
 
-/* Rings (CPU/RAM/TEMP) */
-.kw-ring-row {
-  padding: 4px 0;
+.kw-battery-icon {
+  min-width: 16px;
+  min-height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
 }
-.kw-ring,
-.kw-ring-cpu,
-.kw-ring-mem,
-.kw-ring-temp {
+.kw-battery-pct {
   color: $fg-hi;
-  background-color: rgba(255, 255, 255, 0.06);
-  font-size: 10px;
+  font-family: $font-mono;
+  font-size: 15px;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+
+  &.charging {
+    color: $success;
+  }
+}
+.kw-battery-time {
+  color: $fg-1;
+  font-size: 11px;
+}
+
+/* Rings (CPU/RAM/TEMP): `color` paints the arc, background-color the track */
+.kw-ring-row {
+  background-color: $bg-1;
+  border: 1px solid $border-soft;
+  border-radius: 14px;
+  padding: 12px 4px 10px 4px;
+}
+.kw-ring {
+  color: $fg-hi;
+  background-color: rgba(255, 255, 255, 0.07);
+
+  &.warn {
+    color: $warning;
+  }
+  &.crit {
+    color: $error;
+  }
 }
 .kw-ring-val {
   color: $fg-hi;
@@ -110,84 +86,88 @@
 }
 .kw-ring-label {
   color: $fg-1;
-  font-size: 9px;
-  letter-spacing: 1.2px;
+  font-size: 10px;
   font-weight: 600;
+  letter-spacing: 0.4px;
 }
 
-/* Sliders */
-.kw-slider-row {
-  padding: 2px 0;
-}
-.kw-slider-icon {
-  min-width: 16px;
-  min-height: 16px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 16px 16px;
-}
-.kw-slider {
-  padding: 6px 0;
-  min-height: 18px;
+/* Quick-settings tiles */
+.kw-tile {
+  background-color: $bg-1;
+  background-image: none;
+  border: 1px solid $border-soft;
+  border-radius: 12px;
+  padding: 7px 12px;
+  outline: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  transition:
+    background-color $t-fast ease,
+    border-color $t-fast ease;
 
-  trough {
-    min-height: 4px;
-    border-radius: 999px;
-    background-color: rgba(255, 255, 255, 0.12);
-    background-image: none;
-    border: none;
-    box-shadow: none;
+  &:hover {
+    background-color: $bg-2;
+    border-color: rgba(255, 255, 255, 0.14);
+  }
 
-    highlight,
-    highlight:hover,
-    highlight:disabled {
-      background-color: $fg-hi;
-      background-image: none;
-      border-radius: 999px;
-      border: none;
-      box-shadow: none;
-      min-height: 4px;
+  &.connected {
+    background-color: rgba($success, 0.1);
+    border-color: rgba($success, 0.3);
+
+    &:hover {
+      background-color: rgba($success, 0.15);
+    }
+    .kw-tile-state {
+      color: $success;
     }
   }
 
-  slider,
-  slider:hover,
-  slider:active,
-  slider:disabled {
-    background-color: $fg-hi;
-    background-image: none;
-    border: none;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-    min-width: 14px;
-    min-height: 14px;
-    border-radius: 999px;
-    margin: -6px;
-    padding: 0;
+  &.connecting {
+    background-color: rgba($warning, 0.08);
+    border-color: rgba($warning, 0.3);
+
+    .kw-tile-state {
+      color: $warning;
+    }
   }
 }
-.kw-slider-val {
+.kw-tile-icon {
+  min-width: 18px;
+  min-height: 18px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+}
+.kw-tile-label {
+  color: $fg-hi;
+  font-size: 12px;
+  font-weight: 600;
+}
+.kw-tile-state {
   color: $fg-1;
-  font-family: $font-mono;
-  font-size: 10px;
-  font-feature-settings: "tnum";
-  min-width: 28px;
+  font-size: 11px;
 }
 
 /* Media card */
 .kw-media {
   background-color: $bg-1;
   border: 1px solid $border-soft;
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 14px;
+  padding: 10px;
 }
 .kw-media-art {
-  min-width: 44px;
-  min-height: 44px;
-  border-radius: 8px;
+  min-width: 52px;
+  min-height: 52px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.05);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+
+  &.empty {
+    background-size: 24px 24px;
+  }
 }
 .kw-media-title {
   color: $fg-hi;
@@ -196,37 +176,44 @@
 }
 .kw-media-artist {
   color: $fg-1;
-  font-size: 10px;
-  letter-spacing: 0.4px;
+  font-size: 11px;
 }
 .kw-media-btn {
-  background: transparent;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px 16px;
   border: none;
-  border-radius: 8px;
-  padding: 2px 0;
-  color: $fg-0;
-  font-family: $font-mono;
-  font-size: 15px;
-  transition: $t-fast ease;
+  border-radius: 999px;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+  min-width: 28px;
+  min-height: 28px;
+  transition: background-color $t-fast ease;
+
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: $fg-hi;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 }
 .kw-media-play {
-  color: $accent;
-  font-size: 17px;
+  background-color: $fg-hi;
+  background-size: 14px 14px;
+
+  &:hover {
+    background-color: $fg-0;
+  }
 }
 
 /* Notification history */
 .kw-notif-clear {
   background: transparent;
   border: none;
+  box-shadow: none;
   border-radius: 6px;
   padding: 0 6px;
   color: $fg-1;
-  font-size: 10px;
-  letter-spacing: 0.8px;
+  font-size: 11px;
   transition: $t-fast ease;
   &:hover {
     color: $error;
@@ -236,42 +223,51 @@
 .kw-notif {
   background-color: $bg-1;
   border: 1px solid $border-soft;
-  border-radius: 10px;
-  padding: 7px 10px;
+  border-radius: 12px;
+  padding: 7px 12px;
 }
 .kw-notif-app {
   color: $fg-1;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  font-size: 10px;
+  font-weight: 600;
 }
 .kw-notif-summary {
   color: $fg-0;
-  font-size: 11px;
+  font-size: 12px;
 }
 
-/* Battery detail */
-.kw-battery {
-  padding: 0 4px;
+/* Power row (footer) */
+.kw-power-row {
+  border-top: 1px solid $border-soft;
+  padding-top: 12px;
 }
-.kw-battery-pct {
-  color: $fg-hi;
-  font-family: $font-mono;
-  font-size: 13px;
-  font-weight: 600;
-  font-feature-settings: "tnum";
+.kw-icon-button {
+  background-color: $bg-1;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 18px 18px;
+  background-clip: border-box;
+  border: 1px solid $border-soft;
+  border-radius: 12px;
+  padding: 0;
+  min-height: 36px;
+  outline: none;
+  box-shadow: none;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+  transition: $t-fast ease;
 
-  &.charging {
-    color: $success;
+  &:hover {
+    background-color: $bg-2;
+    border-color: rgba(255, 255, 255, 0.14);
   }
-}
-.kw-battery-health {
-  color: $fg-1;
-  font-size: 10px;
-  font-feature-settings: "tnum";
-}
-.kw-battery-time {
-  color: $fg-1;
-  font-size: 10px;
-  letter-spacing: 0.4px;
+
+  &.danger:hover {
+    border-color: rgba($error, 0.45);
+  }
+  &.armed,
+  &.armed:hover {
+    background-color: rgba($error, 0.16);
+    border-color: rgba($error, 0.75);
+  }
 }
