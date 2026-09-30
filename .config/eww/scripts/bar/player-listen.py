@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Now-playing for the bar's `deflisten`, with an infinite marquee.
+"""Now-playing for the sidebar media card's `deflisten`.
 
-Emits {"status", "title", "artist", "label", "display"}; `display` is a
-fixed-width window that slides through long titles while Playing (paused
-/ short titles / no player = no ticking, purely event-driven).
+Emits {"status", "title", "artist", "art"} on every player change; purely
+event-driven, nothing ticks.
 """
 
 import glob
@@ -15,13 +14,7 @@ import subprocess
 import sys
 import time
 
-WINDOW = 22  # chars visible in the bar label (monospace)
-SEP = "  \u2022  "  # gap between end and restart of the loop
-TICK = 0.35  # marquee step seconds
-
-EMPTY = {
-    "status": "", "title": "", "artist": "", "label": "", "art": "", "display": "",
-}
+EMPTY = {"status": "", "title": "", "artist": "", "art": ""}
 
 
 def pctl(*args: str) -> str:
@@ -60,30 +53,12 @@ def state() -> dict:
         return dict(EMPTY)
     title = pctl("metadata", "title")
     artist = pctl("metadata", "artist")
-    label = f"{artist} \u00b7 {title}" if artist else title
     art = art_path(pctl("metadata", "mpris:artUrl"))
-    return {
-        "status": status, "title": title, "artist": artist, "label": label, "art": art,
-    }
+    return {"status": status, "title": title, "artist": artist, "art": art}
 
 
-def display(cur: dict, offset: int) -> str:
-    text = cur["label"]
-    if len(text) <= WINDOW:
-        return text
-    loop = text + SEP
-    doubled = loop + loop
-    return doubled[offset % len(loop) : offset % len(loop) + WINDOW]
-
-
-def scrolling(cur: dict) -> bool:
-    return cur["status"] == "Playing" and len(cur["label"]) > WINDOW
-
-
-def emit(cur: dict, offset: int) -> None:
-    out = dict(cur)
-    out["display"] = display(cur, offset) if cur["status"] else ""
-    sys.stdout.write(json.dumps(out, separators=(",", ":")) + "\n")
+def emit(cur: dict) -> None:
+    sys.stdout.write(json.dumps(cur, separators=(",", ":")) + "\n")
     sys.stdout.flush()
 
 
@@ -106,25 +81,20 @@ def main() -> None:
         text=True,
     )
     cur = state()
-    offset = 0
-    emit(cur, offset)
+    emit(cur)
 
     while True:
-        timeout = TICK if scrolling(cur) else None
-        ready, _, _ = select.select([proc.stdout], [], [], timeout)
-        if ready:
+        if not proc.stdout.readline():
+            return  # playerctl went away
+        # Coalesce bursts (track changes fire several updates).
+        end = time.monotonic() + 0.2
+        while select.select([proc.stdout], [], [], max(0, end - time.monotonic()))[0]:
             if not proc.stdout.readline():
-                return  # playerctl went away
-            # Coalesce bursts (track changes fire several updates).
-            end = time.monotonic() + 0.2
-            while select.select([proc.stdout], [], [], max(0, end - time.monotonic()))[0]:
-                if not proc.stdout.readline():
-                    return
-            cur = state()
-            offset = 0
-        else:
-            offset += 1
-        emit(cur, offset)
+                return
+        new = state()
+        if new != cur:
+            cur = new
+            emit(cur)
 
 
 if __name__ == "__main__":

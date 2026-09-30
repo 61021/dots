@@ -10,14 +10,15 @@
   font-weight: 500;
 }
 
-/* Right-cluster rhythm: the box gap (2px) is the ONLY space between chips;
-   every chip uses the same 2px 8px padding, no margins. */
+/* Right-cluster rhythm: box gaps are the ONLY space between chips (6px
+   between blocks, 2px inside the status group); every chip uses the same
+   2px 8px padding, no margins. */
 .bar-stat {
   padding: 0;
 }
 
 .bar-tray {
-  padding: 0 6px;
+  padding: 0 4px;
 }
 
 /* Icons are CSS backgrounds, not `image` widgets: eww's image loads pixbufs
@@ -38,10 +39,18 @@
 }
 
 .bar-stat-btn {
-  @include chip;
+  @include chip(7px);
   &:active {
     background: rgba($accent, 0.1);
   }
+}
+
+/* Status group: audio, network, battery share one pill that mirrors the
+   workspace pill on the left. */
+.bar-group {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 9px;
+  padding: 3px;
 }
 
 .bar-bat {
@@ -57,7 +66,15 @@
 }
 
 .bar-launcher {
-  @include chip(8px, 4px 10px);
+  @include chip(9px, 0 11px);
+  background: rgba(255, 255, 255, 0.04);
+  min-height: 28px;
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+  &:active {
+    background: rgba($accent, 0.12);
+  }
 }
 
 .bar-launcher-text {
@@ -131,30 +148,6 @@
   @include chip(8px, 2px 10px);
   &:active {
     background: rgba($accent, 0.1);
-  }
-}
-
-/* Now playing - a quiet chip at the left of the right cluster; title only,
-   small and muted so it never competes with the stats. */
-.bar-player {
-  @include chip;
-}
-
-.bar-player-icon {
-  min-width: 13px;
-  min-height: 13px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 13px 13px;
-}
-
-.bar-player-label {
-  color: $fg-1;
-  font-family: $font-mono;
-  font-size: 10px;
-
-  &.paused {
-    color: rgba($fg-1, 0.6);
   }
 }
 

@@ -10,7 +10,6 @@
 
 (deflisten net :initial '{"icon":"/home/khaled/.config/eww/icons/wifi-x.svg","label":"--","tip":"","state":"offline","radio":true,"conn":{"ssid":"","signal":0,"icon":"wifi-none","sec":false,"band":"","ip":"","sub":""},"busy":"","scanning":false}' "~/.config/eww/scripts/net/nm-listen.py")
 (deflisten bar-audio  :initial '{"icon":"/home/khaled/.config/eww/icons/speaker-none.svg","label":"--"}' "~/.config/eww/scripts/bar/audio-listen.sh")
-(deflisten bar-player :initial '{"status":"","title":"","artist":"","label":"","art":"","display":"","album":"","player":"","shuffle":"","loop":""}' "~/.config/eww/scripts/bar/player-listen.py")
 (deflisten bar-workspaces :initial "[]" "~/.config/eww/scripts/bar/workspaces.py")
 
 ;; --- building blocks ---------------------------------------------------------
@@ -34,8 +33,9 @@
             (label :class "bar-ws-empty" :text "·" :visible {arraylength(ws.icons) == 0} :show-truncated false)))))))
 
 (defwidget bar-left [monitor]
-  (box :orientation "h" :space-evenly false :spacing 4 :halign "start" :valign "center"
+  (box :orientation "h" :space-evenly false :spacing 6 :halign "start" :valign "center"
     (button :class "bar-launcher"
+            :tooltip "Control center (right-click: lock)"
             :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh &"
             :onrightclick "~/.local/bin/kw-lock --grace 0 &"
       (label :class "bar-launcher-text" :text "KW" :show-truncated false))
@@ -50,31 +50,22 @@
         (label :class "bar-date" :text bar-date)))))
 
 (defwidget bar-right []
-  (box :orientation "h" :space-evenly false :spacing 2 :halign "end" :valign "center"
-    (button :class "bar-player"
-            :visible {bar-player.status != ""}
-            :tooltip {bar-player.label}
-            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
-            :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next"
-      (box :orientation "h" :space-evenly false :spacing 5 :valign "center"
-        (box :class "bar-player-icon" :valign "center"
-             :style "background-image: url('${EWW_CONFIG_DIR}/icons/music-notes${bar-player.status == "Playing" ? "-active" : ""}.svg');")
-        (label :class "bar-player-label${bar-player.status == "Playing" ? "" : " paused"}"
-               :text {bar-player.display} :show-truncated false)))
-    (systray :class "bar-tray" :spacing 6 :icon-size 16 :prepend-new true)
-    (eventbox :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
+  (box :orientation "h" :space-evenly false :spacing 6 :halign "end" :valign "center"
+    (systray :class "bar-tray" :spacing 8 :icon-size 16 :prepend-new true)
+    (box :class "bar-group" :orientation "h" :space-evenly false :spacing 2 :valign "center"
+      (eventbox :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
+        (button :class "bar-stat-btn"
+                :tooltip "Toggle mute (scroll to change volume)"
+                :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
+                :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
+          (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
       (button :class "bar-stat-btn"
-              :tooltip "Toggle mute (scroll to change volume)"
-              :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
-              :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
-        (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
-    (button :class "bar-stat-btn"
-            :tooltip {net.tip}
-            :timeout "2s"
-            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
-      (bar-stat :icon {net.icon} :text {net.label}))
-    (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
-      (bar-stat :icon {bar-bat.icon} :text {bar-bat.label}))))
+              :tooltip {net.tip}
+              :timeout "2s"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
+        (bar-stat :icon {net.icon} :text {net.label}))
+      (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
+        (bar-stat :icon {bar-bat.icon} :text {bar-bat.label})))))
 
 (defwidget kw-bar [monitor]
   (centerbox :class "kw-bar" :orientation "h"

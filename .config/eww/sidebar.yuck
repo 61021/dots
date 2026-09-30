@@ -10,6 +10,7 @@
 (defpoll sys-stats    :interval "5s"   :initial '{"cpu":0,"mem":0,"temp":0}'              "~/.config/eww/scripts/sys-stats.sh")
 (defpoll bat-detail   :interval "30s"  :initial '{"percent":-1,"status":"","charging":false,"time":"","health":0}' "~/.config/eww/scripts/battery-detail.sh")
 (defpoll notif-hist   :interval "20s"  :initial "[]"                                      "~/.config/eww/scripts/kw-notif-history.sh")
+(deflisten bar-player :initial '{"status":"","title":"","artist":"","art":""}' "~/.config/eww/scripts/bar/player-listen.py")
 
 (defvar power-arm "")
 
