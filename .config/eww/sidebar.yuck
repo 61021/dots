@@ -19,6 +19,7 @@
 ;; Single JSON poll per service; eww parses the fields (vpn.class / vpn.tooltip).
 ;; kw-refresh.sh pushes instant state on click; the poll only catches external changes.
 (defpoll vpn  :interval "15s" :initial '{"text":"VPN","class":"disconnected","tooltip":"VPN","alt":"disconnected"}'  "~/.config/eww/scripts/vpn.sh")
+(defpoll metered :interval "15s" :initial '{"class":"disconnected","tooltip":"Metered"}' "~/.config/eww/scripts/metered.sh")
 (defpoll warp :interval "15s" :initial '{"text":"WARP","class":"disconnected","tooltip":"WARP","alt":"disconnected"}' "~/.config/eww/scripts/warp.sh")
 
 (defpoll bt-state   :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh bt")
@@ -165,7 +166,12 @@
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"
           :tooltip {warp.tooltip}
           :state {warp.class}
-          :onclick "~/.config/eww/scripts/warp-toggle.sh")))
+          :onclick "~/.config/eww/scripts/warp-toggle.sh")
+        (kw-icon-button
+          :icon "${EWW_CONFIG_DIR}/icons/gauge.svg"
+          :tooltip {metered.tooltip}
+          :state {metered.class}
+          :onclick "~/.config/eww/scripts/metered.sh toggle &")))
 
     (kw-section :title "COMFORT"
       (box :orientation "h" :space-evenly false :spacing 8 :halign "start"
