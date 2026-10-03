@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Toggle hyprsunset warm filter (3000K) via IPC against the persistent daemon
-# (started by hyprland.conf exec-once). Falls back to spawning one if absent.
+# (started by hyprland.lua on startup). Falls back to spawning one if absent.
 TEMP=3000
 
 if ! pgrep -x hyprsunset >/dev/null 2>&1; then

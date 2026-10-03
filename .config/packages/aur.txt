@@ -9,7 +9,6 @@ eww
 figma-agent-linux-bin
 figma-linux
 flaresolverr
-hyprmod-git
 jellyfin-desktop
 jellyseerr
 lidarr-bin

@@ -19,6 +19,6 @@
 
 ## Files to update when changing a value
 
-- `~/stuff/constants/colors/hypr.conf` (Hyprland border colors)
+- `~/stuff/constants/colors/hypr.lua` (Hyprland border colors)
 - `~/stuff/constants/colors/rofi.rasi` (Rofi palette)
 - `~/stuff/constants/colors/eww.scss` (eww SCSS variables)

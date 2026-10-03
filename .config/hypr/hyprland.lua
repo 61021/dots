@@ -1,10 +1,8 @@
 -- ─────────────────────────────────────────────────────────────
--- Hyprland config (Lua), ported from hyprland.conf on 2026-07-29
--- (hyprlang .conf support is deprecated, removed in Hyprland 0.57)
+-- Hyprland config (Lua)
 --
 -- API stubs for the LSP: /usr/share/hypr/stubs/hl.meta.lua
 -- Docs: https://wiki.hypr.land/Configuring/Start/
--- Old config kept alongside for rollback: hyprland.conf
 -- ─────────────────────────────────────────────────────────────
 
 ------------------
@@ -143,7 +141,7 @@ hl.config({
         resize_on_border = true,
         allow_tearing    = false,
         layout           = "master",
-        snap = { enabled = true },  -- inlined from HyprMod (hyprland-gui.conf)
+        snap = { enabled = true },
     },
 
     decoration = {
@@ -186,8 +184,6 @@ hl.config({
         -- VRR where the display supports it (eDP): small power win, no-op on the fixed-rate externals
         vrr = 1,
 
-        -- Inlined from HyprMod (hyprland-gui.conf) on 2026-07-29: HyprMod
-        -- writes hyprlang and can't manage a Lua config; edit these here.
         animate_mouse_windowdragging = true,
         disable_splash_rendering     = true,
         -- false = attention requests mark the workspace urgent (red pill in
@@ -196,7 +192,7 @@ hl.config({
         focus_on_activate = false,
     },
 
-    ecosystem = {  -- inlined from HyprMod (hyprland-gui.conf)
+    ecosystem = {
         enforce_permissions = true,
         no_donation_nag     = true,
     },
@@ -236,7 +232,7 @@ hl.config({
 
         sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
 
-        repeat_rate = 50,  -- inlined from HyprMod (hyprland-gui.conf)
+        repeat_rate = 50,
 
         touchpad = {
             natural_scroll = false,
