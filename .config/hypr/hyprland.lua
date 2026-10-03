@@ -12,8 +12,8 @@
 ------------------
 
 -- Layout is managed by ~/.config/hypr/scripts/apply-monitor-profile.sh via
--- `hyprctl eval 'hl.monitor(...)'` (do not run nwg-displays; it writes the
--- old monitors.conf). Static fallback only: the profile script overrides
+-- `hyprctl eval 'hl.monitor(...)'` (do not run nwg-displays; it writes
+-- hyprlang). Static fallback only: the profile script overrides
 -- these on startup and every hotplug. Keeps eDP-1 at the right scale/rate
 -- if the watcher ever dies.
 hl.monitor({ output = "eDP-1", mode = "2880x1800@120", position = "0x0", scale = 2.0 })
