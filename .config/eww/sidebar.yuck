@@ -125,9 +125,17 @@
           (label :text "Clear"))))
     (box :orientation "v" :space-evenly false :spacing 6
       (for n in notif-hist
-        (box :class "kw-notif" :orientation "v" :space-evenly false :spacing 2
-          (label :class "kw-notif-app"     :text {n.app}     :xalign 0 :limit-width 30 :show-truncated true)
-          (label :class "kw-notif-summary" :text {n.summary} :xalign 0 :limit-width 32 :show-truncated true))))))
+        (eventbox :cursor "pointer"
+          (button :class "kw-notif" :tooltip "Dismiss"
+                  :onclick "(for id in ${n.ids}; do dunstctl history-rm $id; done; ~/.config/eww/scripts/kw-refresh.sh notif) &"
+            (box :orientation "v" :space-evenly false :spacing 2
+              (box :orientation "h" :space-evenly false :spacing 6
+                (label :class "kw-notif-app" :xalign 0 :hexpand true :limit-width 26 :show-truncated true
+                       :text {n.count > 1 ? "${n.app} (${n.count})" : n.app})
+                (label :class "kw-notif-age" :text {n.age})
+                (box :class "kw-notif-x" :valign "center"
+                     :style "background-image: url('${EWW_CONFIG_DIR}/icons/x.svg');"))
+              (label :class "kw-notif-summary" :text {n.summary} :xalign 0 :limit-width 32 :show-truncated true))))))))
 
 (defwidget kw-power-row []
   (box :class "kw-power-row" :orientation "h" :space-evenly true :spacing 6

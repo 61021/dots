@@ -218,16 +218,47 @@
     background: rgba($error, 0.08);
   }
 }
+/* Each card is a button: click dismisses it (and its collapsed duplicates). */
 .kw-notif {
   background-color: $bg-1;
+  background-image: none;
   border: 1px solid $border-soft;
   border-radius: 12px;
   padding: 7px 12px;
+  outline: none;
+  box-shadow: none;
+  text-shadow: none;
+  transition:
+    background-color $t-fast ease,
+    border-color $t-fast ease;
+
+  &:hover {
+    background-color: $bg-2;
+    border-color: rgba(255, 255, 255, 0.14);
+
+    .kw-notif-x {
+      opacity: 0.7;
+    }
+  }
 }
 .kw-notif-app {
   color: $fg-1;
   font-size: 10px;
   font-weight: 600;
+}
+.kw-notif-age {
+  color: $fg-1;
+  font-size: 10px;
+  font-feature-settings: "tnum";
+}
+.kw-notif-x {
+  min-width: 10px;
+  min-height: 10px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 10px 10px;
+  opacity: 0;
+  transition: opacity $t-fast ease;
 }
 .kw-notif-summary {
   color: $fg-0;
