@@ -37,7 +37,7 @@
     (eventbox :cursor "pointer"
       (button :class "bar-launcher"
               :tooltip "Control center (right-click: lock)"
-              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh &"
+              :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh &"
               :onrightclick "~/.local/bin/kw-lock --grace 0 &"
         (label :class "bar-launcher-text" :text "KW" :show-truncated false)))
     (bar-workspaces :monitor monitor)))
@@ -46,7 +46,7 @@
   (box :orientation "h" :halign "center" :valign "center"
     (eventbox :cursor "pointer"
       (button :class "bar-clock-btn"
-              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-calendar.sh &"
+              :onclick "~/.config/eww/scripts/kw-calendar.sh &"
         (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
           (label :class "bar-time" :text bar-time)
           (label :class "bar-date" :text bar-date))))))
@@ -65,13 +65,13 @@
         (button :class "bar-stat-btn"
                 :tooltip "Toggle mute (scroll to change volume)"
                 :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
-                :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
+                :onrightclick "pavucontrol &"
           (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
       (eventbox :cursor "pointer"
         (button :class "bar-stat-btn"
                 :tooltip {net.tip}
                 :timeout "2s"
-                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
+                :onclick "~/.config/eww/scripts/kw-wifi.sh"
           (bar-stat :icon {net.icon} :text {net.label})))
       (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
         (bar-stat :icon {bar-bat.icon} :text {bar-bat.label})))))

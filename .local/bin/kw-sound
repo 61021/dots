@@ -44,7 +44,6 @@ scaled_vol() { awk -v v="$1" -v m="$MASTER_GAIN" 'BEGIN{printf "%.2f", v*m}'; }
 # Every event@volume pair wired on this box, preloaded at service start so
 # the first click after boot is as instant as the hundredth. "vol event [fallback...]"
 PRELOAD=(
-  '0.60 button-pressed'                      # eww / bar / panel button clicks
   '0.55 completion-rotation'                 # launcher / clipboard picker opens
   '0.85 message-attention window-attention'  # urgent window
   '0.50 message'                             # dunst LOW urgency

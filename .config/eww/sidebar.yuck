@@ -32,7 +32,7 @@
     (button
       :class "kw-icon-button"
       :tooltip tooltip
-      :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
+      :onclick onclick
       :style "background-image: url('${icon}');")))
 
 ;; Destructive power action: first click arms (red) for 3s, second executes.
@@ -51,7 +51,7 @@
     (button
       :class "kw-tile ${state}"
       :tooltip {tooltip ?: label}
-      :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
+      :onclick onclick
       (box :orientation "h" :space-evenly false :spacing 10
         (box :class "kw-tile-icon" :valign "center"
              :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');")
@@ -107,15 +107,15 @@
       (box :class "kw-media-controls" :orientation "h" :space-evenly false :spacing 4 :halign "start"
         (eventbox :cursor "pointer"
           (button :class "kw-media-btn" :tooltip "Previous"
-                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl previous"
+                  :onclick "playerctl previous"
                   :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-back.svg');"))
         (eventbox :cursor "pointer"
           (button :class "kw-media-btn kw-media-play" :tooltip {bar-player.status == "Playing" ? "Pause" : "Play"}
-                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
+                  :onclick "playerctl play-pause"
                   :style "background-image: url('${EWW_CONFIG_DIR}/icons/${bar-player.status == "Playing" ? "pause" : "play"}-ink.svg');"))
         (eventbox :cursor "pointer"
           (button :class "kw-media-btn" :tooltip "Next"
-                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next"
+                  :onclick "playerctl next"
                   :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-forward.svg');"))))))
 
 (defwidget kw-notifications []
@@ -125,7 +125,7 @@
       (label :class "kw-section-title" :xalign 0 :hexpand true :text "Notifications")
       (eventbox :cursor "pointer"
         (button :class "kw-notif-clear" :tooltip "Clear history"
-                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
+                :onclick "dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
           (label :text "Clear"))))
     (box :orientation "v" :space-evenly false :spacing 6
       (for n in notif-hist
@@ -242,5 +242,5 @@
   :namespace "kw-sidebar-bg"
   :geometry (geometry :x "0" :y "0" :width "100%" :height "100%" :anchor "top center")
   (eventbox :class "kw-backdrop"
-            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh close &"
+            :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close &"
     (box :hexpand true :vexpand true)))
