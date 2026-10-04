@@ -9,3 +9,4 @@ target
 .vite
 *.log
 .DS_Store
+/home/khaled/stuff/photos
