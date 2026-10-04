@@ -52,7 +52,7 @@ def build(offset: int) -> str:
         {
             "month": calendar.month_name[month],
             "year": str(year),
-            "sub": f"{calendar.day_name[today.weekday()]}, {calendar.month_name[today.month]} {today.day}",
+            "sub": f"{calendar.day_name[today.weekday()]} {today.day} {calendar.month_name[today.month]}",
             "off": offset,
             "days": days,
             "weeks": [
