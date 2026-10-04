@@ -1,0 +1,9 @@
+[Unit]
+Description=Check for a missing morning report at 10:30, or 45 minutes after login when that is later
+
+[Timer]
+OnCalendar=*-*-* 10:30
+OnStartupSec=45min
+
+[Install]
+WantedBy=timers.target

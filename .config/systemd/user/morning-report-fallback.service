@@ -1,0 +1,6 @@
+[Unit]
+Description=Render the morning report without Claude when the scheduled run left none
+
+[Service]
+Type=oneshot
+ExecStart=/home/khaled/stuff/code/personal/morning-report/run.sh fallback
