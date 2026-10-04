@@ -20,7 +20,7 @@ state=$(printf '%s' "$status_line" | sed -E 's/.*Status update:\s*//I')
 
 case "$state" in
   Connected)
-    tooltip="WARP connected\n${status_line}\n\nLeft-click: disconnect\nRight-click: status"
+    tooltip="WARP connected\n${status_line}\n\nLeft-click: disconnect"
     json "$icon_on  WARP" "connected" "$tooltip"
     ;;
   Connecting|"Connecting…"|"Connecting...")

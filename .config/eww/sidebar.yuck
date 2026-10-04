@@ -46,12 +46,13 @@
 ;; Quick-settings tile: icon, name and live state. `state` is the
 ;; connected/connecting/disconnected string every toggle source emits;
 ;; a non-empty `detail` (device, VPN name...) replaces the On/Off text.
-(defwidget kw-tile [icon label state onclick ?tooltip ?detail]
+(defwidget kw-tile [icon label state onclick ?tooltip ?detail ?onrightclick]
   (eventbox :cursor "pointer" :hexpand true
     (button
       :class "kw-tile ${state}"
       :tooltip {tooltip ?: label}
       :onclick onclick
+      :onrightclick {onrightclick ?: "true"}
       (box :orientation "h" :space-evenly false :spacing 10
         (box :class "kw-tile-icon" :valign "center"
              :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');")
@@ -159,16 +160,19 @@
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
           :label "Bluetooth"
+          :tooltip "${bt-state.detail ?: "Bluetooth"} (right-click: settings)"
           :state {bt-state.state}
           :detail {bt-state.detail}
-          :onclick "(rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth); ~/.config/eww/scripts/kw-refresh.sh bt")
+          :onclick "(rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth); ~/.config/eww/scripts/kw-refresh.sh bt"
+          :onrightclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & setsid -f blueman-manager >/dev/null 2>&1 &")
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
           :label "VPN"
           :tooltip {vpn.tooltip}
           :state {vpn.class}
           :detail {vpn.detail}
-          :onclick "~/.config/eww/scripts/vpn-toggle.sh; ~/.config/eww/scripts/kw-refresh.sh vpn"))
+          :onclick "~/.config/eww/scripts/vpn-toggle.sh; ~/.config/eww/scripts/kw-refresh.sh vpn"
+          :onrightclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & ~/.config/eww/scripts/vpn.sh settings &"))
       (box :orientation "h" :space-evenly true :spacing 8
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/cloud-check.svg"

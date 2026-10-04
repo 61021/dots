@@ -4,6 +4,12 @@
 set -u
 
 conn="dev2-uat-vpn"
+
+if [ "${1:-}" = "settings" ]; then
+  uuid=$(nmcli -g connection.uuid connection show "$conn" 2>/dev/null)
+  setsid -f nm-connection-editor ${uuid:+--edit="$uuid"} >/dev/null 2>&1
+  exit 0
+fi
 state_dir="${XDG_RUNTIME_DIR:-/tmp}/eww-vpn"
 mkdir -p "$state_dir"
 connecting_flag="$state_dir/connecting"
@@ -30,17 +36,17 @@ if [ "$gstate" = "activated" ]; then
   fi
   [ -z "$dev" ] && dev="tun0"
   [ -z "$ip_addr" ] && ip_addr="n/a"
-  tooltip="VPN connected\nInterface: ${dev}\nIP: ${ip_addr}\n\nLeft-click: disconnect"
+  tooltip="VPN connected\nInterface: ${dev}\nIP: ${ip_addr}\n\nLeft-click: disconnect\nRight-click: settings"
   json "$icon_on  VPN" "connected" "$tooltip" "${conn%-vpn}"
 elif [ "$gstate" = "activating" ] || [ -f "$connecting_flag" ]; then
   # Drop a stale connecting flag (older than 1 min with nothing activating).
   if [ "$gstate" != "activating" ] && [ -f "$connecting_flag" ] \
      && [ -n "$(find "$connecting_flag" -mmin +1 2>/dev/null)" ]; then
     rm -f "$connecting_flag"
-    json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect"
+    json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect\nRight-click: settings"
   else
     json "$icon_wait  VPN" "connecting" "Connecting to VPN…\n\nLeft-click: cancel"
   fi
 else
-  json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect\nRight-click: view log"
+  json "$icon_off  VPN" "disconnected" "VPN disconnected\n\nLeft-click: connect\nRight-click: settings"
 fi
