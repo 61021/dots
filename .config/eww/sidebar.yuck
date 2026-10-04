@@ -136,10 +136,6 @@
 (defwidget kw-power-row []
   (box :class "kw-power-row" :orientation "h" :space-evenly true :spacing 6
     (kw-icon-button
-      :icon "${EWW_CONFIG_DIR}/icons/arrow-clockwise.svg"
-      :tooltip "Reload Hyprland"
-      :onclick "(hyprctl reload >/dev/null; ~/.config/eww/scripts/kw-sidebar-toggle.sh close) &")
-    (kw-icon-button
       :icon "${EWW_CONFIG_DIR}/icons/lock-key.svg"
       :tooltip "Lock screen"
       :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & ~/.local/bin/kw-lock &")
