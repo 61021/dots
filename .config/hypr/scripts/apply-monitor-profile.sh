@@ -80,6 +80,7 @@ rem=$((total_ws % nmon))
 # so re-applying on every hotplug doesn't stack duplicates.
 moves=()
 rules=()
+firsts=()
 ws=1
 for idx in "${!active_mons[@]}"; do
   mon="${active_mons[$idx]}"
@@ -89,6 +90,7 @@ for idx in "${!active_mons[@]}"; do
   for ((i = 0; i < count; i++)); do
     moves+=("pcall(function() hl.dispatch(hl.dsp.workspace.move({ workspace = ${ws}, monitor = [[${mon}]] })) end)")
     if [[ $first -eq 1 ]]; then
+      firsts+=("$ws")
       rules+=("hl.workspace_rule({ workspace = [[${ws}]], monitor = [[${mon}]], default = true, persistent = true })")
       first=0
     else
