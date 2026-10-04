@@ -105,10 +105,24 @@ if [[ ${#rules[@]} -gt 0 ]]; then
   hyprctl eval "$joined_ws" >/dev/null
 fi
 
+# `default = true` only acts at monitor creation and moves carry "visible" along, so show
+# each monitor's first workspace when the set changes (right-to-left: leftmost ends focused).
+state="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/kw-monitor-set"
+if [[ "$(cat "$state" 2>/dev/null)" != "${active_mons[*]}" ]]; then
+  focus=()
+  for ((idx = ${#firsts[@]} - 1; idx >= 0; idx--)); do
+    focus+=("hl.dispatch(hl.dsp.focus({ workspace = ${firsts[$idx]} }))")
+  done
+  printf -v joined_focus '%s\n' "${focus[@]}"
+  hyprctl eval "$joined_focus" >/dev/null
+  printf '%s\n' "${active_mons[*]}" >"$state"
+fi
+
 # Refresh bars (one per active monitor).
 ~/.config/eww/scripts/kw-bar-launch.sh >/dev/null 2>&1 || true
 
 # Work-mode (2+ externals) extras: warm up the work GitHub SSH key.
 if [[ "$n" -ge 2 ]]; then
-  ssh -T git@github.com-work >/dev/null 2>&1 || true
+  # Backgrounded: where SSH to GitHub is blocked this hangs ~2 min and the watcher drops hotplugs meanwhile.
+  ssh -o ConnectTimeout=10 -T git@github.com-work >/dev/null 2>&1 &
 fi
