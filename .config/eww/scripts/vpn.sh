@@ -13,9 +13,9 @@ icon_off=""   # nf-md-shield_off
 icon_wait="" # nf-md-shield_sync
 
 json() {
-  # $1 text, $2 class, $3 tooltip
-  printf '{"text":"%s","class":"%s","tooltip":"%s","alt":"%s"}\n' \
-    "$1" "$2" "$3" "$2"
+  # $1 text, $2 class, $3 tooltip, $4 tile detail (optional)
+  printf '{"text":"%s","class":"%s","tooltip":"%s","alt":"%s","detail":"%s"}\n' \
+    "$1" "$2" "$3" "$2" "${4:-}"
 }
 
 gstate=$(nmcli -g GENERAL.STATE connection show "$conn" 2>/dev/null | head -1)
@@ -31,7 +31,7 @@ if [ "$gstate" = "activated" ]; then
   [ -z "$dev" ] && dev="tun0"
   [ -z "$ip_addr" ] && ip_addr="n/a"
   tooltip="VPN connected\nInterface: ${dev}\nIP: ${ip_addr}\n\nLeft-click: disconnect"
-  json "$icon_on  VPN" "connected" "$tooltip"
+  json "$icon_on  VPN" "connected" "$tooltip" "${conn%-vpn}"
 elif [ "$gstate" = "activating" ] || [ -f "$connecting_flag" ]; then
   # Drop a stale connecting flag (older than 1 min with nothing activating).
   if [ "$gstate" != "activating" ] && [ -f "$connecting_flag" ] \

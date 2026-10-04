@@ -15,14 +15,14 @@
 
 ;; Single JSON poll per service; eww parses the fields (vpn.class / vpn.tooltip).
 ;; kw-refresh.sh pushes instant state on click; the poll only catches external changes.
-(defpoll vpn  :interval "15s" :initial '{"text":"VPN","class":"disconnected","tooltip":"VPN","alt":"disconnected"}'  "~/.config/eww/scripts/vpn.sh")
+(defpoll vpn  :interval "15s" :initial '{"text":"VPN","class":"disconnected","tooltip":"VPN","alt":"disconnected","detail":""}'  "~/.config/eww/scripts/vpn.sh")
 (defpoll metered :interval "15s" :initial '{"class":"disconnected","tooltip":"Data saver"}' "~/.config/eww/scripts/metered.sh")
 (defpoll warp :interval "15s" :initial '{"text":"WARP","class":"disconnected","tooltip":"WARP","alt":"disconnected"}' "~/.config/eww/scripts/warp.sh")
 
-(defpoll bt-state   :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh bt")
-(defpoll dnd-state  :interval "20s" :initial "connected"    "~/.config/eww/scripts/kw-state.sh dnd")
-(defpoll eye-state  :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh eye")
-(defpoll tv-state   :interval "20s" :initial "disconnected" "~/.config/eww/scripts/kw-state.sh tv")
+(defpoll bt-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh bt")
+(defpoll dnd-state  :interval "20s" :initial '{"state":"connected","detail":""}'    "~/.config/eww/scripts/kw-state.sh dnd")
+(defpoll eye-state  :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh eye")
+(defpoll tv-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh tv")
 
 ;; --- building blocks ---------------------------------------------------------
 
@@ -44,8 +44,9 @@
       :style "background-image: url('${icon}');")))
 
 ;; Quick-settings tile: icon, name and live state. `state` is the
-;; connected/connecting/disconnected string every toggle source emits.
-(defwidget kw-tile [icon label state onclick ?tooltip]
+;; connected/connecting/disconnected string every toggle source emits;
+;; a non-empty `detail` (device, VPN name...) replaces the On/Off text.
+(defwidget kw-tile [icon label state onclick ?tooltip ?detail]
   (eventbox :cursor "pointer" :hexpand true
     (button
       :class "kw-tile ${state}"
@@ -56,8 +57,8 @@
              :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');")
         (box :orientation "v" :space-evenly false :valign "center"
           (label :class "kw-tile-label" :text label :xalign 0 :show-truncated false)
-          (label :class "kw-tile-state" :xalign 0 :show-truncated false
-                 :text {state == "connected" ? "On" : state == "connecting" ? "Connecting" : "Off"}))))))
+          (label :class "kw-tile-state" :xalign 0 :limit-width 14 :show-truncated true
+                 :text {state == "connecting" ? "Connecting" : (detail ?: (state == "connected" ? "On" : "Off"))}))))))
 
 (defwidget kw-header []
   (box :class "kw-header" :orientation "h" :space-evenly false
@@ -158,13 +159,15 @@
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/bluetooth.svg"
           :label "Bluetooth"
-          :state bt-state
+          :state {bt-state.state}
+          :detail {bt-state.detail}
           :onclick "(rfkill list bluetooth | grep -q 'Soft blocked: no' && rfkill block bluetooth || rfkill unblock bluetooth); ~/.config/eww/scripts/kw-refresh.sh bt")
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/shield-check.svg"
           :label "VPN"
           :tooltip {vpn.tooltip}
           :state {vpn.class}
+          :detail {vpn.detail}
           :onclick "~/.config/eww/scripts/vpn-toggle.sh; ~/.config/eww/scripts/kw-refresh.sh vpn"))
       (box :orientation "h" :space-evenly true :spacing 8
         (kw-tile
@@ -184,19 +187,21 @@
           :icon "${EWW_CONFIG_DIR}/icons/bell.svg"
           :label "Notifications"
           :tooltip "Pause or resume notifications (dunst)"
-          :state dnd-state
+          :state {dnd-state.state}
+          :detail {dnd-state.detail}
           :onclick "dunstctl set-paused toggle; ~/.config/eww/scripts/kw-refresh.sh dnd")
         (kw-tile
           :icon "${EWW_CONFIG_DIR}/icons/moon.svg"
           :label "Eye comfort"
           :tooltip "Warm screen, no blue light"
-          :state eye-state
+          :state {eye-state.state}
+          :detail {eye-state.detail}
           :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh; sleep 0.2 && ~/.config/eww/scripts/kw-refresh.sh eye"))
       (kw-tile
         :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
         :label "TV mode"
         :tooltip "Screen off, stay awake, stop charging. ALT+SHIFT+T exits"
-        :state tv-state
+        :state {tv-state.state}
         :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv"))
 
     (kw-media)
