@@ -19,13 +19,13 @@ json() {
 
 status() {
   if [ -z "$line" ]; then
-    json disconnected "Metered: no connection"
+    json disconnected "Data saver: no connection"
     return
   fi
   m=$(nmcli -g GENERAL.METERED device show "$dev" 2>/dev/null)
   case "$m" in
-    yes*) json connected "Metered: on ($conn)\nDownloads paused\n\nClick: mark unmetered" ;;
-    *)    json disconnected "Metered: off ($conn)\n\nClick: mark metered" ;;
+    yes*) json connected "Data saver: on ($conn)\nDownloads paused\n\nClick: turn off" ;;
+    *)    json disconnected "Data saver: off ($conn)\n\nClick: turn on and pause downloads" ;;
   esac
 }
 
