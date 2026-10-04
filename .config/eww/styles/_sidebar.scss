@@ -19,18 +19,16 @@
   padding: 0 2px;
 }
 
-/* Header: clock left, battery right */
+/* Header: date left (the bar already shows the time), battery right */
 .kw-header {
   padding: 0 2px;
 }
-.kw-clock-time {
+.kw-header-day {
   color: $fg-hi;
-  font-family: $font-mono;
-  font-size: 30px;
-  font-weight: 300;
-  font-feature-settings: "tnum";
+  font-size: 18px;
+  font-weight: 600;
 }
-.kw-clock-date {
+.kw-header-date {
   color: $fg-1;
   font-size: 12px;
   font-weight: 500;
