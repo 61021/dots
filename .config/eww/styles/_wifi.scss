@@ -158,6 +158,13 @@ $wifi-w: 316px;
   background: rgba($accent, 0.08);
 }
 
+.wifi-row.armed {
+  background: rgba($error, 0.12);
+  &:hover {
+    background: rgba($error, 0.18);
+  }
+}
+
 .wifi-row-name {
   font-size: 13px;
   color: $fg-0;
@@ -166,6 +173,9 @@ $wifi-w: 316px;
 .wifi-row-status {
   font-size: 11px;
   color: $accent;
+  &.armed {
+    color: $error;
+  }
 }
 
 .wifi-row-lock {

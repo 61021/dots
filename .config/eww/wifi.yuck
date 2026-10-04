@@ -12,6 +12,8 @@
 (defvar kw-wifi-busy "")
 ;; Optimistic radio state ("on"/"off") while nmcli works; "" = trust `net.radio`.
 (defvar kw-wifi-radio "")
+;; SSID armed for forgetting: the first right-click arms, a second within 3s forgets.
+(defvar kw-wifi-forget "")
 
 (defwidget wifi-signal [icon ?active]
   (box :class "wifi-signal" :valign "center"
@@ -19,15 +21,16 @@
 
 (defwidget wifi-row [ap busy]
   (eventbox :cursor "pointer"
-    (button :class "wifi-row${busy ? " busy" : ""}"
-            :tooltip {ap.saved ? "Right-click to forget this network" : ""}
+    (button :class "wifi-row${busy ? " busy" : ""}${kw-wifi-forget == ap.ssid ? " armed" : ""}"
+            :tooltip {kw-wifi-forget == ap.ssid ? "Right-click again to forget" : ap.saved ? "Right-click to forget this network" : ""}
             :onclick "~/.config/eww/scripts/wifi/wifi-action.sh row-click '${replace(ap.ssid, "'", "'\"'\"'")}' ${ap.saved} ${ap.sec} ${ap.eap} '${ap.uuid}' &"
-            :onrightclick "${ap.saved ? "~/.config/eww/scripts/wifi/wifi-action.sh forget ${ap.uuids} &" : "true"}"
+            :onrightclick "~/.config/eww/scripts/wifi/wifi-action.sh forget '${replace(ap.ssid, "'", "'\"'\"'")}' ${ap.saved} ${ap.uuids} &"
       (box :orientation "h" :space-evenly false :spacing 10
         (wifi-signal :icon {ap.icon} :active busy)
         (label :class "wifi-row-name" :halign "start" :hexpand true :limit-width 26 :text {ap.ssid})
-        (label :class "wifi-row-status" :visible busy :text "Connecting…")
-        (box :class "wifi-row-lock" :valign "center" :visible {ap.sec && !busy}
+        (label :class "wifi-row-status${kw-wifi-forget == ap.ssid ? " armed" : ""}"
+               :text {kw-wifi-forget == ap.ssid ? "Forget?" : busy ? "Connecting…" : ""})
+        (box :class "wifi-row-lock" :valign "center" :visible {ap.sec && !busy && kw-wifi-forget != ap.ssid}
              :style "background-image: url('${EWW_CONFIG_DIR}/icons/lock-key.svg');")))))
 
 (defwidget wifi-connected []

@@ -100,9 +100,22 @@ case "${1:-}" in
       || nmcli device disconnect "$(nmcli -t -f DEVICE,TYPE device status | awk -F: '$2=="wifi"{print $1; exit}')" >/dev/null 2>&1
     ;;
   forget)
-    # forget <uuid>...: every saved profile for that SSID
+    # forget <ssid> <saved> <uuid>...: the first right-click arms the row for
+    # 3s, a second one deletes every saved profile for that SSID.
     shift
-    for u in "$@"; do nmcli connection delete uuid "$u" >/dev/null 2>&1; done
+    ssid=$1 saved=$2
+    shift 2
+    [ "$saved" = true ] || exit 0
+    if [ "$(eww get kw-wifi-forget 2>/dev/null)" = "$ssid" ]; then
+      eww update kw-wifi-forget='' 2>/dev/null
+      for u in "$@"; do nmcli connection delete uuid "$u" >/dev/null 2>&1; done
+    else
+      eww update "kw-wifi-forget=$ssid" 2>/dev/null
+      (
+        sleep 3
+        [ "$(eww get kw-wifi-forget 2>/dev/null)" = "$ssid" ] && eww update kw-wifi-forget='' 2>/dev/null
+      ) &
+    fi
     ;;
   settings)
     ~/.config/eww/scripts/kw-wifi.sh close
