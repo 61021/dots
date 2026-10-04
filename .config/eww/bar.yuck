@@ -36,9 +36,8 @@
   (box :orientation "h" :space-evenly false :spacing 6 :halign "start" :valign "center"
     (eventbox :cursor "pointer"
       (button :class "bar-launcher"
-              :tooltip "Control center (right-click: lock)"
+              :tooltip "Control center"
               :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh &"
-              :onrightclick "~/.local/bin/kw-lock --grace 0 &"
         (label :class "bar-launcher-text" :text "KW" :show-truncated false)))
     (bar-workspaces :monitor monitor)))
 
