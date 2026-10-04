@@ -7,10 +7,11 @@
 (defvar kw-cal '{"month":"","year":"","sub":"","off":0,"days":[],"weeks":[]}')
 
 (defwidget kw-cal-nav [icon cmd tip]
-  (button :class "kw-cal-nav" :tooltip tip :valign "center"
-          :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
-    (box :class "kw-cal-nav-icon" :valign "center"
-         :style "background-image: url('${EWW_CONFIG_DIR}/icons/${icon}.svg');")))
+  (eventbox :cursor "pointer" :valign "center"
+    (button :class "kw-cal-nav" :tooltip tip
+            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py ${cmd}"
+      (box :class "kw-cal-nav-icon" :valign "center"
+           :style "background-image: url('${EWW_CONFIG_DIR}/icons/${icon}.svg');"))))
 
 (defwidget kw-calendar []
   (box :class "kw-calendar" :orientation "v" :space-evenly false :spacing 8
@@ -20,10 +21,10 @@
           (label :class "kw-cal-month" :text {kw-cal.month})
           (label :class "kw-cal-year" :text {kw-cal.year}))
         (label :class "kw-cal-sub" :halign "start" :text {kw-cal.sub}))
-      (button :class "kw-cal-today${kw-cal.off != 0 ? " away" : ""}" :tooltip "Back to today"
-              :valign "center"
-              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py reset"
-        (label :text "Today"))
+      (eventbox :cursor "pointer" :valign "center"
+        (button :class "kw-cal-today${kw-cal.off != 0 ? " away" : ""}" :tooltip "Back to today"
+                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/bar/calendar-data.py reset"
+          (label :text "Today")))
       (kw-cal-nav :icon "caret-left" :cmd "prev" :tip "Previous month")
       (kw-cal-nav :icon "caret-right" :cmd "next" :tip "Next month"))
     (box :orientation "v" :space-evenly false :spacing 3

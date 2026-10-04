@@ -23,53 +23,56 @@
   (eventbox :onscroll "~/.config/eww/scripts/ws-scroll.sh {}"
     (box :class "bar-ws" :orientation "h" :space-evenly false :spacing 3 :valign "center"
       (for ws in bar-workspaces
-        (button :class "bar-ws-btn${ws.active ? " active" : ws.urgent ? " urgent" : ""}"
-                :visible {ws.monitor == monitor}
-                :tooltip "Workspace ${ws.id} - ${arraylength(ws.icons)} window${arraylength(ws.icons) == 1 ? "" : "s"}"
-                :onclick "hyprctl dispatch 'hl.dsp.focus({ workspace = ${ws.id} })'"
-          (box :orientation "h" :space-evenly false :spacing 5 :halign "center" :valign "center"
-            (for icon in {ws.icons}
-              (box :class "bar-ws-app" :valign "center" :style "background-image: url('${icon}');"))
-            (label :class "bar-ws-empty" :text "·" :visible {arraylength(ws.icons) == 0} :show-truncated false)))))))
+        (eventbox :cursor "pointer" :visible {ws.monitor == monitor}
+          (button :class "bar-ws-btn${ws.active ? " active" : ws.urgent ? " urgent" : ""}"
+                  :tooltip "Workspace ${ws.id} - ${arraylength(ws.icons)} window${arraylength(ws.icons) == 1 ? "" : "s"}"
+                  :onclick "hyprctl dispatch 'hl.dsp.focus({ workspace = ${ws.id} })'"
+            (box :orientation "h" :space-evenly false :spacing 5 :halign "center" :valign "center"
+              (for icon in {ws.icons}
+                (box :class "bar-ws-app" :valign "center" :style "background-image: url('${icon}');"))
+              (label :class "bar-ws-empty" :text "·" :visible {arraylength(ws.icons) == 0} :show-truncated false))))))))
 
 (defwidget bar-left [monitor]
   (box :orientation "h" :space-evenly false :spacing 6 :halign "start" :valign "center"
-    (button :class "bar-launcher"
-            :tooltip "Control center (right-click: lock)"
-            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh &"
-            :onrightclick "~/.local/bin/kw-lock --grace 0 &"
-      (label :class "bar-launcher-text" :text "KW" :show-truncated false))
+    (eventbox :cursor "pointer"
+      (button :class "bar-launcher"
+              :tooltip "Control center (right-click: lock)"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-sidebar-toggle.sh &"
+              :onrightclick "~/.local/bin/kw-lock --grace 0 &"
+        (label :class "bar-launcher-text" :text "KW" :show-truncated false)))
     (bar-workspaces :monitor monitor)))
 
 (defwidget bar-center []
   (box :orientation "h" :halign "center" :valign "center"
-    (button :class "bar-clock-btn"
-            :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-calendar.sh &"
-      (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
-        (label :class "bar-time" :text bar-time)
-        (label :class "bar-date" :text bar-date)))))
+    (eventbox :cursor "pointer"
+      (button :class "bar-clock-btn"
+              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-calendar.sh &"
+        (box :orientation "h" :space-evenly false :spacing 10 :valign "center"
+          (label :class "bar-time" :text bar-time)
+          (label :class "bar-date" :text bar-date))))))
 
 (defwidget bar-right []
   (box :orientation "h" :space-evenly false :spacing 6 :halign "end" :valign "center"
     (systray :class "bar-tray" :spacing 8 :icon-size 16 :prepend-new true)
     (box :class "bar-group" :orientation "h" :space-evenly false :spacing 2 :valign "center"
-      (button :class "bar-stat-btn bar-mic"
-              :visible {bar-audio.mic_muted}
-              :tooltip "Microphone is muted (click to unmute)"
-              :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0 && ~/.local/bin/kw-sound -u audio-volume-change"
-        (box :class "bar-icon" :valign "center"
-             :style "background-image: url('${EWW_CONFIG_DIR}/icons/microphone-slash-alert.svg');"))
-      (eventbox :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
+      (eventbox :cursor "pointer" :visible {bar-audio.mic_muted}
+        (button :class "bar-stat-btn bar-mic"
+                :tooltip "Microphone is muted (click to unmute)"
+                :onclick "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ 0 && ~/.local/bin/kw-sound -u audio-volume-change"
+          (box :class "bar-icon" :valign "center"
+               :style "background-image: url('${EWW_CONFIG_DIR}/icons/microphone-slash-alert.svg');")))
+      (eventbox :cursor "pointer" :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
         (button :class "bar-stat-btn"
                 :tooltip "Toggle mute (scroll to change volume)"
                 :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
                 :onrightclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & pavucontrol &"
           (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
-      (button :class "bar-stat-btn"
-              :tooltip {net.tip}
-              :timeout "2s"
-              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
-        (bar-stat :icon {net.icon} :text {net.label}))
+      (eventbox :cursor "pointer"
+        (button :class "bar-stat-btn"
+                :tooltip {net.tip}
+                :timeout "2s"
+                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ~/.config/eww/scripts/kw-wifi.sh"
+          (bar-stat :icon {net.icon} :text {net.label})))
       (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
         (bar-stat :icon {bar-bat.icon} :text {bar-bat.label})))))
 

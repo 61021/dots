@@ -28,35 +28,37 @@
 ;; --- building blocks ---------------------------------------------------------
 
 (defwidget kw-icon-button [icon tooltip onclick]
-  (button
-    :class "kw-icon-button"
-    :tooltip tooltip
-    :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
-    :style "background-image: url('${icon}');"))
+  (eventbox :cursor "pointer"
+    (button
+      :class "kw-icon-button"
+      :tooltip tooltip
+      :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
+      :style "background-image: url('${icon}');")))
 
 ;; Destructive power action: first click arms (red) for 3s, second executes.
 (defwidget kw-power-button [action icon tooltip]
-  (button
-    :class "kw-icon-button danger${power-arm == action ? " armed" : ""}"
-    :tooltip {power-arm == action ? "Click again to confirm" : tooltip}
-    :onclick "~/.config/eww/scripts/kw-power.sh ${action}"
-    :style "background-image: url('${icon}');"))
+  (eventbox :cursor "pointer"
+    (button
+      :class "kw-icon-button danger${power-arm == action ? " armed" : ""}"
+      :tooltip {power-arm == action ? "Click again to confirm" : tooltip}
+      :onclick "~/.config/eww/scripts/kw-power.sh ${action}"
+      :style "background-image: url('${icon}');")))
 
 ;; Quick-settings tile: icon, name and live state. `state` is the
 ;; connected/connecting/disconnected string every toggle source emits.
 (defwidget kw-tile [icon label state onclick ?tooltip]
-  (button
-    :class "kw-tile ${state}"
-    :hexpand true
-    :tooltip {tooltip ?: label}
-    :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
-    (box :orientation "h" :space-evenly false :spacing 10
-      (box :class "kw-tile-icon" :valign "center"
-           :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');")
-      (box :orientation "v" :space-evenly false :valign "center"
-        (label :class "kw-tile-label" :text label :xalign 0 :show-truncated false)
-        (label :class "kw-tile-state" :xalign 0 :show-truncated false
-               :text {state == "connected" ? "On" : state == "connecting" ? "Connecting" : "Off"})))))
+  (eventbox :cursor "pointer" :hexpand true
+    (button
+      :class "kw-tile ${state}"
+      :tooltip {tooltip ?: label}
+      :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & ${onclick}"
+      (box :orientation "h" :space-evenly false :spacing 10
+        (box :class "kw-tile-icon" :valign "center"
+             :style "background-image: url('${state == "connected" ? replace(icon, ".svg", "-active.svg") : icon}');")
+        (box :orientation "v" :space-evenly false :valign "center"
+          (label :class "kw-tile-label" :text label :xalign 0 :show-truncated false)
+          (label :class "kw-tile-state" :xalign 0 :show-truncated false
+                 :text {state == "connected" ? "On" : state == "connecting" ? "Connecting" : "Off"}))))))
 
 (defwidget kw-section [title]
   (box :orientation "v" :space-evenly false :spacing 8
@@ -103,24 +105,28 @@
         (label :class "kw-media-artist" :text {bar-player.artist} :limit-width 26 :show-truncated true :xalign 0
                :visible {bar-player.artist != ""}))
       (box :class "kw-media-controls" :orientation "h" :space-evenly false :spacing 4 :halign "start"
-        (button :class "kw-media-btn" :tooltip "Previous"
-                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl previous"
-                :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-back.svg');")
-        (button :class "kw-media-btn kw-media-play" :tooltip {bar-player.status == "Playing" ? "Pause" : "Play"}
-                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
-                :style "background-image: url('${EWW_CONFIG_DIR}/icons/${bar-player.status == "Playing" ? "pause" : "play"}-ink.svg');")
-        (button :class "kw-media-btn" :tooltip "Next"
-                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next"
-                :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-forward.svg');")))))
+        (eventbox :cursor "pointer"
+          (button :class "kw-media-btn" :tooltip "Previous"
+                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl previous"
+                  :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-back.svg');"))
+        (eventbox :cursor "pointer"
+          (button :class "kw-media-btn kw-media-play" :tooltip {bar-player.status == "Playing" ? "Pause" : "Play"}
+                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl play-pause"
+                  :style "background-image: url('${EWW_CONFIG_DIR}/icons/${bar-player.status == "Playing" ? "pause" : "play"}-ink.svg');"))
+        (eventbox :cursor "pointer"
+          (button :class "kw-media-btn" :tooltip "Next"
+                  :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & playerctl next"
+                  :style "background-image: url('${EWW_CONFIG_DIR}/icons/skip-forward.svg');"))))))
 
 (defwidget kw-notifications []
   (box :orientation "v" :space-evenly false :spacing 8
        :visible {arraylength(notif-hist) > 0}
     (box :orientation "h" :space-evenly false
       (label :class "kw-section-title" :xalign 0 :hexpand true :text "Notifications")
-      (button :class "kw-notif-clear" :tooltip "Clear history"
-              :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
-        (label :text "Clear")))
+      (eventbox :cursor "pointer"
+        (button :class "kw-notif-clear" :tooltip "Clear history"
+                :onclick "~/.local/bin/kw-sound -v .6 -g 80 button-pressed & dunstctl history-clear; ~/.config/eww/scripts/kw-refresh.sh notif"
+          (label :text "Clear"))))
     (box :orientation "v" :space-evenly false :spacing 6
       (for n in notif-hist
         (box :class "kw-notif" :orientation "v" :space-evenly false :spacing 2
