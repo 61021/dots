@@ -39,7 +39,7 @@ case "${1:-}" in
       exec "$0" settings # 802.1X needs identity + certs, not just a password
     elif [ "$sec" = "true" ]; then
       eww update kw-wifi-prompt="$ssid" kw-wifi-error='' 2>/dev/null
-      eww open --screen "$(focused_screen)" kw-wifi-pw 2>/dev/null || true
+      eww --no-daemonize open --screen "$(focused_screen)" kw-wifi-pw 2>/dev/null || true
     else
       exec "$0" connect-open "$ssid"
     fi

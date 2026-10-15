@@ -3,10 +3,10 @@
 # Open path stays far under eww's 200ms onclick budget: the panel renders with
 # the daemon's last-known data at once; SIGUSR1 tells scripts/net/nm-listen.py
 # to scan now and keep scanning every 15s while the panel is up.
-# Decision comes from `hyprctl layers`, never from `eww active-windows`: with a
-# dead socket file the eww CLI answers from a fresh empty daemon (see
-# kw-sidebar-toggle.sh). A surface that survives `eww close` belongs to a
-# daemon this CLI can't reach; only a full relaunch kills it.
+# Decision comes from `hyprctl layers`, never from `eww active-windows`: a
+# second daemon's surfaces are invisible to the CLI (see kw-sidebar-toggle.sh).
+# A surface that survives `eww close` belongs to a daemon this CLI can't
+# reach; only a full relaunch kills it.
 set -euo pipefail
 
 exec 9>"${XDG_RUNTIME_DIR:-/tmp}/kw-wifi-toggle.lock"
@@ -32,6 +32,7 @@ fi
 
 mon_id="$(hyprctl -j monitors | jq -r '[to_entries[] | select(.value.focused)][0].key // 0')"
 
-eww open-many --arg "kw-wifi-bg:mon=$mon_id" --arg "kw-wifi:mon=$mon_id" kw-wifi-bg kw-wifi 9>&- \
-  || { eww close kw-wifi-bg kw-wifi 9>&- >/dev/null 2>&1 || true; exit 1; }
+# A reply slower than the CLI's 100ms timeout still opens the panel; only an unreachable daemon is a failure.
+open_err=$(eww --no-daemonize open-many --arg "kw-wifi-bg:mon=$mon_id" --arg "kw-wifi:mon=$mon_id" kw-wifi-bg kw-wifi 9>&- 2>&1 >/dev/null || true)
+case $open_err in *"Failed to connect"*) setsid -f ~/.config/eww/scripts/kw-bar-launch.sh 9>&- >/dev/null 2>&1; exit 1 ;; esac
 signal_net USR1

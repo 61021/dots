@@ -69,7 +69,7 @@ launch_all() {
   local -A gdk_idx=()
   while read -r name idx; do gdk_idx["$name"]=$idx; done < <(gdk_index_map)
   while read -r name w _; do
-    eww open bar --id "bar-$name" --screen "${gdk_idx[$name]:-0}" \
+    eww --no-daemonize open bar --id "bar-$name" --screen "${gdk_idx[$name]:-0}" \
       --arg "monitor=$name" --size "${w}x36" 9>&- >/dev/null 2>&1 &
     disown
     expected=$((expected + 1))
@@ -82,7 +82,7 @@ launch_all() {
     [ "$n" -ge "$expected" ] && break
     sleep 0.1
   done
-  pkill -9 -f "eww open .* bar" 2>/dev/null || true
+  pkill -9 -f "eww --no-daemonize open bar" 2>/dev/null || true
 }
 
 # The render check can pass while the socket FILE is dead: an eww CLI

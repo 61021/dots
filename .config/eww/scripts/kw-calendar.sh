@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 # Click-to-toggle kw-calendar on the focused monitor.
-# Same hardening as kw-sidebar-toggle.sh: decide from `hyprctl layers` (the
-# eww CLI forks a fresh empty-handed daemon when the socket file is dead, so
-# `eww active-windows` lies exactly when a zombie is on screen), flock away
-# double-fires, full relaunch if a surface survives the close.
+# Same hardening as kw-sidebar-toggle.sh: decide from `hyprctl layers` (a
+# second daemon's surfaces are invisible to `eww active-windows`), flock away
+# double-fires, `open --no-daemonize`, full relaunch if a surface survives the close.
 set -euo pipefail
 
 exec 9>"${XDG_RUNTIME_DIR:-/tmp}/kw-calendar-toggle.lock"
@@ -29,4 +28,4 @@ fi
 mon_id="$(hyprctl -j monitors | jq -r '[to_entries[] | select(.value.focused)][0].key // 0')"
 
 ~/.config/eww/scripts/bar/calendar-data.py reset 9>&-
-eww open --screen "$mon_id" kw-calendar 9>&-
+eww --no-daemonize open --screen "$mon_id" kw-calendar 9>&-
