@@ -11,3 +11,4 @@ target
 *.log
 .DS_Store
 /home/khaled/stuff/photos
+/home/khaled/stuff/archives/*/device-backup
