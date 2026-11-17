@@ -1,19 +1,19 @@
 /* KW OLED: pure black surfaces. Matugen will overwrite this if re-run. */
-@define-color accent_color       #89ddff;
-@define-color accent_bg_color    #89ddff;
+@define-color accent_color       #fafafa;
+@define-color accent_bg_color    #fafafa;
 @define-color accent_fg_color    #000000;
 @define-color window_bg_color    #000000;
-@define-color window_fg_color    #e5e7eb;
+@define-color window_fg_color    #e5e5e5;
 @define-color view_bg_color      #000000;
-@define-color view_fg_color      #e5e7eb;
+@define-color view_fg_color      #e5e5e5;
 @define-color headerbar_bg_color #000000;
-@define-color headerbar_fg_color #f8fafc;
-@define-color card_bg_color      #0a0a0a;
-@define-color card_fg_color      #e5e7eb;
-@define-color popover_bg_color   #0a0a0a;
-@define-color popover_fg_color   #e5e7eb;
+@define-color headerbar_fg_color #fafafa;
+@define-color card_bg_color      #171717;
+@define-color card_fg_color      #e5e5e5;
+@define-color popover_bg_color   #171717;
+@define-color popover_fg_color   #e5e5e5;
 @define-color sidebar_bg_color   #000000;
-@define-color sidebar_fg_color   #e5e7eb;
+@define-color sidebar_fg_color   #e5e5e5;
 
 window,
 .background,

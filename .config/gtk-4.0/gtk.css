@@ -1,29 +1,29 @@
 /* KW OLED: pure black surfaces. Matugen will overwrite this if re-run. */
-@define-color accent_color            #89ddff;
-@define-color accent_bg_color         #89ddff;
+@define-color accent_color            #fafafa;
+@define-color accent_bg_color         #fafafa;
 @define-color accent_fg_color         #000000;
 
 @define-color window_bg_color         #000000;
-@define-color window_fg_color         #e5e7eb;
+@define-color window_fg_color         #e5e5e5;
 @define-color view_bg_color           #000000;
-@define-color view_fg_color           #e5e7eb;
+@define-color view_fg_color           #e5e5e5;
 @define-color headerbar_bg_color      #000000;
-@define-color headerbar_fg_color      #f8fafc;
+@define-color headerbar_fg_color      #fafafa;
 @define-color headerbar_border_color  #000000;
 @define-color headerbar_backdrop_color #000000;
 @define-color sidebar_bg_color        #000000;
-@define-color sidebar_fg_color        #e5e7eb;
+@define-color sidebar_fg_color        #e5e5e5;
 @define-color sidebar_backdrop_color  #000000;
 @define-color secondary_sidebar_bg_color #000000;
-@define-color secondary_sidebar_fg_color #e5e7eb;
-@define-color popover_bg_color        #0a0a0a;
-@define-color popover_fg_color        #e5e7eb;
-@define-color card_bg_color           #0a0a0a;
-@define-color card_fg_color           #e5e7eb;
+@define-color secondary_sidebar_fg_color #e5e5e5;
+@define-color popover_bg_color        #171717;
+@define-color popover_fg_color        #e5e5e5;
+@define-color card_bg_color           #171717;
+@define-color card_fg_color           #e5e5e5;
 @define-color dialog_bg_color         #000000;
-@define-color dialog_fg_color         #e5e7eb;
-@define-color thumbnail_bg_color      #0a0a0a;
-@define-color thumbnail_fg_color      #e5e7eb;
+@define-color dialog_fg_color         #e5e5e5;
+@define-color thumbnail_bg_color      #171717;
+@define-color thumbnail_fg_color      #e5e5e5;
 
 /* ---- Nautilus / general OLED tweaks ----------------------------------- */
 window,
@@ -51,11 +51,11 @@ headerbar {
 
 /* Hover on sidebar rows */
 placessidebar row:hover {
-  background-color: #0a0a0a;
+  background-color: #171717;
 }
 placessidebar row:selected {
-  background-color: #141414;
-  color: #f8fafc;
+  background-color: #262626;
+  color: #fafafa;
 }
 
 /* File grid hover/selection */

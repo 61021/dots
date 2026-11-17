@@ -7,8 +7,8 @@ configuration {
 * {
     font:           "IBM Plex Sans 10";
     bg0:            #000000;
-    bg1:            #0a0a0a;
-    bg2:            #141414;
+    bg1:            #171717;
+    bg2:            #262626;
     bg-sel:         #ffffff14;
     fg0:            #e7e9ee;
     fg1:            #6b7178;
