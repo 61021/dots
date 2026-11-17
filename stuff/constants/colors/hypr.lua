@@ -3,6 +3,6 @@
 -- (hypr.conf next to this file is the old hyprlang copy, kept for rollback)
 
 return {
-    active_border   = "rgba(ffffff50)",
-    inactive_border = "rgba(ffffff00)",
+    active_border   = "rgba(ffffff0f)",
+    inactive_border = "rgba(ffffff0f)",
 }

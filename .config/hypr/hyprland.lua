@@ -126,13 +126,13 @@ hl.permission({ binary = "/usr/(s?bin|local/bin)/grim",       type = "screencopy
 -- (tokens defined in ~/stuff/constants/colors/palette.md)
 local colorsOk, colors = pcall(require, "/home/khaled/stuff/constants/colors/hypr.lua")
 if not colorsOk or type(colors) ~= "table" then
-    colors = { active_border = "rgba(ffffff50)", inactive_border = "rgba(ffffff00)" }
+    colors = { active_border = "rgba(ffffff0f)", inactive_border = "rgba(ffffff0f)" }
 end
 
 hl.config({
     general = {
-        gaps_in     = 6,
-        gaps_out    = 10,
+        gaps_in     = 9,
+        gaps_out    = 18,
         border_size = 1,
         col = {
             active_border   = colors.active_border,
@@ -145,17 +145,19 @@ hl.config({
     },
 
     decoration = {
-        rounding       = 12,
+        rounding       = 16,
         rounding_power = 2,
 
         active_opacity   = 1.0,
-        inactive_opacity = 0.9,
+        inactive_opacity = 1.0,
 
+        -- Soft drop shadow; the 1px border above is a 6% white hairline on every window.
         shadow = {
             enabled      = true,
-            range        = 4,
+            range        = 44,
             render_power = 3,
-            color        = "rgba(1a1a1aee)",
+            offset       = { 0, 14 },
+            color        = "rgba(0000008c)",
         },
 
         blur = {
@@ -211,12 +213,12 @@ hl.curve("easeInOutCirc", { type = "bezier", points = { {0.85, 0},   {0.15, 1}  
 hl.curve("easeOutCirc",   { type = "bezier", points = { {0, 0.55},   {0.45, 1}    } })
 hl.curve("easeOutExpo",   { type = "bezier", points = { {0.16, 1},   {0.3, 1}     } })
 
-hl.animation({ leaf = "windows",          enabled = true, speed = 1.8,   bezier = "md3_decel",   style = "popin 60%" })
+hl.animation({ leaf = "windows",          enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "popin 97%" })
 hl.animation({ leaf = "border",           enabled = true, speed = 5,  bezier = "default" })
-hl.animation({ leaf = "fade",             enabled = true, speed = 1.5, bezier = "md3_decel" })
-hl.animation({ leaf = "layers",           enabled = true, speed = 1.2,   bezier = "md3_decel",   style = "slide" })
-hl.animation({ leaf = "workspaces",       enabled = true, speed = 2, bezier = "easeOutExpo", style = "slide" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.8,   bezier = "md3_decel",   style = "slidevert" })
+hl.animation({ leaf = "fade",             enabled = true, speed = 1.1, bezier = "md3_decel" })
+hl.animation({ leaf = "layers",           enabled = true, speed = 0.9,   bezier = "md3_decel",   style = "slide" })
+hl.animation({ leaf = "workspaces",       enabled = true, speed = 1.3, bezier = "easeOutExpo", style = "slide" })
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "slidevert" })
 
 
 ---------------
