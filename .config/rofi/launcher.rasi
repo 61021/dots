@@ -1,0 +1,21 @@
+/*****----- App launcher: minimal.rasi dropped from the bar, the same shell as the calendar and Wi-Fi panels -----*****/
+@theme "~/.config/rofi/minimal.rasi"
+
+window {
+    location:            north;
+    anchor:              north;
+    y-offset:            50px;   /* the bar's 44px zone + the popovers' 6px gap */
+    width:               520px;
+    border-radius:       16px;
+    border-color:        #ffffff1a;
+    background-color:    @bg0;
+}
+
+mainbox {
+    padding:             10px;
+}
+
+inputbar {
+    padding:             8px 12px;
+    margin:              0 0 6px 0;
+}
