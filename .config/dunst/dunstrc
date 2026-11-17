@@ -1,26 +1,55 @@
+# KW notifications: slim one-line toasts under the right end of the bar.
+# Palette: ~/stuff/constants/colors/palette.md
+
 [global]
-font = "IBM Plex Sans 11"
-frame_color = "#90989a"
-frame_width = 2
-separator_color= frame
-highlight = "#89b4fa"
-corner_radius = 10
+    font = "IBM Plex Sans Medium 10"
+    markup = full
+    # Title, then the body in the muted colour on the same line. dunst cannot
+    # reveal the body on hover, so it stays inline and is cut with an ellipsis.
+    format = "%s  <span foreground='#a1a1a1'>%b</span>"
+    ignore_newline = true
+    word_wrap = false
+    ellipsize = end
+    alignment = left
+    vertical_alignment = center
+    show_age_threshold = -1
+
+    origin = top-right
+    offset = (18, 10)
+    width = (0, 520)
+    height = (0, 36)
+    padding = 9
+    horizontal_padding = 12
+    text_icon_padding = 9
+    gap_size = 6
+    frame_width = 1
+    frame_color = "#ffffff1a"
+    corner_radius = 12
+    highlight = "#fafafa"
+
+    icon_position = left
+    min_icon_size = 16
+    max_icon_size = 16
+    default_icon = /home/khaled/.config/dunst/icons/bell.svg
 
 [urgency_low]
-background = "#000000"
-foreground = "#white"
+    background = "#000000"
+    foreground = "#fafafa"
 
 [urgency_normal]
-background = "#000000"
-foreground = "#white"
+    background = "#000000"
+    foreground = "#fafafa"
 
 [urgency_critical]
-background = "#000000"
-foreground = "#white"
-frame_color = "#ff0000"
+    background = "#000000"
+    foreground = "#fafafa"
+    default_icon = /home/khaled/.config/dunst/icons/warning.svg
 
-# Sound for every notification; the script maps urgency/app to an event sound
-# and plays the camera shutter for hyprshot's "Screenshot saved".
+# low-bat-notification.sh sends theme icon names; show the Phosphor one.
+[kw-battery]
+    appname = "battery"
+    new_icon = /home/khaled/.config/dunst/icons/battery-warning.svg
+
 [kw-sound]
-summary = "*"
-script = /home/khaled/.local/bin/kw-notif-sound
+    summary = "*"
+    script = /home/khaled/.local/bin/kw-notif-sound
