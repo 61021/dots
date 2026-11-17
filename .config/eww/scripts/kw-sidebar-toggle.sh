@@ -35,11 +35,9 @@ fi
 
 
 # One hyprctl + one jq: the focused monitor is the one that got the click.
-read -r mon_id sidebar_h < <(hyprctl -j monitors | jq -r \
-  '[to_entries[] | select(.value.focused)][0] | "\(.key // 0) \(((.value.height / .value.scale) | floor) - 36)"')
-sidebar_w=300
+mon_id=$(hyprctl -j monitors | jq -r '[to_entries[] | select(.value.focused)][0].key // 0')
 
 # Building the sidebar outlasts the CLI's 100ms reply timeout; plain `eww open` then forks a second daemon. The window opens anyway.
 open_err=$(eww --no-daemonize open --screen "$mon_id" kw-sidebar-bg 9>&- 2>&1 >/dev/null || true)
-open_err+=$(eww --no-daemonize open --screen "$mon_id" --size "${sidebar_w}x${sidebar_h}" kw-sidebar 9>&- 2>&1 >/dev/null || true)
+open_err+=$(eww --no-daemonize open --screen "$mon_id" kw-sidebar 9>&- 2>&1 >/dev/null || true)
 case $open_err in *"Failed to connect"*) setsid -f ~/.config/eww/scripts/kw-bar-launch.sh 9>&- >/dev/null 2>&1 ;; esac

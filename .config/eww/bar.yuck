@@ -19,6 +19,11 @@
     (box :class "bar-icon" :valign "center" :style "background-image: url('${icon}');")
     (label :class "bar-text" :text text :show-truncated false)))
 
+;; Icon-only status chip: the value lives in the button's tooltip.
+(defwidget bar-glyph [icon]
+  (box :class "bar-stat" :valign "center"
+    (box :class "bar-icon" :valign "center" :style "background-image: url('${icon}');")))
+
 (defwidget bar-workspaces [monitor]
   (eventbox :onscroll "~/.config/eww/scripts/ws-scroll.sh {}"
     (box :class "bar-ws" :orientation "h" :space-evenly false :spacing 3 :valign "center"
@@ -62,16 +67,16 @@
                :style "background-image: url('${EWW_CONFIG_DIR}/icons/microphone-slash-alert.svg');")))
       (eventbox :cursor "pointer" :onscroll "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%$([ '{}' = 'up' ] && echo + || echo -) && ~/.local/bin/kw-sound -u -g 200 audio-volume-change"
         (button :class "bar-stat-btn"
-                :tooltip "Toggle mute (scroll to change volume)"
+                :tooltip "Volume ${bar-audio.label} (click to mute, scroll to change)"
                 :onclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && ~/.local/bin/kw-sound -u audio-volume-change"
                 :onrightclick "pavucontrol &"
-          (bar-stat :icon {bar-audio.icon} :text {bar-audio.label})))
+          (bar-glyph :icon {bar-audio.icon})))
       (eventbox :cursor "pointer"
         (button :class "bar-stat-btn"
                 :tooltip {net.tip}
                 :timeout "2s"
                 :onclick "~/.config/eww/scripts/kw-wifi.sh"
-          (bar-stat :icon {net.icon} :text {net.label})))
+          (bar-glyph :icon {net.icon})))
       (box :class "bar-stat-btn bar-bat ${bar-bat.state}"
         (bar-stat :icon {bar-bat.icon} :text {bar-bat.label})))))
 
@@ -84,7 +89,8 @@
 ;; --- window ------------------------------------------------------------------
 
 ;; Opened once per monitor by kw-bar-launch.sh:
-;;   eww open bar --id bar-<name> --screen <gdk_idx> --arg monitor=<name> --size <w>x36
+;;   eww open bar --id bar-<name> --screen <gdk_idx> --arg monitor=<name> --size <w>x44
+;; 44 = an 8px transparent top margin + the 36px floating bar (see .kw-bar).
 ;; --screen binds the surface (GDK index, geometry-matched by the script);
 ;; the monitor arg is the HYPRLAND name, used only to filter workspace pills.
 ;; --size makes layer-shell reserve the full top edge; anchor must stay
@@ -94,5 +100,5 @@
   :exclusive true
   :focusable false
   :namespace "kw-bar"
-  :geometry (geometry :x "0" :y "0" :width "100px" :height "36px" :anchor "top center")
+  :geometry (geometry :x "0" :y "0" :width "100px" :height "44px" :anchor "top center")
   (kw-bar :monitor monitor))

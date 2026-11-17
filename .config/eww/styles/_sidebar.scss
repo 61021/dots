@@ -1,14 +1,14 @@
-/* Sidebar - header, rings, quick-settings tiles, media, notifications, power row. */
+/* Control center - header, rings, quick-settings tiles, media, notifications,
+   power row. A floating card under the KW key: the popover shell (calendar,
+   Wi-Fi), as tall as its content. */
 
 .kw-sidebar {
   background-color: $bg-0;
-  border: none;
-  border-right: 1px solid $border-soft;
-  border-radius: 0;
-  padding: 18px 16px 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 16px 14px 14px 14px;
   margin: 0;
   color: $fg-0;
-  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.6);
 }
 
 .kw-section-title {
@@ -43,7 +43,7 @@
 }
 .kw-battery-pct {
   color: $fg-hi;
-  font-family: $font-mono;
+  font-family: $font-sans;
   font-size: 15px;
   font-weight: 600;
   font-feature-settings: "tnum";
@@ -77,7 +77,7 @@
 }
 .kw-ring-val {
   color: $fg-hi;
-  font-family: $font-mono;
+  font-family: $font-sans;
   font-size: 11px;
   font-weight: 600;
   font-feature-settings: "tnum";

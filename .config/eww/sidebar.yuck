@@ -218,8 +218,6 @@
 
     (kw-media)
     (kw-notifications)
-
-    (box :vexpand true)
     (kw-power-row)))
 
 ;; --- window ------------------------------------------------------------------
@@ -229,10 +227,9 @@
   :focusable false
   :namespace "kw-sidebar"
   :geometry (geometry
-    :x "0px"
-    :y "0px"
-    :width "240px"
-    :height "100%"
+    :x "10px"
+    :y "6px"
+    :width "300px"
     :anchor "top left")
   (kw-sidebar))
 

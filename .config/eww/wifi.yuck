@@ -119,7 +119,7 @@ __KW_PASS_EOF__")
   :stacking "fg"
   :focusable false
   :namespace "kw-wifi"
-  :geometry (geometry :x "8px" :y "6px" :anchor "top right")
+  :geometry (geometry :x "10px" :y "6px" :anchor "top right")
   (kw-wifi-panel))
 
 ;; Password sheet over the top of the panel: the ONLY focusable wifi window.
@@ -130,7 +130,7 @@ __KW_PASS_EOF__")
   :stacking "fg"
   :focusable true
   :namespace "kw-wifi-pw"
-  :geometry (geometry :x "8px" :y "6px" :anchor "top right")
+  :geometry (geometry :x "10px" :y "6px" :anchor "top right")
   (wifi-pw))
 
 ;; Invisible full-surface backdrop opened beneath the panel (layerrule order
