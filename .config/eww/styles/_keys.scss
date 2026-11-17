@@ -1,0 +1,44 @@
+/* Keys sheet - every bind, grouped in four columns. The popover shell. */
+
+.kw-keys {
+  background-color: $bg-0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 26px 30px 28px;
+  color: $fg-0;
+  font-family: $font-sans;
+}
+
+.kw-keys-col {
+  min-width: 236px;
+}
+
+.kw-keys-title {
+  color: $fg-1;
+  font-size: 12px;
+  font-weight: 600;
+  padding-bottom: 6px;
+}
+
+.kw-keys-row {
+  min-height: 30px;
+}
+
+.kw-keys-desc {
+  color: $fg-0;
+  font-size: 13px;
+}
+
+.kw-kbd {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+  color: $fg-0;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 6px;
+  min-width: 10px;
+}
+
+.kw-keys-dim {
+  background-color: rgba(0, 0, 0, 0.62);
+}

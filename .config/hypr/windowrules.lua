@@ -149,6 +149,20 @@ hl.layer_rule({
     order   = 2,
     no_anim = true,
 })
+-- ── eww keys sheet (ALT+/) ───────────────────────────────────
+hl.layer_rule({
+    name      = "kw-keys",
+    match     = { namespace = "^kw-keys$" },
+    animation = "popin 95%",
+})
+-- Dimmed click-outside-dismiss backdrop under the sheet.
+hl.layer_rule({
+    name      = "kw-keys-bg",
+    match     = { namespace = "^kw-keys-bg$" },
+    order     = 2,
+    animation = "fade",
+})
+
 -- Password dialog: default order 0 = renders above the panel; quick popin.
 hl.layer_rule({
     name      = "kw-wifi-pw",

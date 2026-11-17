@@ -266,7 +266,7 @@ hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/stuff/constants/scripts/wallpaper/
 hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-wifi.sh"), { description = "Wi-Fi panel" })
 hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-sidebar-toggle.sh"), { description = "Control center" })
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-calendar.sh"), { description = "Calendar" })
-hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/hypr/scripts/keybinds.sh"), { description = "Show keybinds" })
+hl.bind(mainMod .. " + slash", hl.dsp.exec_cmd("~/.config/eww/scripts/kw-keys.sh"), { description = "Show keybinds" })
 hl.bind(mainMod .. " + F1", hl.dsp.exec_cmd("~/.config/hypr/scripts/gamemode.sh"), { description = "Game mode" })
 hl.bind(mainMod .. " + G", hl.dsp.window.float({ action = "toggle" }), { description = "Float or tile window" })
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" }), { description = "Maximize window" })  -- was `fullscreen, 1`

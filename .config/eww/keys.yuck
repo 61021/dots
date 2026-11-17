@@ -1,0 +1,38 @@
+;; -----------------------------------------------------------------------------
+;; Keys sheet (ALT+/): every bind on one grouped sheet. kw-keys.sh pushes the
+;; live binds (scripts/keys-data.py) into kw-keys-data right before it opens.
+;; -----------------------------------------------------------------------------
+
+(defvar kw-keys-data "[]")
+
+(defwidget kw-keys []
+  (eventbox :onclick "~/.config/eww/scripts/kw-keys.sh close &"
+    (box :class "kw-keys" :orientation "h" :space-evenly false :spacing 36
+      (for col in kw-keys-data
+        (box :class "kw-keys-col" :orientation "v" :space-evenly false :spacing 22 :valign "start"
+          (for g in {col.groups}
+            (box :orientation "v" :space-evenly false
+              (label :class "kw-keys-title" :text {g.title} :xalign 0)
+              (for r in {g.rows}
+                (box :class "kw-keys-row" :orientation "h" :space-evenly false :spacing 14
+                  (label :class "kw-keys-desc" :text {r.desc} :xalign 0 :hexpand true :show-truncated false)
+                  (box :orientation "h" :space-evenly false :spacing 3 :halign "end" :valign "center"
+                    (for k in {r.keys}
+                      (label :class "kw-kbd" :text k :show-truncated false))))))))))))
+
+(defwindow kw-keys
+  :stacking "overlay"
+  :focusable false
+  :namespace "kw-keys"
+  :geometry (geometry :anchor "center")
+  (kw-keys))
+
+;; Dimmed click-outside-dismiss backdrop, one layer below the sheet.
+(defwindow kw-keys-bg
+  :stacking "fg"
+  :focusable false
+  :namespace "kw-keys-bg"
+  :geometry (geometry :x "0" :y "0" :width "100%" :height "100%" :anchor "top center")
+  (eventbox :class "kw-keys-dim"
+            :onclick "~/.config/eww/scripts/kw-keys.sh close &"
+    (box :hexpand true :vexpand true)))

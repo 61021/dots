@@ -6,3 +6,4 @@
 (include "bar.yuck")
 (include "calendar.yuck")
 (include "wifi.yuck")
+(include "keys.yuck")
