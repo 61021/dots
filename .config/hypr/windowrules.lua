@@ -149,7 +149,7 @@ hl.layer_rule({
     order   = 2,
     no_anim = true,
 })
--- ── eww keys sheet (ALT+/) ───────────────────────────────────
+-- ── eww keys sheet (ALT+/) and overview strip (ALT+Tab) ──────
 hl.layer_rule({
     name      = "kw-keys",
     match     = { namespace = "^kw-keys$" },
@@ -161,6 +161,11 @@ hl.layer_rule({
     match     = { namespace = "^kw-keys-bg$" },
     order     = 2,
     animation = "fade",
+})
+hl.layer_rule({
+    name      = "kw-overview",
+    match     = { namespace = "^kw-overview$" },
+    animation = "popin 95%",
 })
 
 -- Password dialog: default order 0 = renders above the panel; quick popin.

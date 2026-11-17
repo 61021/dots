@@ -301,9 +301,14 @@ hl.bind("CTRL + SHIFT + F12", hl.dsp.exec_cmd("hyprshot -m region --clipboard-on
 hl.bind("Print",         hl.dsp.exec_cmd("hyprshot -m output -o ~/stuff/screenshots --notify"), { description = "Screenshot the screen" })
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("hyprshot -m window -o ~/stuff/screenshots --notify"), { description = "Screenshot a window" })
 
--- Alt+Tab cycles windows on the current workspace
+-- Alt+Tab cycles windows on the current workspace. The second bind on each
+-- key shows the overview strip (it hides itself 1.2s after the last press);
+-- it shares the description so the keys sheet lists the pair once.
+local overview = hl.dsp.exec_cmd("~/.config/eww/scripts/kw-overview.sh show")
 hl.bind("ALT + Tab", hl.dsp.window.cycle_next(), { description = "Next window" })
+hl.bind("ALT + Tab", overview, { description = "Next window" })
 hl.bind("ALT + SHIFT + Tab", hl.dsp.window.cycle_next({ next = false }), { description = "Previous window" })
+hl.bind("ALT + SHIFT + Tab", overview, { description = "Previous window" })
 
 -- Switch workspaces with mainMod + [0-9]
 -- Move active window to a workspace with mainMod + SHIFT + [0-9]

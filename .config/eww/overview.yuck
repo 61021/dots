@@ -1,0 +1,37 @@
+;; -----------------------------------------------------------------------------
+;; Overview strip: the occupied workspaces as thumbnails under the bar, shown
+;; while ALT+Tab cycles (kw-overview.sh). Each window is a tile at its real
+;; place with its app icon; data from scripts/overview-data.py.
+;; -----------------------------------------------------------------------------
+
+(defvar kw-ov '{"wall":"","ws":[]}')
+
+;; One window tile. eww cannot loop inside an overlay, so each thumbnail has
+;; eight fixed slots; the data script fills the unused ones with "gone".
+(defwidget kw-ov-win [c]
+  (box :class {c.cls} :halign "start" :valign "start" :style {c.box}
+    (box :class "kw-ov-icon" :halign "center" :valign "center" :style {c.ico})))
+
+(defwidget kw-overview []
+  (box :class "kw-ov" :orientation "h" :space-evenly false :spacing 10
+    (for w in {kw-ov.ws}
+      (eventbox :cursor "pointer"
+                :onclick "~/.config/eww/scripts/kw-overview.sh go ${w.id} &"
+        (overlay
+          (box :class "kw-ov-ws${w.active ? " active" : ""}"
+               :style "background-image: url('${kw-ov.wall}');")
+          (kw-ov-win :c {w.wins[0]})
+          (kw-ov-win :c {w.wins[1]})
+          (kw-ov-win :c {w.wins[2]})
+          (kw-ov-win :c {w.wins[3]})
+          (kw-ov-win :c {w.wins[4]})
+          (kw-ov-win :c {w.wins[5]})
+          (kw-ov-win :c {w.wins[6]})
+          (kw-ov-win :c {w.wins[7]}))))))
+
+(defwindow kw-overview
+  :stacking "overlay"
+  :focusable false
+  :namespace "kw-overview"
+  :geometry (geometry :x "0" :y "6px" :anchor "top center")
+  (kw-overview))
