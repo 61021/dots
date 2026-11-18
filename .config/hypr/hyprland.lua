@@ -216,12 +216,19 @@ hl.curve("easeOutExpo",   { type = "bezier", points = { {0.16, 1},   {0.3, 1}   
 hl.animation({ leaf = "windows",          enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "popin 97%" })
 hl.animation({ leaf = "border",           enabled = true, speed = 5,  bezier = "default" })
 hl.animation({ leaf = "fade",             enabled = true, speed = 1.1, bezier = "md3_decel" })
--- Layers (panels, popovers, the launcher, toasts) share one motion: they drop in
--- from the top while fading in, and leave the same way, quicker.
-hl.animation({ leaf = "layers",           enabled = true, speed = 2.0, bezier = "easeOutExpo", style = "slide top" })
-hl.animation({ leaf = "layersOut",        enabled = true, speed = 1.2, bezier = "md3_decel",   style = "slide top" })
-hl.animation({ leaf = "fadeLayersIn",     enabled = true, speed = 2.0, bezier = "linear" })
-hl.animation({ leaf = "fadeLayersOut",    enabled = true, speed = 1.2, bezier = "linear" })
+-- Layers (panels, popovers, the launcher, toasts) share one motion: a short drop
+-- from above with a fade, and the same back out. Hyprland can only slide a layer
+-- from the screen edge, so the curves hide the trip: layerDrop covers 97% of it in
+-- the first third of the time while layerShow keeps the layer near-invisible, and
+-- on the way out layerHide fades it before layerLift has moved it 2%.
+hl.curve("layerDrop", { type = "bezier", points = { {0, 1},   {0, 1}   } })
+hl.curve("layerShow", { type = "bezier", points = { {0.5, 0}, {0.6, 1} } })
+hl.curve("layerLift", { type = "bezier", points = { {1, 0},   {1, 0}   } })
+hl.curve("layerHide", { type = "bezier", points = { {0.2, 1}, {0.4, 1} } })
+hl.animation({ leaf = "layers",           enabled = true, speed = 2.0, bezier = "layerDrop", style = "slide top" })
+hl.animation({ leaf = "layersOut",        enabled = true, speed = 1.2, bezier = "layerLift", style = "slide top" })
+hl.animation({ leaf = "fadeLayersIn",     enabled = true, speed = 2.0, bezier = "layerShow" })
+hl.animation({ leaf = "fadeLayersOut",    enabled = true, speed = 1.2, bezier = "layerHide" })
 hl.animation({ leaf = "workspaces",       enabled = true, speed = 1.3, bezier = "easeOutExpo", style = "slide" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "slidevert" })
 
