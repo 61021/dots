@@ -216,10 +216,12 @@ hl.curve("easeOutExpo",   { type = "bezier", points = { {0.16, 1},   {0.3, 1}   
 hl.animation({ leaf = "windows",          enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "popin 97%" })
 hl.animation({ leaf = "border",           enabled = true, speed = 5,  bezier = "default" })
 hl.animation({ leaf = "fade",             enabled = true, speed = 1.1, bezier = "md3_decel" })
-hl.animation({ leaf = "layers",           enabled = true, speed = 0.9,   bezier = "md3_decel",   style = "slide" })
--- Layers (panels, popovers, the launcher, toasts) appear at once; only leaving animates.
-hl.animation({ leaf = "layersIn",         enabled = false })
-hl.animation({ leaf = "fadeLayersIn",     enabled = false })
+-- Layers (panels, popovers, the launcher, toasts) share one motion: they drop in
+-- from the top while fading in, and leave the same way, quicker.
+hl.animation({ leaf = "layers",           enabled = true, speed = 2.0, bezier = "easeOutExpo", style = "slide top" })
+hl.animation({ leaf = "layersOut",        enabled = true, speed = 1.2, bezier = "md3_decel",   style = "slide top" })
+hl.animation({ leaf = "fadeLayersIn",     enabled = true, speed = 2.0, bezier = "linear" })
+hl.animation({ leaf = "fadeLayersOut",    enabled = true, speed = 1.2, bezier = "linear" })
 hl.animation({ leaf = "workspaces",       enabled = true, speed = 1.3, bezier = "easeOutExpo", style = "slide" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "slidevert" })
 

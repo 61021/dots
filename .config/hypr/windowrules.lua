@@ -109,12 +109,8 @@ hl.layer_rule({
     no_anim = true,
 })
 
--- ── eww sidebar: slide in from the left edge ─────────────────
-hl.layer_rule({
-    name      = "kw-sidebar-anim",
-    match     = { namespace = "^kw-sidebar$" },
-    animation = "slide left",
-})
+-- ── eww control center ───────────────────────────────────────
+-- The card takes the shared layer motion (hyprland.lua): no rule of its own.
 -- Click-outside-dismiss backdrop (below bar + wifi panel in the fg layer;
 -- the sidebar itself is overlay-stacked, so it's above this regardless).
 hl.layer_rule({
@@ -124,22 +120,20 @@ hl.layer_rule({
     no_anim = true,  -- was `animation none`
 })
 
--- ── eww calendar + wifi popovers: floating cards, one motion ──
+-- ── eww calendar + wifi popovers: floating cards ─────────────
 -- Same layer as the bar (top). Hyprland renders higher `order` FIRST
--- (= below), so order 1 keeps a popover under the bar. mac-style: a
--- quick subtle scale+fade.
+-- (= below), so order 1 keeps a popover under the bar, and the shared
+-- layer motion (hyprland.lua) makes it drop out from behind it.
 hl.layer_rule({
-    name      = "kw-calendar",
-    match     = { namespace = "^kw-calendar$" },
-    order     = 1,
-    animation = "popin 95%",
+    name  = "kw-calendar",
+    match = { namespace = "^kw-calendar$" },
+    order = 1,
 })
 
 hl.layer_rule({
-    name      = "kw-wifi",
-    match     = { namespace = "^kw-wifi$" },
-    order     = 1,
-    animation = "popin 95%",
+    name  = "kw-wifi",
+    match = { namespace = "^kw-wifi$" },
+    order = 1,
 })
 -- Invisible click-outside-dismiss backdrop: below the panel (higher order
 -- renders lower in the same layer), no animation on an invisible surface.
@@ -150,27 +144,13 @@ hl.layer_rule({
     no_anim = true,
 })
 -- ── eww keys sheet (ALT+/) and overview strip (ALT+Tab) ──────
-hl.layer_rule({
-    name      = "kw-keys",
-    match     = { namespace = "^kw-keys$" },
-    animation = "popin 95%",
-})
--- Dimmed click-outside-dismiss backdrop under the sheet.
+-- Both take the shared layer motion. The sheet's dimmed backdrop only fades:
+-- a full-screen dim must not slide.
 hl.layer_rule({
     name      = "kw-keys-bg",
     match     = { namespace = "^kw-keys-bg$" },
     order     = 2,
     animation = "fade",
 })
-hl.layer_rule({
-    name      = "kw-overview",
-    match     = { namespace = "^kw-overview$" },
-    animation = "popin 95%",
-})
-
--- Password dialog: default order 0 = renders above the panel; quick popin.
-hl.layer_rule({
-    name      = "kw-wifi-pw",
-    match     = { namespace = "^kw-wifi-pw$" },
-    animation = "popin 90%",
-})
+-- The Wi-Fi password dialog (kw-wifi-pw) has no rule: default order 0 keeps
+-- it above the panel.
