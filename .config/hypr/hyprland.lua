@@ -217,6 +217,9 @@ hl.animation({ leaf = "windows",          enabled = true, speed = 1.1,   bezier 
 hl.animation({ leaf = "border",           enabled = true, speed = 5,  bezier = "default" })
 hl.animation({ leaf = "fade",             enabled = true, speed = 1.1, bezier = "md3_decel" })
 hl.animation({ leaf = "layers",           enabled = true, speed = 0.9,   bezier = "md3_decel",   style = "slide" })
+-- Layers (panels, popovers, the launcher, toasts) appear at once; only leaving animates.
+hl.animation({ leaf = "layersIn",         enabled = false })
+hl.animation({ leaf = "fadeLayersIn",     enabled = false })
 hl.animation({ leaf = "workspaces",       enabled = true, speed = 1.3, bezier = "easeOutExpo", style = "slide" })
 hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 1.1,   bezier = "md3_decel",   style = "slidevert" })
 
