@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Metered state of the active physical connection, as {"class","tooltip"} JSON.
-# `toggle` flips connection.metered yes/no and reapplies, which fires the
-# 80-kw-metered-downloads dispatcher (stops/starts the download stack).
+# `toggle` on saves connection.metered yes; off is a runtime-only override.
+# Both fire the 80-kw-metered-downloads dispatcher (stops/starts the download stack).
 set -u
 
 active() {
@@ -36,8 +36,13 @@ case "${1:-status}" in
       yes*) want=no ;;
       *)    want=yes ;;
     esac
-    nmcli connection modify "$conn" connection.metered "$want" \
-      && nmcli device reapply "$dev" >/dev/null 2>&1
+    # Off is for this session only: a saved "no" overrides the hotspot's metered hint for good.
+    if [ "$want" = yes ]; then
+      nmcli connection modify "$conn" connection.metered yes \
+        && nmcli device reapply "$dev" >/dev/null 2>&1
+    else
+      nmcli device modify "$dev" connection.metered no >/dev/null 2>&1
+    fi
     eww update "metered=$(status)" 2>/dev/null
     ;;
   *) status ;;
