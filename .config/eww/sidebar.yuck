@@ -23,6 +23,7 @@
 (defpoll dnd-state  :interval "20s" :initial '{"state":"connected","detail":""}'    "~/.config/eww/scripts/kw-state.sh dnd")
 (defpoll eye-state  :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh eye")
 (defpoll tv-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh tv")
+(defpoll dl-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh dl")
 
 ;; --- building blocks ---------------------------------------------------------
 
@@ -209,12 +210,20 @@
           :state {eye-state.state}
           :detail {eye-state.detail}
           :onclick "~/.config/eww/scripts/eye-comfort-toggle.sh; sleep 0.2 && ~/.config/eww/scripts/kw-refresh.sh eye"))
-      (kw-tile
-        :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
-        :label "TV mode"
-        :tooltip "Screen off, stay awake, stop charging. ALT+SHIFT+T exits"
-        :state {tv-state.state}
-        :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv"))
+      (box :orientation "h" :space-evenly true :spacing 8
+        (kw-tile
+          :icon "${EWW_CONFIG_DIR}/icons/monitor.svg"
+          :label "TV mode"
+          :tooltip "Screen off, stay awake, stop charging. ALT+SHIFT+T exits"
+          :state {tv-state.state}
+          :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv")
+        (kw-tile
+          :icon "${EWW_CONFIG_DIR}/icons/download-simple.svg"
+          :label "Download mode"
+          :tooltip "Screen off, stay awake, everything else at its lowest. ALT+SHIFT+D exits"
+          :state {dl-state.state}
+          :detail {dl-state.detail}
+          :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & (~/.config/eww/scripts/download-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh dl) &")))
 
     (kw-media)
     (kw-notifications)
