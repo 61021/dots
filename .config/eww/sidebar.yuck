@@ -227,7 +227,7 @@
   :focusable false
   :namespace "kw-sidebar"
   :geometry (geometry
-    :x "10px"
+    :x "18px"
     :y "6px"
     :width "300px"
     :anchor "top left")

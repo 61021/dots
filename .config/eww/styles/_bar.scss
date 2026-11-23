@@ -1,12 +1,12 @@
 /* Top bar - frame, stats, launcher, clock button. Floating: the window is
    44px tall and full width; the margins keep it 8px off the top edge and
-   10px off the sides (the window itself stays transparent). */
+   18px off the sides, level with the windows (gaps_out). */
 
 .kw-bar {
   background-color: $bg-0;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  margin: 8px 10px 0 10px;
+  margin: 8px 18px 0 18px;
   padding: 0 5px;
   color: $fg-0;
   font-family: $font-sans;
