@@ -1,37 +1,39 @@
-# KW notifications: slim one-line toasts under the right end of the bar.
+# KW notifications: cards under the right end of the bar, title over body.
 # Palette: ~/stuff/constants/colors/palette.md
 
 [global]
-    font = "IBM Plex Sans Medium 10"
+    font = "IBM Plex Sans 10"
     markup = full
-    # Title, then the body in the muted colour on the same line. dunst cannot
-    # reveal the body on hover, so it stays inline and is cut with an ellipsis.
-    format = "%s  <span foreground='#a1a1a1'>%b</span>"
-    ignore_newline = true
-    word_wrap = false
+    # Title in fg-hi semibold, body in fg-1 underneath; the card stops at two body lines.
+    format = "<span weight='600' foreground='#fafafa'>%s</span>\n<span foreground='#a1a1a1'>%b</span>"
+    ignore_newline = false
+    word_wrap = true
     ellipsize = end
     alignment = left
-    vertical_alignment = center
+    vertical_alignment = top
+    line_height = 3
     show_age_threshold = -1
     # Away from the keyboard toasts wait, so they are still there on return.
     idle_threshold = 2m
+    # Rules below match with POSIX regex, not globs.
+    enable_posix_regex = true
 
     origin = top-right
     offset = (18, 10)
-    width = (0, 520)
-    height = (0, 36)
-    padding = 9
-    horizontal_padding = 12
-    text_icon_padding = 9
-    gap_size = 6
+    width = 360
+    height = (0, 96)
+    padding = 12
+    horizontal_padding = 14
+    text_icon_padding = 12
+    gap_size = 8
     frame_width = 1
     frame_color = "#ffffff1a"
-    corner_radius = 12
+    corner_radius = 14
     highlight = "#fafafa"
 
     icon_position = left
-    min_icon_size = 16
-    max_icon_size = 16
+    min_icon_size = 20
+    max_icon_size = 20
     default_icon = /home/khaled/.config/dunst/icons/bell.svg
 
 [experimental]
@@ -51,6 +53,7 @@
     background = "#000000"
     foreground = "#fafafa"
     default_icon = /home/khaled/.config/dunst/icons/warning.svg
+    frame_color = "#ff646766"
     timeout = 15s
 
 # Senders that ask for "never expire" (the battery notifier) still expire.
@@ -58,11 +61,16 @@
     match_dbus_timeout = 0
     override_dbus_timeout = 15s
 
+# No body: title alone, no empty second line.
+[kw-title-only]
+    body = "^$"
+    format = "<span weight='600' foreground='#fafafa'>%s</span>"
+
 # low-bat-notification.sh sends theme icon names; show the Phosphor one.
 [kw-battery]
-    appname = "battery"
+    appname = "^battery$"
     new_icon = /home/khaled/.config/dunst/icons/battery-warning.svg
 
 [kw-sound]
-    summary = "*"
+    summary = ".*"
     script = /home/khaled/.local/bin/kw-notif-sound
