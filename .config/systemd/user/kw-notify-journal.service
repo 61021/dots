@@ -1,0 +1,10 @@
+[Unit]
+Description=Toasts for finished torrents and the fan watchdog
+
+[Service]
+ExecStart=%h/.local/bin/kw-notify-journal
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

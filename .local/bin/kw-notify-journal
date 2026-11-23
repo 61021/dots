@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+"""Turns journal lines into toasts: finished torrents and the fan watchdog maxing the fan."""
+import json
+import os
+import subprocess
+
+ICONS = os.path.expanduser('~/.config/dunst/icons')
+MATCHES = ['SYSLOG_IDENTIFIER=kw-torrent-done', '+', '_SYSTEMD_UNIT=fan-watchdog.service']
+
+
+def notify(icon: str, urgency: str, title: str, body: str) -> None:
+    subprocess.run(['notify-send', '-a', 'kw-notify', '-i', f'{ICONS}/{icon}.svg', '-u', urgency, title, body])
+
+
+def message(entry: dict) -> str:
+    msg = entry.get('MESSAGE', '')
+    return bytes(msg).decode(errors='replace') if isinstance(msg, list) else msg
+
+
+journal = subprocess.Popen(['journalctl', '-f', '-n0', '-o', 'json', *MATCHES], stdout=subprocess.PIPE, text=True)
+for line in journal.stdout:
+    entry = json.loads(line)
+    msg = message(entry)
+    if entry.get('SYSLOG_IDENTIFIER') == 'kw-torrent-done':
+        notify('download-simple', 'low', 'Download finished', msg)
+    elif 'fan to max' in msg:
+        temp = msg.split(':')[0]
+        notify('thermometer-hot', 'critical', f'Running hot: {temp}',
+               'Fan at full speed. Save your work; the laptop cuts power if it keeps climbing.')

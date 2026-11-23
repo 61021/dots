@@ -1,0 +1,87 @@
+#!/bin/sh
+# Periodic checks behind kw-notify.timer: hotspot data, disk space, backup age, pending reboot.
+# Each toast fires once per threshold per day (the reboot one once per boot).
+export LC_ALL=C
+
+STATE=${XDG_STATE_HOME:-$HOME/.local/state}/kw-notify
+ICONS=$HOME/.config/dunst/icons
+# One SSID per line; metered links count as hotspots too.
+HOTSPOT_SSIDS="Khaled's S24 Ultra"
+TODAY=$(date +%F)
+mkdir -p "$STATE"
+find "$STATE" -type f -name '20*' -mtime +7 -delete
+
+# once STAMP ICON URGENCY TITLE BODY
+once() {
+    [ -e "$1" ] && return
+    touch "$1"
+    notify-send -a kw-notify -i "$ICONS/$2.svg" -u "$3" "$4" "$5"
+}
+
+bytes() {
+    echo $(( $(cat "/sys/class/net/$1/statistics/rx_bytes") + $(cat "/sys/class/net/$1/statistics/tx_bytes") ))
+}
+
+hotspot() {
+    links=$(nmcli -t -f DEVICE,TYPE,STATE device status | awk -F: '$2 ~ /^(ethernet|wifi|gsm|bt)$/ && $3 == "connected" { print $1 }')
+    for dev in $links; do
+        name=$(nmcli -g GENERAL.CONNECTION device show "$dev")
+        ssid=$(nmcli -g 802-11-wireless.ssid connection show id "$name" 2>/dev/null)
+        case "$(nmcli -g GENERAL.METERED device show "$dev")" in
+            yes*) ;;
+            *) [ -n "$ssid" ] && printf '%s\n' "$HOTSPOT_SSIDS" | grep -qxF -- "$ssid" || continue ;;
+        esac
+        now=$(bytes "$dev")
+        last=$(awk -v d="$dev" '$1 == d { print $2 }' "$STATE/counters" 2>/dev/null)
+        # A smaller counter means the interface reset (reboot, driver reload).
+        [ -n "$last" ] && [ "$now" -ge "$last" ] && delta=$((now - last)) || delta=0
+        total=$(( $(cat "$STATE/$TODAY-hotspot" 2>/dev/null || echo 0) + delta ))
+        echo "$total" > "$STATE/$TODAY-hotspot"
+        mb=$((total / 1000000))
+        if [ "$mb" -ge 1000 ]; then
+            touch "$STATE/$TODAY-hotspot-500"
+            once "$STATE/$TODAY-hotspot-1g" cell-signal-high critical \
+                "Hotspot: 1 GB used today" "That's over the ~800 MB a day the 24 GB plan allows. Check what's downloading."
+        elif [ "$mb" -ge 500 ]; then
+            once "$STATE/$TODAY-hotspot-500" cell-signal-high normal \
+                "Hotspot: 500 MB used today" "The 24 GB plan allows about 800 MB a day."
+        fi
+    done
+    # Every link's counter, so joining the hotspot counts from the last check only.
+    for dev in $links; do echo "$dev $(bytes "$dev")"; done > "$STATE/counters"
+}
+
+disk() {
+    for mnt in / /home; do
+        pct=$(df --output=pcent "$mnt" | tail -1 | tr -dc 0-9)
+        free=$(df -h --output=avail "$mnt" | tail -1 | tr -d ' ' | sed 's/\([KMGT]\)$/ \1B/')
+        stamp=$STATE/$TODAY-disk$(echo "$mnt" | tr / -)
+        if [ "$pct" -ge 95 ]; then
+            touch "$stamp-92"
+            once "$stamp-95" hard-drives critical \
+                "Disk almost full: $mnt" "$pct% used, $free left. Builds and downloads start failing soon."
+        elif [ "$pct" -ge 92 ]; then
+            once "$stamp-92" hard-drives normal "Disk filling up: $mnt" "$pct% used, $free left."
+        fi
+    done
+}
+
+backup() {
+    # kw-backup.service touches this after every successful run.
+    [ -e "$STATE/last-backup" ] || return
+    days=$(( ($(date +%s) - $(stat -c %Y "$STATE/last-backup")) / 86400 ))
+    [ "$days" -ge 7 ] && once "$STATE/$TODAY-backup" cloud-arrow-up normal \
+        "Back up: last backup was $days days ago" "Run backup on home Wi-Fi, not the hotspot."
+}
+
+reboot_pending() {
+    [ -d "/usr/lib/modules/$(uname -r)" ] && return
+    once "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/kw-notify-reboot" arrow-clockwise normal \
+        "Reboot to finish the update" "Running $(uname -r), installed $(pacman -Q linux | cut -d' ' -f2). USB devices may fail until then."
+}
+
+hotspot
+disk
+backup
+reboot_pending
+exit 0

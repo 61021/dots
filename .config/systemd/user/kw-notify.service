@@ -1,0 +1,6 @@
+[Unit]
+Description=Toasts for hotspot data, disk space, backup age and pending reboot
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/kw-notify-check
