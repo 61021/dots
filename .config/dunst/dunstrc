@@ -13,6 +13,8 @@
     alignment = left
     vertical_alignment = center
     show_age_threshold = -1
+    # Away from the keyboard toasts wait, so they are still there on return.
+    idle_threshold = 2m
 
     origin = top-right
     offset = (18, 10)
@@ -32,18 +34,29 @@
     max_icon_size = 16
     default_icon = /home/khaled/.config/dunst/icons/bell.svg
 
+[experimental]
+    pause_on_mouse_over = true
+
 [urgency_low]
     background = "#000000"
     foreground = "#fafafa"
+    timeout = 5s
 
 [urgency_normal]
     background = "#000000"
     foreground = "#fafafa"
+    timeout = 8s
 
 [urgency_critical]
     background = "#000000"
     foreground = "#fafafa"
     default_icon = /home/khaled/.config/dunst/icons/warning.svg
+    timeout = 15s
+
+# Senders that ask for "never expire" (the battery notifier) still expire.
+[kw-expire]
+    match_dbus_timeout = 0
+    override_dbus_timeout = 15s
 
 # low-bat-notification.sh sends theme icon names; show the Phosphor one.
 [kw-battery]
