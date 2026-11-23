@@ -1,0 +1,6 @@
+[Unit]
+Description=Toast that %i failed
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/kw-notify-failure %i --user
