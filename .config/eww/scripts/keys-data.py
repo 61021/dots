@@ -39,7 +39,7 @@ COLUMNS = [
     ("Workspaces", ["Go to workspace", "Move window there", "Next or previous",
                     "Show or hide scratchpad", "Move to scratchpad"]),
     ("Screen", ["Screenshot the screen", "Screenshot a window", "Region to file", "Region to clipboard",
-                "Lock screen", "Game mode", "TV mode on or off", "Download mode on or off", "Reload Hyprland config"]),
+                "Lock screen", "Game mode", "TV mode on or off", "Away mode on or off", "Reload Hyprland config"]),
 ]
 
 

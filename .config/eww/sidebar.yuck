@@ -23,7 +23,7 @@
 (defpoll dnd-state  :interval "20s" :initial '{"state":"connected","detail":""}'    "~/.config/eww/scripts/kw-state.sh dnd")
 (defpoll eye-state  :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh eye")
 (defpoll tv-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh tv")
-(defpoll dl-state   :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh dl")
+(defpoll away-state :interval "20s" :initial '{"state":"disconnected","detail":""}' "~/.config/eww/scripts/kw-state.sh away")
 
 ;; --- building blocks ---------------------------------------------------------
 
@@ -218,12 +218,12 @@
           :state {tv-state.state}
           :onclick "~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv")
         (kw-tile
-          :icon "${EWW_CONFIG_DIR}/icons/download-simple.svg"
-          :label "Download mode"
-          :tooltip "Screen off, stay awake, everything else at its lowest. ALT+SHIFT+D exits"
-          :state {dl-state.state}
-          :detail {dl-state.detail}
-          :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & (~/.config/eww/scripts/download-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh dl) &")))
+          :icon "${EWW_CONFIG_DIR}/icons/door-open.svg"
+          :label "Away mode"
+          :tooltip "Keeps Claude and downloads running with the lid shut, locked and dark. ALT+SHIFT+D exits"
+          :state {away-state.state}
+          :detail {away-state.detail}
+          :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & (~/.config/eww/scripts/away-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh away) &")))
 
     (kw-media)
     (kw-notifications)

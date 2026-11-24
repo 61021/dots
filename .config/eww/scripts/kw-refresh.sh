@@ -4,7 +4,7 @@
 set -u
 name="${1:-}"
 case "$name" in
-  bt|dnd|eye|tv|dl)
+  bt|dnd|eye|tv|away)
     eww update "${name}-state=$(~/.config/eww/scripts/kw-state.sh "$name")" 2>/dev/null ;;
   vpn)
     # Async connect: this shows "connecting" immediately; the poll follows up.

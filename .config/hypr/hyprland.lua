@@ -289,10 +289,10 @@ hl.bind("SUPER + L", hl.dsp.exec_cmd("~/.local/bin/kw-lock"), { description = "L
 hl.bind(mainMod .. " + SHIFT + T",
     hl.dsp.exec_cmd("~/.config/eww/scripts/tv-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh tv"),
     { locked = true, description = "TV mode on or off" })
--- Download mode: same screen-off rules, so this bind is also the way out.
+-- Away mode: same screen-off rules, so this bind is also the way out.
 hl.bind(mainMod .. " + SHIFT + D",
-    hl.dsp.exec_cmd("~/.config/eww/scripts/download-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh dl"),
-    { locked = true, description = "Download mode on or off" })
+    hl.dsp.exec_cmd("~/.config/eww/scripts/away-mode.sh toggle; ~/.config/eww/scripts/kw-refresh.sh away"),
+    { locked = true, description = "Away mode on or off" })
 
 -- Focus / move / resize with mainMod + H/J/K/L
 hl.bind(mainMod .. " + H", hl.dsp.focus({ direction = "left" }), { description = "Focus left" })

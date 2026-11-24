@@ -29,6 +29,6 @@ case "${1:-}" in
     t=$(hyprctl hyprsunset temperature 2>/dev/null)
     if [ -n "$t" ] && [ "$t" -lt 6500 ] 2>/dev/null; then out connected "${t}K"; else out disconnected; fi ;;
   tv)   out "$(~/.config/eww/scripts/tv-mode.sh get)" ;;
-  dl)   out "$(~/.config/eww/scripts/download-mode.sh get)" "$(~/.config/eww/scripts/download-mode.sh detail)" ;;
+  away) out "$(~/.config/eww/scripts/away-mode.sh get)" "$(~/.config/eww/scripts/away-mode.sh detail)" ;;
   *)    out disconnected ;;
 esac
