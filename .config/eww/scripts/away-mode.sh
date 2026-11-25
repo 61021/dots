@@ -6,7 +6,8 @@
 # keeps a closed lid cooler. Everything but the lock is restored on exit.
 # A watcher suspends the laptop once nothing is left to run: downloads done and
 # imported (or nothing came in for STALL_LIMIT) and no Claude session working
-# for IDLE minutes; or at BATTERY_MIN% on battery, before UPower's 2% action.
+# for IDLE minutes. At BATTERY_MIN% on battery it hibernates instead, before
+# UPower's 2% action, so a battery that runs flat loses nothing.
 #
 # usage: away-mode.sh on|off|toggle|get|detail
 # Exit with the sidebar tile or ALT+SHIFT+D (binds still fire under dpms off).
@@ -103,7 +104,7 @@ queue_state() {
 # Runs detached for as long as the mode is on.
 watch() {
     echo $$ > "$DIR/watch.pid"
-    local done_checks=0 last_flow state reason busy
+    local done_checks=0 last_flow state reason busy how at
     last_flow=$(date +%s)
     claude_cpu > "$DIR/cpu"
     while sleep "$INTERVAL" && is_on; do
@@ -114,8 +115,11 @@ watch() {
             *) done_checks=0 ;;
         esac
         claude_busy && busy=1 || busy=
+        how=suspend
         if on_battery && [ "$(battery)" -le "$BATTERY_MIN" ]; then
             reason="Battery at $(battery)%"
+            # After a kernel upgrade without a reboot the image could not be resumed.
+            [ -d "/usr/lib/modules/$(uname -r)" ] && how=hibernate
         elif [ -n "$busy" ]; then
             continue
         elif [ "$done_checks" -ge 3 ]; then
@@ -127,8 +131,9 @@ watch() {
         fi
         rm -f "$DIR/watch.pid"
         off quiet
-        notify "$reason, suspended at $(date +%H:%M)" "$(progress)"
-        systemctl suspend
+        at=$(date +%H:%M)
+        [ "$how" = hibernate ] && systemctl hibernate || { how=suspend; systemctl suspend; }
+        notify "$reason, ${how%e}ed at $at" "$(progress)"
         return
     done
 }
@@ -155,7 +160,7 @@ on() {
 
     local s bat
     s=$(summary)
-    bat=$(on_battery && echo " On battery ($(battery)%), suspends at $BATTERY_MIN%." || true)
+    bat=$(on_battery && echo " On battery ($(battery)%), hibernates at $BATTERY_MIN%." || true)
     if [ -z "$s" ]; then
         notify -u critical "Away mode on, but nothing is running" "It suspends in about 3 minutes. ALT+SHIFT+D wakes it."
     else
