@@ -147,7 +147,7 @@
     (kw-icon-button
       :icon "${EWW_CONFIG_DIR}/icons/moon-stars.svg"
       :tooltip "Suspend"
-      :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & systemctl suspend &")
+      :onclick "~/.config/eww/scripts/kw-sidebar-toggle.sh close & systemctl suspend-then-hibernate &")
     (kw-power-button
       :action "reboot"
       :icon "${EWW_CONFIG_DIR}/icons/arrows-clockwise.svg"

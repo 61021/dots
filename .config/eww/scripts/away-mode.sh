@@ -4,7 +4,7 @@
 # blocked, keyboard light, Bluetooth and toasts off, TLP's battery profile
 # (quiet platform profile, no turbo, Wi-Fi power save) even on AC, which also
 # keeps a closed lid cooler. Everything but the lock is restored on exit.
-# A watcher suspends the laptop once nothing is left to run: downloads done and
+# A watcher runs suspend-then-hibernate once nothing is left to run: downloads done and
 # imported (or nothing came in for STALL_LIMIT) and no Claude session working
 # for IDLE minutes. At BATTERY_MIN% on battery it hibernates instead, before
 # UPower's 2% action, so a battery that runs flat loses nothing.
@@ -115,11 +115,9 @@ watch() {
             *) done_checks=0 ;;
         esac
         claude_busy && busy=1 || busy=
-        how=suspend
+        how=suspend-then-hibernate
         if on_battery && [ "$(battery)" -le "$BATTERY_MIN" ]; then
-            reason="Battery at $(battery)%"
-            # After a kernel upgrade without a reboot the image could not be resumed.
-            [ -d "/usr/lib/modules/$(uname -r)" ] && how=hibernate
+            reason="Battery at $(battery)%" how=hibernate
         elif [ -n "$busy" ]; then
             continue
         elif [ "$done_checks" -ge 3 ]; then
@@ -132,8 +130,10 @@ watch() {
         rm -f "$DIR/watch.pid"
         off quiet
         at=$(date +%H:%M)
-        [ "$how" = hibernate ] && systemctl hibernate || { how=suspend; systemctl suspend; }
-        notify "$reason, ${how%e}ed at $at" "$(progress)"
+        # After a kernel upgrade without a reboot no image could be resumed.
+        [ -d "/usr/lib/modules/$(uname -r)" ] && systemctl "$how" || { how=suspend; systemctl suspend; }
+        [ "$how" = hibernate ] && how=hibernated || how=suspended
+        notify "$reason, $how at $at" "$(progress)"
         return
     done
 }
