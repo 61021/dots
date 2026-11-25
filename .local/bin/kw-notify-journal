@@ -3,8 +3,10 @@
 import json
 import os
 import subprocess
+import time
 
 ICONS = os.path.expanduser('~/.config/dunst/icons')
+HOT_TOAST_GAP = 600
 MATCHES = ['SYSLOG_IDENTIFIER=kw-torrent-done', '+', '_SYSTEMD_UNIT=fan-watchdog.service']
 
 
@@ -17,13 +19,15 @@ def message(entry: dict) -> str:
     return bytes(msg).decode(errors='replace') if isinstance(msg, list) else msg
 
 
+last_hot = float('-inf')
 journal = subprocess.Popen(['journalctl', '-f', '-n0', '-o', 'json', *MATCHES], stdout=subprocess.PIPE, text=True)
 for line in journal.stdout:
     entry = json.loads(line)
     msg = message(entry)
     if entry.get('SYSLOG_IDENTIFIER') == 'kw-torrent-done':
         notify('download-simple', 'low', 'Download finished', msg)
-    elif 'fan to max' in msg:
+    elif 'fan to max' in msg and time.monotonic() - last_hot >= HOT_TOAST_GAP:
+        last_hot = time.monotonic()
         temp = msg.split(':')[0]
         notify('thermometer-hot', 'critical', f'Running hot: {temp}',
                'Fan at full speed. Save your work; the laptop cuts power if it keeps climbing.')
